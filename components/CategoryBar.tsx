@@ -9,7 +9,7 @@ export default function CategoryBar() {
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 p-5">
-      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">分類進度</h2>
+      <h2 className="text-sm font-semibold text-stone-500 uppercase tracking-wide mb-4">分類進度</h2>
       <div className="flex flex-col gap-3">
         {categories.map((cat) => {
           const catVocabs = vocabularies.filter((v) => v.categoryIds.includes(cat.id))
@@ -20,10 +20,10 @@ export default function CategoryBar() {
           return (
             <div key={cat.id}>
               <div className="flex justify-between text-sm mb-1">
-                <span className="font-medium text-gray-700">{cat.name}</span>
-                <span className="text-gray-400">{graduated}/{total}</span>
+                <span className="font-medium text-stone-700">{cat.name}</span>
+                <span className="text-stone-400">{graduated}/{total}</span>
               </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-500"
                   style={{ width: `${pct}%`, backgroundColor: cat.color }}

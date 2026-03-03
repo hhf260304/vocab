@@ -32,26 +32,26 @@ export default function FlashCard({ vocab, onRemembered, onForgot }: Props) {
           className={`relative w-full h-56 cursor-pointer transform-style-3d transition-transform duration-500 ${flipped ? 'rotate-y-180' : ''}`}
           onClick={() => !flipped && setFlipped(true)}
         >
-          <div className="backface-hidden absolute inset-0 bg-white rounded-3xl border-2 border-gray-200 flex flex-col items-center justify-center p-6 shadow-sm">
-            <p className="text-4xl font-bold text-gray-900 text-center">{vocab.chinese}</p>
-            <p className="text-gray-400 text-sm mt-4">點擊翻轉</p>
+          <div className="backface-hidden absolute inset-0 bg-white rounded-3xl border-2 border-stone-200 flex flex-col items-center justify-center p-6 shadow-sm">
+            <p className="text-4xl font-bold text-stone-900 text-center">{vocab.chinese}</p>
+            <p className="text-stone-400 text-sm mt-4">點擊翻轉</p>
           </div>
 
-          <div className="backface-hidden rotate-y-180 absolute inset-0 bg-indigo-600 rounded-3xl flex flex-col items-center justify-center p-6 shadow-sm">
+          <div className="backface-hidden rotate-y-180 absolute inset-0 bg-stone-800 rounded-3xl flex flex-col items-center justify-center p-6 shadow-sm">
             <p className="text-4xl font-bold text-white text-center">{vocab.japanese}</p>
             <div className="flex items-center gap-2 mt-2">
-              <p className="text-indigo-200 text-lg">{vocab.kana}</p>
+              <p className="text-stone-300 text-lg">{vocab.kana}</p>
               <button
                 onClick={(e) => { e.stopPropagation(); speak() }}
-                className="text-indigo-200 hover:text-white transition-colors text-xl"
+                className="text-stone-300 hover:text-white transition-colors text-xl"
               >
                 🔊
               </button>
             </div>
             {vocab.exampleJp && (
               <div className="mt-4 text-center">
-                <p className="text-indigo-100 text-sm">{vocab.exampleJp}</p>
-                <p className="text-indigo-200 text-xs mt-1">{vocab.exampleZh}</p>
+                <p className="text-stone-200 text-sm">{vocab.exampleJp}</p>
+                <p className="text-stone-300 text-xs mt-1">{vocab.exampleZh}</p>
               </div>
             )}
           </div>
