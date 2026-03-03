@@ -36,8 +36,8 @@ export default function ReviewPage() {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
         <p className="text-5xl">🎉</p>
-        <h2 className="text-xl font-bold text-gray-900">今日沒有待複習單字</h2>
-        <button onClick={() => router.push('/')} className="text-indigo-600 hover:underline text-sm">
+        <h2 className="text-xl font-bold text-stone-900">今日沒有待複習單字</h2>
+        <button onClick={() => router.push('/')} className="text-orange-700 hover:underline text-sm">
           回到首頁
         </button>
       </div>
@@ -48,20 +48,20 @@ export default function ReviewPage() {
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-6 text-center">
         <p className="text-5xl">✅</p>
-        <h2 className="text-2xl font-bold text-gray-900">複習完成！</h2>
+        <h2 className="text-2xl font-bold text-stone-900">複習完成！</h2>
         <div className="flex gap-6">
           <div className="flex flex-col items-center">
             <span className="text-3xl font-bold text-emerald-600">{results.remembered}</span>
-            <span className="text-sm text-gray-500">記得</span>
+            <span className="text-sm text-stone-500">記得</span>
           </div>
           <div className="flex flex-col items-center">
             <span className="text-3xl font-bold text-red-500">{results.forgot}</span>
-            <span className="text-sm text-gray-500">忘記</span>
+            <span className="text-sm text-stone-500">忘記</span>
           </div>
         </div>
         <button
           onClick={() => router.push('/')}
-          className="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-semibold hover:bg-indigo-700 transition-colors"
+          className="px-6 py-3 bg-orange-700 text-white rounded-2xl font-semibold hover:bg-orange-800 transition-colors"
         >
           回到首頁
         </button>
@@ -73,20 +73,20 @@ export default function ReviewPage() {
     <div className="flex flex-col items-center gap-8">
       <div className="w-full flex items-center justify-between">
         <div className="flex flex-col">
-          <span className="text-sm text-gray-400">進度</span>
-          <span className="font-bold text-gray-700">{index + 1} / {total}</span>
+          <span className="text-sm text-stone-400">進度</span>
+          <span className="font-bold text-stone-700">{index + 1} / {total}</span>
         </div>
         <button
           onClick={() => router.push('/')}
-          className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
+          className="text-sm text-stone-400 hover:text-stone-600 transition-colors"
         >
           離開
         </button>
       </div>
 
-      <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+      <div className="w-full h-1.5 bg-stone-100 rounded-full overflow-hidden">
         <div
-          className="h-full bg-indigo-500 rounded-full transition-all duration-300"
+          className="h-full bg-stone-800 rounded-full transition-all duration-300"
           style={{ width: `${((index) / total) * 100}%` }}
         />
       </div>

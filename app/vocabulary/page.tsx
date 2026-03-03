@@ -23,17 +23,17 @@ export default function VocabularyPage() {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">單字庫</h1>
+        <h1 className="text-2xl font-bold text-stone-900">單字庫</h1>
         <Link
           href="/vocabulary/new"
-          className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors"
+          className="px-4 py-2 bg-orange-700 text-white rounded-xl text-sm font-semibold hover:bg-orange-800 transition-colors"
         >
           + 新增單字
         </Link>
       </div>
 
       <input
-        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white"
+        className="w-full border border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
         placeholder="搜尋日文、假名、中文..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -44,7 +44,7 @@ export default function VocabularyPage() {
           <button
             onClick={() => setSelectedCat(null)}
             className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-              !selectedCat ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+              !selectedCat ? 'bg-orange-700 text-white' : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-50'
             }`}
           >
             全部
@@ -54,7 +54,7 @@ export default function VocabularyPage() {
               key={cat.id}
               onClick={() => setSelectedCat(selectedCat === cat.id ? null : cat.id)}
               className={`px-3 py-1 rounded-full text-sm font-medium transition-colors border-2 ${
-                selectedCat === cat.id ? 'text-white border-transparent' : 'border-gray-200 bg-white text-gray-600'
+                selectedCat === cat.id ? 'text-white border-transparent' : 'border-stone-200 bg-white text-stone-600'
               }`}
               style={selectedCat === cat.id ? { backgroundColor: cat.color } : {}}
             >
@@ -66,7 +66,7 @@ export default function VocabularyPage() {
 
       <div className="flex flex-col gap-3">
         {filtered.length === 0 ? (
-          <div className="text-center py-12 text-gray-400">
+          <div className="text-center py-12 text-stone-400">
             <p className="text-4xl mb-3">🔍</p>
             <p className="font-medium">{vocabularies.length === 0 ? '還沒有單字' : '找不到符合的單字'}</p>
           </div>

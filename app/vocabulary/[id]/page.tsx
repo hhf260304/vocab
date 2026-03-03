@@ -12,7 +12,7 @@ export default function EditVocabPage() {
   const vocab = vocabularies.find((v) => v.id === id)
 
   if (!vocab) {
-    return <p className="text-gray-500">找不到單字</p>
+    return <p className="text-stone-500">找不到單字</p>
   }
 
   function handleSubmit(data: VocabFormData) {
@@ -23,10 +23,10 @@ export default function EditVocabPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">編輯單字</h1>
-        <p className="text-gray-500 text-sm mt-1">修改 {vocab.japanese} 的資料</p>
+        <h1 className="text-2xl font-bold text-stone-900">編輯單字</h1>
+        <p className="text-stone-500 text-sm mt-1">修改 {vocab.japanese} 的資料</p>
       </div>
-      <div className="bg-white rounded-2xl border border-gray-200 p-6">
+      <div className="bg-white rounded-2xl border border-stone-200 p-6">
         <VocabForm
           initialData={vocab}
           onSubmit={handleSubmit}

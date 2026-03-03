@@ -17,10 +17,10 @@ export default function NewVocabPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">新增單字</h1>
-        <p className="text-gray-500 text-sm mt-1">加入新的日文單字到你的單字庫</p>
+        <h1 className="text-2xl font-bold text-stone-900">新增單字</h1>
+        <p className="text-stone-500 text-sm mt-1">加入新的日文單字到你的單字庫</p>
       </div>
-      <div className="bg-white rounded-2xl border border-gray-200 p-6">
+      <div className="bg-white rounded-2xl border border-stone-200 p-6">
         <VocabForm onSubmit={handleSubmit} submitLabel="新增單字" />
       </div>
     </div>
