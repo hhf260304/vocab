@@ -8,7 +8,7 @@ export default function CategoryBar() {
   if (categories.length === 0) return null
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-5">
+    <div className="bg-white rounded-2xl border border-stone-200 p-5">
       <h2 className="text-sm font-semibold text-stone-500 uppercase tracking-wide mb-4">分類進度</h2>
       <div className="flex flex-col gap-3">
         {categories.map((cat) => {
