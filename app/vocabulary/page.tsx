@@ -29,6 +29,7 @@ function CategorySection({
         <button
           onClick={() => setCollapsed((c) => !c)}
           className="flex items-center gap-2 flex-1 text-left"
+          aria-expanded={!collapsed}
         >
           <span className="font-semibold text-stone-800">{name}</span>
           <span className="text-sm text-stone-400">{vocabs.length} 個單字</span>
@@ -48,6 +49,7 @@ function CategorySection({
               onClick={() => onDeleteCategory(cat.id)}
               className="px-2 py-1 text-xs text-stone-400 hover:text-red-500 transition-colors"
               title={`刪除分類「${name}」`}
+              aria-label={`刪除分類「${name}」`}
             >
               ×
             </button>
@@ -145,7 +147,7 @@ export default function VocabularyPage() {
           </button>
           <button
             type="button"
-            onClick={() => setShowCatInput(false)}
+            onClick={() => { setShowCatInput(false); setNewCatName('') }}
             className="px-3 py-2 text-stone-400 rounded-xl border border-stone-200 hover:bg-stone-50 text-sm"
           >
             取消
