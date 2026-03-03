@@ -1,8 +1,7 @@
 'use client'
 
 import { Suspense } from 'react'
-import { useRouter } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useVocabStore } from '@/lib/store'
 import { VocabFormData } from '@/lib/types'
 import VocabForm from '@/components/VocabForm'
@@ -17,7 +16,7 @@ function NewVocabPageInner() {
   function handleSubmit(data: VocabFormData) {
     addVocabulary({
       ...data,
-      categoryIds: categoryId ? [categoryId] : [],
+      categoryIds: category ? [category.id] : [],
     })
     router.push('/vocabulary')
   }
@@ -39,7 +38,7 @@ function NewVocabPageInner() {
 
 export default function NewVocabPage() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <NewVocabPageInner />
     </Suspense>
   )
