@@ -1,16 +1,24 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useVocabStore } from '@/lib/store'
 import { VocabFormData } from '@/lib/types'
 import VocabForm from '@/components/VocabForm'
 
-export default function NewVocabPage() {
+function NewVocabPageInner() {
   const router = useRouter()
-  const addVocabulary = useVocabStore((s) => s.addVocabulary)
+  const searchParams = useSearchParams()
+  const categoryId = searchParams.get('categoryId')
+  const { addVocabulary, categories } = useVocabStore()
+  const category = categories.find((c) => c.id === categoryId)
 
   function handleSubmit(data: VocabFormData) {
-    addVocabulary(data)
+    addVocabulary({
+      ...data,
+      categoryIds: categoryId ? [categoryId] : [],
+    })
     router.push('/vocabulary')
   }
 
@@ -18,11 +26,21 @@ export default function NewVocabPage() {
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-bold text-stone-900">新增單字</h1>
-        <p className="text-stone-500 text-sm mt-1">加入新的日文單字到你的單字庫</p>
+        <p className="text-stone-500 text-sm mt-1">
+          {category ? `加入「${category.name}」分類` : '加入新的日文單字到你的單字庫'}
+        </p>
       </div>
       <div className="bg-white rounded-2xl border border-stone-200 p-6">
         <VocabForm onSubmit={handleSubmit} submitLabel="新增單字" />
       </div>
     </div>
+  )
+}
+
+export default function NewVocabPage() {
+  return (
+    <Suspense>
+      <NewVocabPageInner />
+    </Suspense>
   )
 }
