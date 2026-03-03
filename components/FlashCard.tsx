@@ -21,7 +21,7 @@ export default function FlashCard({ vocab, onRemembered, onForgot }: Props) {
   function handleAnswer(remembered: boolean) {
     setFlipped(false)
     setTimeout(() => {
-      remembered ? onRemembered() : onForgot()
+      if (remembered) { onRemembered() } else { onForgot() }
     }, 150)
   }
 
