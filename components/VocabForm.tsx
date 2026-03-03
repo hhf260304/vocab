@@ -10,6 +10,9 @@ interface Props {
 }
 
 export default function VocabForm({ initialData, onSubmit, submitLabel }: Props) {
+  // categoryIds is carried through state but has no UI.
+  // new/page.tsx overrides it from the URL param on submit.
+  // [id]/page.tsx relies on it round-tripping unchanged from initialData.
   const [form, setForm] = useState<VocabFormData>({
     japanese: '',
     chinese: '',
