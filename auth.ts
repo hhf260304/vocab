@@ -1,11 +1,11 @@
 // auth.ts
-import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
-import Credentials from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
+import { eq } from "drizzle-orm";
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -41,8 +41,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         await db
           .insert(users)
           .values({
-            id: token.sub!,
-            email: token.email!,
+            id: token.sub ?? crypto.randomUUID(),
+            email: token.email ?? undefined,
             name: token.name,
             image: token.picture,
           })
@@ -54,7 +54,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.sub!;
+      session.user.id = token.sub ?? "";
       return session;
     },
   },
