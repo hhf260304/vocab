@@ -1,10 +1,8 @@
 export interface Vocabulary {
   id: string
   japanese: string
-  kana: string
   chinese: string
   exampleJp: string
-  exampleZh: string
   categoryIds: string[]
   createdAt: number
   reviewStage: 0 | 1 | 2 | 3 | 4 | 5
@@ -15,7 +13,6 @@ export interface Vocabulary {
 export interface Category {
   id: string
   name: string
-  color: string
 }
 
 export type VocabFormData = Omit<Vocabulary, 'id' | 'createdAt' | 'reviewStage' | 'nextReviewAt' | 'lastReviewedAt'>

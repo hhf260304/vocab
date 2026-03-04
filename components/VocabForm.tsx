@@ -1,99 +1,222 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { VocabFormData } from '@/lib/types'
+import { Check, ChevronsUpDown, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { useVocabStore } from "@/lib/store";
+import type { VocabFormData } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface Props {
-  initialData?: VocabFormData & { id?: string }
-  onSubmit: (data: VocabFormData) => void
-  submitLabel: string
+	initialData?: VocabFormData & { id?: string };
+	onSubmit: (data: VocabFormData) => void;
+	submitLabel: string;
+	showCategorySelector?: boolean;
 }
 
-export default function VocabForm({ initialData, onSubmit, submitLabel }: Props) {
-  // categoryIds is carried through state but has no UI.
-  // new/page.tsx overrides it from the URL param on submit.
-  // [id]/page.tsx relies on it round-tripping unchanged from initialData.
-  const [form, setForm] = useState<VocabFormData>({
-    japanese: '',
-    chinese: '',
-    exampleJp: '',
-    categoryIds: [],
-    ...initialData,
-  })
+export default function VocabForm({
+	initialData,
+	onSubmit,
+	submitLabel,
+	showCategorySelector = false,
+}: Props) {
+	const { categories, addCategory } = useVocabStore();
+	const [catOpen, setCatOpen] = useState(false);
+	const [catSearch, setCatSearch] = useState("");
+	const [form, setForm] = useState<VocabFormData>({
+		japanese: "",
+		chinese: "",
+		exampleJp: "",
+		categoryIds: [],
+		...initialData,
+	});
 
-  useEffect(() => {
-    if (initialData) setForm((f) => ({ ...f, ...initialData }))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialData?.id])
+	useEffect(() => {
+		if (initialData) setForm((f) => ({ ...f, ...initialData }));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [initialData?.id]);
 
-  function speak(text: string) {
-    const utterance = new SpeechSynthesisUtterance(text)
-    utterance.lang = 'ja-JP'
-    speechSynthesis.speak(utterance)
-  }
+	function speak(text: string) {
+		const utterance = new SpeechSynthesisUtterance(text);
+		utterance.lang = "ja-JP";
+		speechSynthesis.speak(utterance);
+	}
 
-  function setField(field: keyof VocabFormData, value: string | string[]) {
-    setForm((f) => ({ ...f, [field]: value }))
-  }
+	function setField(field: keyof VocabFormData, value: string | string[]) {
+		setForm((f) => ({ ...f, [field]: value }));
+	}
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!form.japanese || !form.chinese) return
-    onSubmit(form)
-  }
+	function handleSelectCategory(catId: string) {
+		setField("categoryIds", form.categoryIds[0] === catId ? [] : [catId]);
+		setCatOpen(false);
+		setCatSearch("");
+	}
 
-  const inputClass = 'w-full border border-stone-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white'
+	function handleCreateCategory() {
+		const trimmed = catSearch.trim();
+		if (!trimmed) return;
+		addCategory(trimmed);
+		const created = useVocabStore
+			.getState()
+			.categories.find((c) => c.name === trimmed);
+		if (created) setField("categoryIds", [created.id]);
+		setCatOpen(false);
+		setCatSearch("");
+	}
 
-  return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <div>
-        <label className="block text-sm font-medium text-stone-700 mb-1">日文 *</label>
-        <div className="flex gap-2">
-          <input
-            className={inputClass}
-            value={form.japanese}
-            onChange={(e) => setField('japanese', e.target.value)}
-            placeholder="例：食べる"
-            required
-          />
-          <button
-            type="button"
-            onClick={() => speak(form.japanese)}
-            className="px-3 py-2 rounded-xl border border-stone-200 hover:bg-stone-50 text-lg"
-            title="朗讀"
-          >
-            🔊
-          </button>
-        </div>
-      </div>
+	function handleSubmit(e: React.FormEvent) {
+		e.preventDefault();
+		if (!form.japanese || !form.chinese) return;
+		onSubmit(form);
+	}
 
-      <div>
-        <label className="block text-sm font-medium text-stone-700 mb-1">中文意思 *</label>
-        <input
-          className={inputClass}
-          value={form.chinese}
-          onChange={(e) => setField('chinese', e.target.value)}
-          placeholder="例：吃"
-          required
-        />
-      </div>
+	return (
+		<form onSubmit={handleSubmit} className="flex flex-col gap-5">
+			<div className="flex flex-col gap-1.5">
+				<Label htmlFor="japanese">日文 *</Label>
+				<div className="flex gap-2">
+					<Input
+						id="japanese"
+						value={form.japanese}
+						onChange={(e) => setField("japanese", e.target.value)}
+						placeholder="例：食べる"
+						required
+					/>
+					<Button
+						type="button"
+						variant="outline"
+						size="icon"
+						onClick={() => speak(form.japanese)}
+						title="朗讀"
+					>
+						🔊
+					</Button>
+				</div>
+			</div>
 
-      <div>
-        <label className="block text-sm font-medium text-stone-700 mb-1">例句（日文）</label>
-        <input
-          className={inputClass}
-          value={form.exampleJp}
-          onChange={(e) => setField('exampleJp', e.target.value)}
-          placeholder="例：ご飯を食べる。"
-        />
-      </div>
+			<div className="flex flex-col gap-1.5">
+				<Label htmlFor="chinese">中文意思 *</Label>
+				<Input
+					id="chinese"
+					value={form.chinese}
+					onChange={(e) => setField("chinese", e.target.value)}
+					placeholder="例：吃"
+					required
+				/>
+			</div>
 
-      <button
-        type="submit"
-        className="w-full py-3 bg-orange-700 text-white rounded-xl font-semibold hover:bg-orange-800 transition-colors mt-2"
-      >
-        {submitLabel}
-      </button>
-    </form>
-  )
+			<div className="flex flex-col gap-1.5">
+				<Label htmlFor="exampleJp">例句（日文）</Label>
+				<Input
+					id="exampleJp"
+					value={form.exampleJp}
+					onChange={(e) => setField("exampleJp", e.target.value)}
+					placeholder="例：ご飯を食べる。"
+				/>
+			</div>
+
+			{showCategorySelector && (
+				<div className="flex flex-col gap-1.5">
+					<Label>分類</Label>
+					<Popover open={catOpen} onOpenChange={setCatOpen}>
+						<PopoverTrigger asChild>
+							<Button
+								type="button"
+								variant="outline"
+								role="combobox"
+								aria-expanded={catOpen}
+								className="w-full justify-between font-normal"
+							>
+								{form.categoryIds[0]
+									? (categories.find((c) => c.id === form.categoryIds[0])
+											?.name ?? "— 不指定分類 —")
+									: "— 不指定分類 —"}
+								<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+							</Button>
+						</PopoverTrigger>
+						<PopoverContent className="w-full p-0" align="start">
+							<Command>
+								<CommandInput
+									placeholder="搜尋或輸入新分類…"
+									value={catSearch}
+									onValueChange={setCatSearch}
+								/>
+								<CommandList>
+									<CommandEmpty>
+										{catSearch.trim() ? (
+											<button
+												type="button"
+												onClick={handleCreateCategory}
+												className="flex w-full items-center gap-2 px-2 py-1.5 text-sm hover:bg-accent"
+											>
+												<Plus className="h-4 w-4" />
+												建立「{catSearch.trim()}」
+											</button>
+										) : (
+											<p className="py-2 text-center text-sm text-muted-foreground">
+												尚無分類
+											</p>
+										)}
+									</CommandEmpty>
+									<CommandGroup>
+										{categories.map((cat) => (
+											<CommandItem
+												key={cat.id}
+												value={cat.name}
+												onSelect={() => handleSelectCategory(cat.id)}
+											>
+												<Check
+													className={cn(
+														"mr-2 h-4 w-4",
+														form.categoryIds[0] === cat.id
+															? "opacity-100"
+															: "opacity-0",
+													)}
+												/>
+												{cat.name}
+											</CommandItem>
+										))}
+										{catSearch.trim() &&
+											categories.some(
+												(c) =>
+													c.name.toLowerCase() ===
+													catSearch.trim().toLowerCase(),
+											) === false && (
+												<CommandItem
+													value={`__create__${catSearch}`}
+													onSelect={handleCreateCategory}
+													className="text-muted-foreground"
+												>
+													<Plus className="mr-2 h-4 w-4" />
+													建立「{catSearch.trim()}」
+												</CommandItem>
+											)}
+									</CommandGroup>
+								</CommandList>
+							</Command>
+						</PopoverContent>
+					</Popover>
+				</div>
+			)}
+
+			<Button type="submit" className="w-full mt-2">
+				{submitLabel}
+			</Button>
+		</form>
+	);
 }
