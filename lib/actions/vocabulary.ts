@@ -108,11 +108,16 @@ export async function markReview(id: string, remembered: boolean) {
 
   const { stage, nextReviewAt } = getNextReviewAt(vocab.reviewStage, remembered);
 
+  const nextReviewAtDate =
+    nextReviewAt === Infinity
+      ? new Date("9999-12-31T00:00:00Z")
+      : new Date(nextReviewAt);
+
   await db
     .update(vocabulary)
     .set({
       reviewStage: stage,
-      nextReviewAt: new Date(nextReviewAt),
+      nextReviewAt: nextReviewAtDate,
       lastReviewedAt: new Date(),
     })
     .where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
