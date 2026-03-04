@@ -9,9 +9,11 @@ import {
 
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
-  email: text("email").notNull().unique(),
+  email: text("email").unique(),           // nullable — credentials users have no email
   name: text("name"),
   image: text("image"),
+  username: text("username").unique(),     // credentials users' login identifier
+  passwordHash: text("password_hash"),     // bcrypt hash; null for Google users
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
 });
 
