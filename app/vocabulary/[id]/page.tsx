@@ -14,7 +14,8 @@ export default async function EditVocabPage({
 }) {
   const { id } = await params;
   const session = await auth();
-  const userId = session!.user.id;
+  if (!session?.user?.id) notFound();
+  const userId = session.user.id;
 
   const [vocab, categories] = await Promise.all([
     db
