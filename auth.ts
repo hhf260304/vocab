@@ -18,10 +18,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) return null;
 
+        const username = (credentials.username as string).trim();
         const [user] = await db
           .select()
           .from(users)
-          .where(eq(users.username, credentials.username as string))
+          .where(eq(users.username, username))
           .limit(1);
 
         if (!user || !user.passwordHash) return null;
@@ -41,7 +42,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         await db
           .insert(users)
           .values({
-            id: token.sub ?? crypto.randomUUID(),
+            id: token.sub ?? (() => { throw new Error("Google token missing sub"); })(),
             email: token.email ?? undefined,
             name: token.name,
             image: token.picture,
@@ -54,7 +55,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.sub ?? "";
+      if (!token.sub) throw new Error("Session token missing sub");
+      session.user.id = token.sub;
       return session;
     },
   },

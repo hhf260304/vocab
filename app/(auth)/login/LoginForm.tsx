@@ -29,18 +29,18 @@ export default function LoginForm() {
         const result = await register(username, password);
         if (result?.error) {
           setError(result.error);
+          return;
         }
+      }
+      const result = await signIn("credentials", {
+        username,
+        password,
+        redirect: false,
+      });
+      if (result?.error) {
+        setError("用戶名或密碼錯誤");
       } else {
-        const result = await signIn("credentials", {
-          username,
-          password,
-          redirect: false,
-        });
-        if (result?.error) {
-          setError("用戶名或密碼錯誤");
-        } else {
-          router.push("/");
-        }
+        router.push("/");
       }
     } finally {
       setLoading(false);

@@ -3,13 +3,13 @@
 
 import { hash } from "bcryptjs";
 import { eq } from "drizzle-orm";
-import { signIn } from "@/auth";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 
 export async function register(username: string, password: string) {
-  if (!username || username.length < 2) {
-    return { error: "用戶名至少需要 2 個字元" };
+  const trimmed = username.trim();
+  if (!trimmed || trimmed.length < 2 || trimmed.length > 32) {
+    return { error: "用戶名需介於 2 到 32 個字元" };
   }
   if (!password || password.length < 6) {
     return { error: "密碼至少需要 6 個字元" };
@@ -18,7 +18,7 @@ export async function register(username: string, password: string) {
   const [existing] = await db
     .select({ id: users.id })
     .from(users)
-    .where(eq(users.username, username))
+    .where(eq(users.username, trimmed))
     .limit(1);
 
   if (existing) {
@@ -27,12 +27,15 @@ export async function register(username: string, password: string) {
 
   const passwordHash = await hash(password, 10);
 
-  await db.insert(users).values({
-    id: crypto.randomUUID(),
-    username,
-    passwordHash,
-  });
+  try {
+    await db.insert(users).values({
+      id: crypto.randomUUID(),
+      username: trimmed,
+      passwordHash,
+    });
+  } catch {
+    return { error: "註冊失敗，請稍後再試" };
+  }
 
-  // Auto-login after registration
-  await signIn("credentials", { username, password, redirectTo: "/" });
+  return { success: true };
 }
