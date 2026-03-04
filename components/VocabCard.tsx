@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import type { Category, Vocabulary } from "@/lib/types";
+import type { Category, Vocabulary } from "@/lib/db/schema";
 import CategoryTag from "./CategoryTag";
 
 interface Props {
@@ -16,9 +16,7 @@ interface Props {
 const STAGE_LABELS = ["新", "第1次", "第2次", "第3次", "第4次", "畢業"];
 
 export default function VocabCard({ vocab, categories, onDelete }: Props) {
-	const vocabCategories = categories.filter((c) =>
-		vocab.categoryIds.includes(c.id),
-	);
+	const vocabCategory = categories.find((c) => c.id === vocab.categoryId);
 
 	return (
 		<Card>
@@ -36,9 +34,9 @@ export default function VocabCard({ vocab, categories, onDelete }: Props) {
 						<Badge variant="secondary" className="text-xs">
 							{STAGE_LABELS[vocab.reviewStage]}
 						</Badge>
-						{vocabCategories.map((cat) => (
-							<CategoryTag key={cat.id} category={cat} />
-						))}
+						{vocabCategory && (
+							<CategoryTag key={vocabCategory.id} category={vocabCategory} />
+						)}
 					</div>
 				</div>
 				<div className="flex gap-2 shrink-0">

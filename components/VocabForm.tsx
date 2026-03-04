@@ -19,15 +19,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import type { Category } from "@/lib/db/schema";
 import type { VocabFormData } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
+type CategoryLike = { id: string; name: string };
+
 interface Props {
-  categories: Category[];
+  categories: CategoryLike[];
   initialData?: VocabFormData & { id?: string };
   onSubmit: (data: VocabFormData) => void;
-  onCreateCategory?: (name: string) => Promise<Category>;
+  onCreateCategory?: (name: string) => Promise<CategoryLike>;
   submitLabel: string;
   showCategorySelector?: boolean;
 }
