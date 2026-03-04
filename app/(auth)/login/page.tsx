@@ -1,17 +1,30 @@
 // app/(auth)/login/page.tsx
 import { signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
+import LoginForm from "./LoginForm";
 
 export default function LoginPage() {
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center px-4">
       <div className="bg-card border border-border rounded-2xl p-10 flex flex-col items-center gap-6 w-full max-w-sm shadow-sm">
+        {/* Header */}
         <div className="flex flex-col items-center gap-1 text-center">
           <span className="text-4xl">📚</span>
           <h1 className="text-2xl font-bold text-foreground mt-2">VocabFlow</h1>
           <p className="text-muted-foreground text-sm">單字練習本</p>
         </div>
 
+        {/* Credentials form */}
+        <LoginForm />
+
+        {/* Divider */}
+        <div className="w-full flex items-center gap-3">
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-xs text-muted-foreground">或</span>
+          <div className="flex-1 h-px bg-border" />
+        </div>
+
+        {/* Google login */}
         <form
           action={async () => {
             "use server";
