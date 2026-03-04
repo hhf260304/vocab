@@ -97,6 +97,15 @@ export async function deleteVocabulary(id: string) {
   revalidatePath("/");
 }
 
+export async function getVocabularyById(id: string) {
+  const userId = await getUserId();
+  const [vocab] = await db
+    .select()
+    .from(vocabulary)
+    .where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
+  return vocab ?? null;
+}
+
 export async function markReview(id: string, remembered: boolean) {
   const userId = await getUserId();
   const [vocab] = await db

@@ -132,14 +132,15 @@ export default function VocabularyClient({
 
   function confirmDelete() {
     if (!pendingDelete) return;
+    const snapshot = pendingDelete;
+    setPendingDelete(null);
     startTransition(async () => {
-      if (pendingDelete.type === "vocab") {
-        await deleteVocabulary(pendingDelete.id);
+      if (snapshot.type === "vocab") {
+        await deleteVocabulary(snapshot.id);
       } else {
-        await deleteCategory(pendingDelete.id);
+        await deleteCategory(snapshot.id);
       }
     });
-    setPendingDelete(null);
   }
 
   function handleAddCategory(e: React.FormEvent) {
