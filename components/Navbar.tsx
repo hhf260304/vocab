@@ -10,6 +10,7 @@ const links = [
 
 export default function Navbar() {
 	const pathname = usePathname();
+	if (pathname === "/login") return null;
 
 	return (
 		<nav className="border-b border-border bg-card sticky top-0 z-10">
