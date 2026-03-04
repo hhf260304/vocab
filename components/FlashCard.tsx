@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import type { Vocabulary } from "@/lib/types";
+import type { Vocabulary } from "@/lib/db/schema";
 
 interface Props {
 	vocab: Vocabulary;
