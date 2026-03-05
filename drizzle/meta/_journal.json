@@ -8,6 +8,13 @@
       "when": 1772635441359,
       "tag": "0000_black_galactus",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772691267059,
+      "tag": "0001_clammy_lester",
+      "breakpoints": true
     }
   ]
 }
