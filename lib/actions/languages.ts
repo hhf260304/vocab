@@ -1,0 +1,79 @@
+// lib/actions/languages.ts
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { and, eq } from "drizzle-orm";
+import { auth } from "@/auth";
+import { db } from "@/lib/db";
+import { languages } from "@/lib/db/schema";
+
+export const PRESET_LANGUAGES = [
+  { name: "中文", ttsCode: "zh-TW" },
+  { name: "英文", ttsCode: "en-US" },
+  { name: "日文", ttsCode: "ja-JP" },
+  { name: "韓文", ttsCode: "ko-KR" },
+] as const;
+
+async function getUserId(): Promise<string> {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("未登入");
+  return session.user.id;
+}
+
+export async function getLanguages() {
+  const userId = await getUserId();
+  return db
+    .select()
+    .from(languages)
+    .where(eq(languages.userId, userId))
+    .orderBy(languages.createdAt);
+}
+
+export async function createLanguage(data: {
+  name: string;
+  ttsCode: string;
+  defaultSide?: "front" | "back";
+}) {
+  const userId = await getUserId();
+  const [created] = await db
+    .insert(languages)
+    .values({
+      userId,
+      name: data.name,
+      ttsCode: data.ttsCode,
+      defaultSide: data.defaultSide ?? "front",
+    })
+    .returning();
+  revalidatePath("/");
+  return created;
+}
+
+export async function updateLanguage(
+  id: string,
+  data: { defaultSide?: "front" | "back" }
+) {
+  const userId = await getUserId();
+  await db
+    .update(languages)
+    .set({ ...(data.defaultSide && { defaultSide: data.defaultSide }) })
+    .where(and(eq(languages.id, id), eq(languages.userId, userId)));
+  revalidatePath("/");
+  revalidatePath(`/languages/${id}`);
+}
+
+export async function deleteLanguage(id: string) {
+  const userId = await getUserId();
+  await db
+    .delete(languages)
+    .where(and(eq(languages.id, id), eq(languages.userId, userId)));
+  revalidatePath("/");
+}
+
+export async function getLanguageById(id: string) {
+  const userId = await getUserId();
+  const [lang] = await db
+    .select()
+    .from(languages)
+    .where(and(eq(languages.id, id), eq(languages.userId, userId)));
+  return lang ?? null;
+}

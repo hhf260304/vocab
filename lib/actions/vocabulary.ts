@@ -14,16 +14,18 @@ async function getUserId(): Promise<string> {
   return session.user.id;
 }
 
-export async function getVocabularies() {
+export async function getVocabularies(languageId?: string) {
   const userId = await getUserId();
+  const conditions = [eq(vocabulary.userId, userId)];
+  if (languageId) conditions.push(eq(vocabulary.languageId, languageId));
   return db
     .select()
     .from(vocabulary)
-    .where(eq(vocabulary.userId, userId))
+    .where(and(...conditions))
     .orderBy(vocabulary.createdAt);
 }
 
-export async function getTodayReviews() {
+export async function getTodayReviews(languageId: string) {
   const userId = await getUserId();
   const now = new Date();
   return db
@@ -32,6 +34,7 @@ export async function getTodayReviews() {
     .where(
       and(
         eq(vocabulary.userId, userId),
+        eq(vocabulary.languageId, languageId),
         lt(vocabulary.reviewStage, 5),
         lte(vocabulary.nextReviewAt, now)
       )
@@ -39,20 +42,22 @@ export async function getTodayReviews() {
 }
 
 export async function createVocabulary(data: {
-  japanese: string;
-  chinese: string;
+  front: string;
+  back: string;
   exampleJp?: string;
   categoryId: string | null;
+  languageId: string | null;
 }) {
   const userId = await getUserId();
   const [created] = await db
     .insert(vocabulary)
     .values({
       userId,
-      japanese: data.japanese.trim(),
-      chinese: data.chinese.trim(),
+      front: data.front.trim(),
+      back: data.back.trim(),
       exampleJp: data.exampleJp?.trim() ?? "",
       categoryId: data.categoryId,
+      languageId: data.languageId,
       reviewStage: 0,
       nextReviewAt: new Date(),
     })
@@ -66,20 +71,22 @@ export async function createVocabulary(data: {
 export async function updateVocabulary(
   id: string,
   data: {
-    japanese?: string;
-    chinese?: string;
+    front?: string;
+    back?: string;
     exampleJp?: string;
     categoryId?: string | null;
+    languageId?: string | null;
   }
 ) {
   const userId = await getUserId();
   await db
     .update(vocabulary)
     .set({
-      ...(data.japanese !== undefined && { japanese: data.japanese.trim() }),
-      ...(data.chinese !== undefined && { chinese: data.chinese.trim() }),
+      ...(data.front !== undefined && { front: data.front.trim() }),
+      ...(data.back !== undefined && { back: data.back.trim() }),
       ...(data.exampleJp !== undefined && { exampleJp: data.exampleJp.trim() }),
       ...(data.categoryId !== undefined && { categoryId: data.categoryId }),
+      ...(data.languageId !== undefined && { languageId: data.languageId }),
     })
     .where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
 

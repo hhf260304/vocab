@@ -1,10 +1,11 @@
 // lib/types.ts
 export interface Vocabulary {
   id: string;
-  japanese: string;
-  chinese: string;
+  front: string;
+  back: string;
   exampleJp: string;
   categoryId: string | null;
+  languageId: string | null;
   createdAt: number;
   reviewStage: 0 | 1 | 2 | 3 | 4 | 5;
   nextReviewAt: number;
@@ -16,7 +17,17 @@ export interface Category {
   name: string;
 }
 
-export type VocabFormData = Omit<
-  Vocabulary,
-  "id" | "createdAt" | "reviewStage" | "nextReviewAt" | "lastReviewedAt"
->;
+export interface Language {
+  id: string;
+  name: string;
+  ttsCode: string;
+  defaultSide: "front" | "back";
+}
+
+export type VocabFormData = {
+  front: string;
+  back: string;
+  exampleJp: string;
+  categoryId: string | null;
+  languageId: string | null;
+};
