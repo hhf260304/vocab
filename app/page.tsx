@@ -1,44 +1,95 @@
 // app/page.tsx
 import Link from "next/link";
-import CategoryBar from "@/components/CategoryBar";
-import StatsCard from "@/components/StatsCard";
+import LanguageCard from "@/components/LanguageCard";
 import { Button } from "@/components/ui/button";
-import { getCategories } from "@/lib/actions/categories";
+import { createLanguage, getLanguages, PRESET_LANGUAGES } from "@/lib/actions/languages";
 import { getVocabularies, getTodayReviews } from "@/lib/actions/vocabulary";
 
 export default async function DashboardPage() {
-  const [vocabularies, todayReviews, categories] = await Promise.all([
-    getVocabularies(),
-    getTodayReviews(),
-    getCategories(),
-  ]);
+  const langs = await getLanguages();
 
-  const graduated = vocabularies.filter((v) => v.reviewStage === 5).length;
+  const stats = await Promise.all(
+    langs.map(async (lang) => {
+      const [all, reviews] = await Promise.all([
+        getVocabularies(lang.id),
+        getTodayReviews(lang.id),
+      ]);
+      return { lang, totalCount: all.length, reviewCount: reviews.length };
+    })
+  );
+
+  const existingNames = langs.map((l) => l.name);
+  const availablePresets = PRESET_LANGUAGES.filter(
+    (p) => !existingNames.includes(p.name)
+  );
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">今日複習</h1>
-        <p className="text-muted-foreground text-sm mt-1">保持每日練習，記憶更牢固</p>
+        <h1 className="text-2xl font-bold text-foreground">學習語言</h1>
+        <p className="text-muted-foreground text-sm mt-1">選擇語言開始複習</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
-        <StatsCard label="待複習" value={todayReviews.length} highlight />
-        <StatsCard label="總單字" value={vocabularies.length} />
-        <StatsCard label="已畢業" value={graduated} />
-      </div>
-
-      {todayReviews.length > 0 ? (
-        <Button size="lg" className="w-full text-lg py-7" asChild>
-          <Link href="/review">開始複習（{todayReviews.length} 個）</Link>
-        </Button>
+      {langs.length === 0 ? (
+        <div className="text-center py-16 text-muted-foreground">
+          <p className="text-5xl mb-4">🌍</p>
+          <p className="font-medium text-foreground">尚未新增任何語言</p>
+          <p className="text-sm mt-1 mb-6">從下方選擇要學習的語言</p>
+          {availablePresets.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-muted-foreground font-medium">新增語言</p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {availablePresets.map((preset) => (
+                  <form
+                    key={preset.ttsCode}
+                    action={async () => {
+                      "use server";
+                      await createLanguage({ name: preset.name, ttsCode: preset.ttsCode });
+                    }}
+                  >
+                    <Button type="submit" variant="outline" size="sm">
+                      + {preset.name}
+                    </Button>
+                  </form>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       ) : (
-        <Button size="lg" className="w-full text-lg py-7" disabled>
-          今日無待複習單字
-        </Button>
+        <>
+          <div className="flex flex-col gap-3">
+            {stats.map(({ lang, totalCount, reviewCount }) => (
+              <LanguageCard
+                key={lang.id}
+                language={lang}
+                reviewCount={reviewCount}
+                totalCount={totalCount}
+              />
+            ))}
+          </div>
+          {availablePresets.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-muted-foreground font-medium">新增語言</p>
+              <div className="flex flex-wrap gap-2">
+                {availablePresets.map((preset) => (
+                  <form
+                    key={preset.ttsCode}
+                    action={async () => {
+                      "use server";
+                      await createLanguage({ name: preset.name, ttsCode: preset.ttsCode });
+                    }}
+                  >
+                    <Button type="submit" variant="outline" size="sm">
+                      + {preset.name}
+                    </Button>
+                  </form>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
-
-      <CategoryBar categories={categories} vocabularies={vocabularies} />
     </div>
   );
 }
