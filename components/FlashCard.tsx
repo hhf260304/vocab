@@ -33,18 +33,20 @@ export default function FlashCard({
   // 進入新卡片時，若 defaultSide='back' 立即播音
   useEffect(() => {
     if (defaultSide === "back") {
-      speakBack();
+      const utterance = new SpeechSynthesisUtterance(vocab.back);
+      utterance.lang = ttsCode;
+      speechSynthesis.speak(utterance);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vocab.id]);
+  }, [vocab.id, vocab.back, ttsCode, defaultSide]);
 
   // 翻轉至反面時播音（僅 defaultSide='front' 時會觸發）
   useEffect(() => {
     if (flipped && defaultSide === "front") {
-      speakBack();
+      const utterance = new SpeechSynthesisUtterance(vocab.back);
+      utterance.lang = ttsCode;
+      speechSynthesis.speak(utterance);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flipped]);
+  }, [flipped, vocab.back, ttsCode, defaultSide]);
 
   function handleAnswer(remembered: boolean) {
     setFlipped(defaultSide === "back");

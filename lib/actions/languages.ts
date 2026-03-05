@@ -48,7 +48,7 @@ export async function updateLanguage(
   const userId = await getUserId();
   await db
     .update(languages)
-    .set({ ...(data.defaultSide && { defaultSide: data.defaultSide }) })
+    .set({ ...(data.defaultSide !== undefined && { defaultSide: data.defaultSide }) })
     .where(and(eq(languages.id, id), eq(languages.userId, userId)));
   revalidatePath("/");
   revalidatePath(`/languages/${id}`);
