@@ -19,7 +19,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { PRESET_LANGUAGES } from "@/lib/actions/languages";
+import { PRESET_LANGUAGES } from "@/lib/languages-config";
 import type { VocabFormData } from "@/lib/types";
 import { cn } from "@/lib/utils";
 

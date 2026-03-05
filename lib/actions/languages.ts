@@ -7,13 +7,6 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { languages } from "@/lib/db/schema";
 
-export const PRESET_LANGUAGES = [
-  { name: "中文", ttsCode: "zh-TW" },
-  { name: "英文", ttsCode: "en-US" },
-  { name: "日文", ttsCode: "ja-JP" },
-  { name: "韓文", ttsCode: "ko-KR" },
-] as const;
-
 async function getUserId(): Promise<string> {
   const session = await auth();
   if (!session?.user?.id) throw new Error("未登入");

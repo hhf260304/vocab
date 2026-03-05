@@ -2,7 +2,8 @@
 import Link from "next/link";
 import LanguageCard from "@/components/LanguageCard";
 import { Button } from "@/components/ui/button";
-import { createLanguage, getLanguages, PRESET_LANGUAGES } from "@/lib/actions/languages";
+import { createLanguage, getLanguages } from "@/lib/actions/languages";
+import { PRESET_LANGUAGES } from "@/lib/languages-config";
 import { getVocabularies, getTodayReviews } from "@/lib/actions/vocabulary";
 
 export default async function DashboardPage() {
