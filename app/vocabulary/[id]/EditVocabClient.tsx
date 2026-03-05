@@ -17,31 +17,36 @@ import {
 import { Button } from "@/components/ui/button";
 import VocabForm from "@/components/VocabForm";
 import { createCategory } from "@/lib/actions/categories";
+import { createLanguage } from "@/lib/actions/languages";
 import { updateVocabulary, deleteVocabulary } from "@/lib/actions/vocabulary";
-import type { Category, Vocabulary } from "@/lib/db/schema";
+import type { Category, Language, Vocabulary } from "@/lib/db/schema";
 import type { VocabFormData } from "@/lib/types";
 
 export default function EditVocabClient({
   vocab,
   categories: initialCategories,
+  languages: initialLanguages,
 }: {
   vocab: Vocabulary;
   categories: Category[];
+  languages: Language[];
 }) {
   const router = useRouter();
   const [vocabError, setVocabError] = useState("");
   const [categories, setCategories] = useState(initialCategories);
+  const [languages, setLanguages] = useState(initialLanguages);
 
   async function handleSubmit(data: VocabFormData) {
     setVocabError("");
     try {
       await updateVocabulary(vocab.id, {
-        japanese: data.japanese,
-        chinese: data.chinese,
+        front: data.front,
+        back: data.back,
         exampleJp: data.exampleJp,
         categoryId: data.categoryId,
+        languageId: data.languageId,
       });
-      router.push("/vocabulary");
+      router.push(vocab.languageId ? `/languages/${vocab.languageId}` : "/");
     } catch {
       setVocabError("儲存失敗，請再試一次");
     }
@@ -49,7 +54,7 @@ export default function EditVocabClient({
 
   async function handleDelete() {
     await deleteVocabulary(vocab.id);
-    router.push("/vocabulary");
+    router.push(vocab.languageId ? `/languages/${vocab.languageId}` : "/");
   }
 
   async function handleCreateCategory(name: string) {
@@ -58,12 +63,19 @@ export default function EditVocabClient({
     return created;
   }
 
+  async function handleCreateLanguage(name: string, ttsCode: string) {
+    const created = await createLanguage({ name, ttsCode });
+    setLanguages((prev) => [...prev, created]);
+    return created;
+  }
+
   const initialData: VocabFormData & { id: string } = {
     id: vocab.id,
-    japanese: vocab.japanese,
-    chinese: vocab.chinese,
+    front: vocab.front,
+    back: vocab.back,
     exampleJp: vocab.exampleJp,
     categoryId: vocab.categoryId,
+    languageId: vocab.languageId,
   };
 
   return (
@@ -72,7 +84,7 @@ export default function EditVocabClient({
         <div>
           <h1 className="text-2xl font-bold text-foreground">編輯單字</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            修改 {vocab.japanese} 的資料
+            修改 {vocab.back} 的資料
           </p>
         </div>
         <AlertDialog>
@@ -85,7 +97,7 @@ export default function EditVocabClient({
             <AlertDialogHeader>
               <AlertDialogTitle>確認刪除</AlertDialogTitle>
               <AlertDialogDescription>
-                確定刪除「{vocab.japanese}」？此操作無法復原。
+                確定刪除「{vocab.back}」？此操作無法復原。
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -106,9 +118,11 @@ export default function EditVocabClient({
         )}
         <VocabForm
           categories={categories}
+          languages={languages}
           initialData={initialData}
           onSubmit={handleSubmit}
           onCreateCategory={handleCreateCategory}
+          onCreateLanguage={handleCreateLanguage}
           submitLabel="儲存變更"
           showCategorySelector
         />

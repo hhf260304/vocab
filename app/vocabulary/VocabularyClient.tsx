@@ -106,9 +106,13 @@ function CategorySection({
 export default function VocabularyClient({
   initialCategories,
   initialVocabularies,
+  languages: _languages,
+  currentLanguageId: _currentLanguageId,
 }: {
   initialCategories: Category[];
   initialVocabularies: Vocabulary[];
+  languages?: { id: string; name: string }[];
+  currentLanguageId?: string | null;
 }) {
   const [showCatInput, setShowCatInput] = useState(false);
   const [newCatName, setNewCatName] = useState("");
@@ -122,7 +126,7 @@ export default function VocabularyClient({
 
   function handleDelete(id: string) {
     const vocab = initialVocabularies.find((v) => v.id === id);
-    if (vocab) setPendingDelete({ type: "vocab", id, name: vocab.japanese });
+    if (vocab) setPendingDelete({ type: "vocab", id, name: vocab.front });
   }
 
   function handleDeleteCategory(id: string) {

@@ -2,10 +2,15 @@
 import { Suspense } from "react";
 import NewVocabPageInner from "./NewVocabPageInner";
 
-export default function NewVocabPage() {
+export default async function NewVocabPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ languageId?: string; categoryId?: string }>;
+}) {
+  const { languageId } = await searchParams;
   return (
-    <Suspense fallback={null}>
-      <NewVocabPageInner />
+    <Suspense>
+      <NewVocabPageInner languageId={languageId} />
     </Suspense>
   );
 }
