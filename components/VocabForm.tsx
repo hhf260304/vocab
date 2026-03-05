@@ -19,43 +19,45 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { PRESET_LANGUAGES } from "@/lib/actions/languages";
 import type { VocabFormData } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 type CategoryLike = { id: string; name: string };
+type LanguageLike = { id: string; name: string; ttsCode: string };
 
 interface Props {
   categories: CategoryLike[];
+  languages: LanguageLike[];
   initialData?: VocabFormData & { id?: string };
   onSubmit: (data: VocabFormData) => void;
   onCreateCategory?: (name: string) => Promise<CategoryLike>;
+  onCreateLanguage?: (name: string, ttsCode: string) => Promise<LanguageLike>;
   submitLabel: string;
   showCategorySelector?: boolean;
 }
 
 export default function VocabForm({
   categories,
+  languages,
   initialData,
   onSubmit,
   onCreateCategory,
+  onCreateLanguage,
   submitLabel,
   showCategorySelector = false,
 }: Props) {
   const [catOpen, setCatOpen] = useState(false);
   const [catSearch, setCatSearch] = useState("");
+  const [langOpen, setLangOpen] = useState(false);
   const [form, setForm] = useState<VocabFormData>({
-    japanese: "",
-    chinese: "",
+    front: "",
+    back: "",
     exampleJp: "",
     categoryId: null,
+    languageId: null,
     ...initialData,
   });
-
-  function speak(text: string) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "ja-JP";
-    speechSynthesis.speak(utterance);
-  }
 
   function setField(field: keyof VocabFormData, value: string | null) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -76,49 +78,123 @@ export default function VocabForm({
     setCatSearch("");
   }
 
+  function handleSelectLanguage(langId: string) {
+    setField("languageId", form.languageId === langId ? null : langId);
+    setLangOpen(false);
+  }
+
+  async function handleCreatePresetLanguage(name: string, ttsCode: string) {
+    if (!onCreateLanguage) return;
+    const created = await onCreateLanguage(name, ttsCode);
+    setField("languageId", created.id);
+    setLangOpen(false);
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.japanese || !form.chinese) return;
+    if (!form.front || !form.back) return;
     onSubmit(form);
   }
 
+  const selectedLang = languages.find((l) => l.id === form.languageId);
+
+  // 預設清單中尚未被使用者建立的語言
+  const availablePresets = PRESET_LANGUAGES.filter(
+    (p) => !languages.some((l) => l.name === p.name)
+  );
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      {/* 語言選擇 */}
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="japanese">日文 *</Label>
-        <div className="flex gap-2">
-          <Input
-            id="japanese"
-            value={form.japanese}
-            onChange={(e) => setField("japanese", e.target.value)}
-            placeholder="例：食べる"
-            required
-          />
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            onClick={() => speak(form.japanese)}
-            title="朗讀"
-          >
-            🔊
-          </Button>
-        </div>
+        <Label>語言 *</Label>
+        <Popover open={langOpen} onOpenChange={setLangOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              role="combobox"
+              aria-expanded={langOpen}
+              className="w-full justify-between font-normal"
+            >
+              {selectedLang ? selectedLang.name : "— 選擇語言 —"}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-full p-0" align="start">
+            <Command>
+              <CommandList>
+                {languages.length > 0 && (
+                  <CommandGroup heading="我的語言">
+                    {languages.map((lang) => (
+                      <CommandItem
+                        key={lang.id}
+                        value={lang.id}
+                        onSelect={() => handleSelectLanguage(lang.id)}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            form.languageId === lang.id
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                        {lang.name}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
+                {availablePresets.length > 0 && (
+                  <CommandGroup heading="新增語言">
+                    {availablePresets.map((p) => (
+                      <CommandItem
+                        key={p.ttsCode}
+                        value={p.name}
+                        onSelect={() =>
+                          handleCreatePresetLanguage(p.name, p.ttsCode)
+                        }
+                        className="text-muted-foreground"
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        {p.name}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
       </div>
 
+      {/* 正面 */}
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="chinese">中文意思 *</Label>
+        <Label htmlFor="front">正面（提示）*</Label>
         <Input
-          id="chinese"
-          value={form.chinese}
-          onChange={(e) => setField("chinese", e.target.value)}
+          id="front"
+          value={form.front}
+          onChange={(e) => setField("front", e.target.value)}
           placeholder="例：吃"
           required
         />
       </div>
 
+      {/* 反面 */}
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="exampleJp">例句（日文）</Label>
+        <Label htmlFor="back">反面（目標語言）*</Label>
+        <Input
+          id="back"
+          value={form.back}
+          onChange={(e) => setField("back", e.target.value)}
+          placeholder="例：食べる"
+          required
+        />
+      </div>
+
+      {/* 例句 */}
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="exampleJp">例句</Label>
         <Input
           id="exampleJp"
           value={form.exampleJp}
@@ -127,6 +203,7 @@ export default function VocabForm({
         />
       </div>
 
+      {/* 分類（可選） */}
       {showCategorySelector && (
         <div className="flex flex-col gap-1.5">
           <Label>分類</Label>
