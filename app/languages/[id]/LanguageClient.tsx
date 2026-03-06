@@ -470,7 +470,7 @@ export default function LanguageClient({
             <AlertDialogDescription>
               {pendingDelete?.type === "vocab"
                 ? `確定刪除「${pendingDelete.name}」？此操作無法復原。`
-                : `確定刪除分類「${pendingDelete?.name}」？屬於此分類的單字將變為未分類。`}
+                : `確定刪除分類「${pendingDelete?.name}」？此分類底下的所有單字將一併刪除，此操作無法復原。`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
