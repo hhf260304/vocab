@@ -55,6 +55,7 @@ export const vocabulary = pgTable("vocabulary", {
   front: text("japanese").notNull(),
   back: text("chinese").notNull(),
   exampleJp: text("example_jp").notNull().default(""),
+  zhuyin: text("zhuyin").notNull().default(""),
   reviewStage: integer("review_stage").notNull().default(0),
   nextReviewAt: timestamp("next_review_at").default(sql`now()`).notNull(),
   lastReviewedAt: timestamp("last_reviewed_at"),
