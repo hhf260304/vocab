@@ -45,6 +45,19 @@ export async function deleteCategory(id: string, languageId: string) {
   revalidatePath(`/languages/${languageId}`);
 }
 
+export async function updateCategory(id: string, name: string, languageId: string) {
+  const userId = await getUserId();
+  const trimmed = name.trim();
+  if (!trimmed) throw new Error("分類名稱不能為空");
+
+  await db
+    .update(categories)
+    .set({ name: trimmed })
+    .where(and(eq(categories.id, id), eq(categories.userId, userId)));
+
+  revalidatePath(`/languages/${languageId}`);
+}
+
 export async function createCategories(
   names: string[],
   languageId: string
