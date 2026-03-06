@@ -45,6 +45,7 @@ export default function EditVocabClient({
         front: data.front,
         back: data.back,
         exampleJp: data.exampleJp,
+        zhuyin: data.zhuyin,
         categoryId: data.categoryId,
         languageId: data.languageId,
       });
@@ -78,9 +79,13 @@ export default function EditVocabClient({
     front: vocab.front,
     back: vocab.back,
     exampleJp: vocab.exampleJp,
+    zhuyin: vocab.zhuyin,
     categoryId: vocab.categoryId,
     languageId: vocab.languageId,
   };
+
+  const selectedLanguage = languages.find((l) => l.id === (vocab.languageId ?? ""));
+  const isChineseLanguage = selectedLanguage?.ttsCode === "zh-TW";
 
   return (
     <div className="flex flex-col gap-6">
@@ -134,6 +139,7 @@ export default function EditVocabClient({
           submitLabel="儲存變更"
           showCategorySelector={!!vocab.languageId}
           showLanguageSelector={!vocab.languageId}
+          isChineseLanguage={isChineseLanguage}
         />
       </div>
     </div>
