@@ -15,10 +15,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-TW">
-      <body className={`${geist.className} bg-stone-50 min-h-screen`}>
+      <body className={`${geist.className} bg-stone-50 min-h-screen flex flex-col`}>
         <SessionProvider>
           <Navbar />
-          <main className="max-w-3xl mx-auto px-4 py-8">{children}</main>
+          <main className="max-w-3xl mx-auto px-4 py-8 flex-1 w-full flex flex-col">{children}</main>
         </SessionProvider>
       </body>
     </html>
