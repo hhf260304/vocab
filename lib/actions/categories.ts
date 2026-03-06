@@ -44,3 +44,42 @@ export async function deleteCategory(id: string, languageId: string) {
 
   revalidatePath(`/languages/${languageId}`);
 }
+
+export async function createCategories(
+  names: string[],
+  languageId: string
+): Promise<{ duplicates: string[] } | { created: number }> {
+  const userId = await getUserId();
+
+  const trimmed = names.map((n) => n.trim()).filter(Boolean);
+  if (trimmed.length === 0) return { created: 0 };
+
+  // Fetch existing category names for this language
+  const existing = await db
+    .select({ name: categories.name })
+    .from(categories)
+    .where(and(eq(categories.userId, userId), eq(categories.languageId, languageId)));
+
+  const existingNames = existing.map((c) => c.name.toLowerCase());
+
+  // Find duplicates: against existing AND within input itself
+  const seen = new Set<string>();
+  const duplicates: string[] = [];
+
+  for (const name of trimmed) {
+    const lower = name.toLowerCase();
+    if (existingNames.includes(lower) || seen.has(lower)) {
+      duplicates.push(name);
+    }
+    seen.add(lower);
+  }
+
+  if (duplicates.length > 0) return { duplicates };
+
+  await db.insert(categories).values(
+    trimmed.map((name) => ({ userId, name, languageId }))
+  );
+
+  revalidatePath(`/languages/${languageId}`);
+  return { created: trimmed.length };
+}
