@@ -107,7 +107,6 @@ export default function ReviewClient({
         key={current.id}
         vocab={current}
         ttsCode={language.ttsCode}
-        defaultSide={language.defaultSide as "front" | "back"}
         onRemembered={() => handleAnswer(true)}
         onForgot={() => handleAnswer(false)}
       />

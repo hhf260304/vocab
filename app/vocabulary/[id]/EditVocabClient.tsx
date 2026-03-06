@@ -53,12 +53,13 @@ export default function EditVocabClient({
   }
 
   async function handleDelete() {
-    await deleteVocabulary(vocab.id);
+    await deleteVocabulary(vocab.id, vocab.languageId ?? undefined);
     router.push(vocab.languageId ? `/languages/${vocab.languageId}` : "/");
   }
 
   async function handleCreateCategory(name: string) {
-    const created = await createCategory(name);
+    if (!vocab.languageId) throw new Error("缺少語言");
+    const created = await createCategory(name, vocab.languageId);
     setCategories((prev) => [...prev, created]);
     return created;
   }
@@ -121,10 +122,11 @@ export default function EditVocabClient({
           languages={languages}
           initialData={initialData}
           onSubmit={handleSubmit}
-          onCreateCategory={handleCreateCategory}
-          onCreateLanguage={handleCreateLanguage}
+          onCreateCategory={vocab.languageId ? handleCreateCategory : undefined}
+          onCreateLanguage={!vocab.languageId ? handleCreateLanguage : undefined}
           submitLabel="儲存變更"
-          showCategorySelector
+          showCategorySelector={!!vocab.languageId}
+          showLanguageSelector={!vocab.languageId}
         />
       </div>
     </div>

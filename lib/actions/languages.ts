@@ -25,7 +25,6 @@ export async function getLanguages() {
 export async function createLanguage(data: {
   name: string;
   ttsCode: string;
-  defaultSide?: "front" | "back";
 }) {
   const userId = await getUserId();
   const [created] = await db
@@ -34,24 +33,10 @@ export async function createLanguage(data: {
       userId,
       name: data.name,
       ttsCode: data.ttsCode,
-      defaultSide: data.defaultSide ?? "front",
     })
     .returning();
   revalidatePath("/");
   return created;
-}
-
-export async function updateLanguage(
-  id: string,
-  data: { defaultSide?: "front" | "back" }
-) {
-  const userId = await getUserId();
-  await db
-    .update(languages)
-    .set({ ...(data.defaultSide !== undefined && { defaultSide: data.defaultSide }) })
-    .where(and(eq(languages.id, id), eq(languages.userId, userId)));
-  revalidatePath("/");
-  revalidatePath(`/languages/${id}`);
 }
 
 export async function deleteLanguage(id: string) {

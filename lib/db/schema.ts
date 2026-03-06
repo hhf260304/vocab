@@ -21,7 +21,6 @@ export const languages = pgTable("languages", {
     .references(() => users.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   ttsCode: text("tts_code").notNull(),
-  defaultSide: text("default_side").notNull().default("front"),
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
 });
 
@@ -32,6 +31,9 @@ export const categories = pgTable("categories", {
   userId: text("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  languageId: text("language_id").references(() => languages.id, {
+    onDelete: "cascade",
+  }),
   name: text("name").notNull(),
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
 });

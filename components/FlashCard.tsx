@@ -8,7 +8,6 @@ import type { Vocabulary } from "@/lib/db/schema";
 interface Props {
   vocab: Vocabulary;
   ttsCode: string;
-  defaultSide: "front" | "back";
   onRemembered: () => void;
   onForgot: () => void;
 }
@@ -16,13 +15,10 @@ interface Props {
 export default function FlashCard({
   vocab,
   ttsCode,
-  defaultSide,
   onRemembered,
   onForgot,
 }: Props) {
-  // defaultSide='front' → 初始未翻轉（正面朝上）
-  // defaultSide='back'  → 初始已翻轉（反面朝上，立即播音）
-  const [flipped, setFlipped] = useState(defaultSide === "back");
+  const [flipped, setFlipped] = useState(false);
 
   function speakBack() {
     const utterance = new SpeechSynthesisUtterance(vocab.back);
@@ -30,35 +26,25 @@ export default function FlashCard({
     speechSynthesis.speak(utterance);
   }
 
-  // 進入新卡片時，若 defaultSide='back' 立即播音
+  // 翻轉至反面時播音
   useEffect(() => {
-    if (defaultSide === "back") {
+    if (flipped) {
       const utterance = new SpeechSynthesisUtterance(vocab.back);
       utterance.lang = ttsCode;
       speechSynthesis.speak(utterance);
     }
-  }, [vocab.id, vocab.back, ttsCode, defaultSide]);
-
-  // 翻轉至反面時播音（僅 defaultSide='front' 時會觸發）
-  useEffect(() => {
-    if (flipped && defaultSide === "front") {
-      const utterance = new SpeechSynthesisUtterance(vocab.back);
-      utterance.lang = ttsCode;
-      speechSynthesis.speak(utterance);
-    }
-  }, [flipped, vocab.back, ttsCode, defaultSide]);
+  }, [flipped, vocab.back, ttsCode]);
 
   function handleAnswer(remembered: boolean) {
-    setFlipped(defaultSide === "back");
+    setFlipped(false);
     setTimeout(() => {
       if (remembered) onRemembered();
       else onForgot();
     }, 150);
   }
 
-  const frontContent = defaultSide === "front" ? vocab.front : vocab.back;
-  const backContent = defaultSide === "front" ? vocab.back : vocab.front;
-  const backIsTarget = defaultSide === "front"; // 反面才是目標語言
+  const frontContent = vocab.front;
+  const backContent = vocab.back;
 
   return (
     <div className="flex flex-col items-center gap-6 w-full">
@@ -80,19 +66,17 @@ export default function FlashCard({
             <p className="text-4xl font-bold text-white text-center">
               {backContent}
             </p>
-            {backIsTarget && (
-              <div className="flex items-center gap-2 mt-2">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    speakBack();
-                  }}
-                  className="text-stone-300 hover:text-white transition-colors text-xl"
-                >
-                  🔊
-                </button>
-              </div>
-            )}
+            <div className="flex items-center gap-2 mt-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  speakBack();
+                }}
+                className="text-stone-300 hover:text-white transition-colors text-xl"
+              >
+                🔊
+              </button>
+            </div>
             {vocab.exampleJp && (
               <div className="mt-4 text-center">
                 <p className="text-stone-200 text-sm">{vocab.exampleJp}</p>

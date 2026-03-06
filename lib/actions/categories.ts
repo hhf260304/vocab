@@ -13,36 +13,34 @@ async function getUserId(): Promise<string> {
   return session.user.id;
 }
 
-export async function getCategories() {
+export async function getCategories(languageId: string) {
   const userId = await getUserId();
   return db
     .select()
     .from(categories)
-    .where(eq(categories.userId, userId))
+    .where(and(eq(categories.userId, userId), eq(categories.languageId, languageId)))
     .orderBy(categories.createdAt);
 }
 
-export async function createCategory(name: string) {
+export async function createCategory(name: string, languageId: string) {
   const userId = await getUserId();
   const trimmed = name.trim();
   if (!trimmed) throw new Error("分類名稱不能為空");
 
   const [created] = await db
     .insert(categories)
-    .values({ userId, name: trimmed })
+    .values({ userId, name: trimmed, languageId })
     .returning();
 
-  revalidatePath("/vocabulary");
-  revalidatePath("/");
+  revalidatePath(`/languages/${languageId}`);
   return created;
 }
 
-export async function deleteCategory(id: string) {
+export async function deleteCategory(id: string, languageId: string) {
   const userId = await getUserId();
   await db
     .delete(categories)
     .where(and(eq(categories.id, id), eq(categories.userId, userId)));
 
-  revalidatePath("/vocabulary");
-  revalidatePath("/");
+  revalidatePath(`/languages/${languageId}`);
 }

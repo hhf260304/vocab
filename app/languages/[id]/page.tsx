@@ -1,6 +1,7 @@
 // app/languages/[id]/page.tsx
 import { notFound } from "next/navigation";
 import LanguageClient from "./LanguageClient";
+import { getCategories } from "@/lib/actions/categories";
 import { getLanguageById } from "@/lib/actions/languages";
 import { getVocabularies, getTodayReviews } from "@/lib/actions/vocabulary";
 
@@ -10,10 +11,11 @@ export default async function LanguagePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [language, allVocab, reviews] = await Promise.all([
+  const [language, allVocab, reviews, categories] = await Promise.all([
     getLanguageById(id),
     getVocabularies(id),
     getTodayReviews(id),
+    getCategories(id),
   ]);
 
   if (!language) notFound();
@@ -26,6 +28,8 @@ export default async function LanguagePage({
       reviewCount={reviews.length}
       totalCount={allVocab.length}
       graduatedCount={graduatedCount}
+      initialCategories={categories}
+      initialVocabularies={allVocab}
     />
   );
 }

@@ -5,11 +5,13 @@ import NewVocabClient from "./NewVocabClient";
 
 export default async function NewVocabPageInner({
   languageId,
+  categoryId,
 }: {
   languageId?: string;
+  categoryId?: string;
 }) {
   const [categories, languages] = await Promise.all([
-    getCategories(),
+    languageId ? getCategories(languageId) : Promise.resolve([]),
     getLanguages(),
   ]);
   return (
@@ -17,6 +19,7 @@ export default async function NewVocabPageInner({
       categories={categories}
       languages={languages}
       defaultLanguageId={languageId ?? null}
+      defaultCategoryId={categoryId ?? null}
     />
   );
 }

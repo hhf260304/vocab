@@ -19,7 +19,7 @@ export function getNextReviewAt(stage: number, remembered: boolean): { stage: nu
   }
   return {
     stage: nextStage,
-    nextReviewAt: Date.now() + INTERVALS_MS[nextStage],
+    nextReviewAt: Date.now() + INTERVALS_MS[stage],
   }
 }
 

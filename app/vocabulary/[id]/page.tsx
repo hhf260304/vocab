@@ -11,13 +11,16 @@ export default async function EditVocabPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [vocab, categories, languages] = await Promise.all([
+  const [vocab, languages] = await Promise.all([
     getVocabularyById(id),
-    getCategories(),
     getLanguages(),
   ]);
 
   if (!vocab) notFound();
+
+  const categories = vocab.languageId
+    ? await getCategories(vocab.languageId)
+    : [];
 
   return (
     <EditVocabClient vocab={vocab} categories={categories} languages={languages} />

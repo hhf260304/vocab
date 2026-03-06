@@ -14,10 +14,12 @@ export default function NewVocabClient({
   categories: initialCategories,
   languages: initialLanguages,
   defaultLanguageId,
+  defaultCategoryId,
 }: {
   categories: Category[];
   languages: Language[];
   defaultLanguageId: string | null;
+  defaultCategoryId: string | null;
 }) {
   const router = useRouter();
   const [vocabError, setVocabError] = useState("");
@@ -42,7 +44,8 @@ export default function NewVocabClient({
   }
 
   async function handleCreateCategory(name: string) {
-    const created = await createCategory(name);
+    if (!defaultLanguageId) throw new Error("缺少語言");
+    const created = await createCategory(name, defaultLanguageId);
     setCategories((prev) => [...prev, created]);
     return created;
   }
@@ -70,14 +73,15 @@ export default function NewVocabClient({
             front: "",
             back: "",
             exampleJp: "",
-            categoryId: null,
+            categoryId: defaultCategoryId,
             languageId: defaultLanguageId,
           }}
           onSubmit={handleSubmit}
-          onCreateCategory={handleCreateCategory}
-          onCreateLanguage={handleCreateLanguage}
+          onCreateCategory={defaultLanguageId ? handleCreateCategory : undefined}
+          onCreateLanguage={defaultLanguageId ? undefined : handleCreateLanguage}
           submitLabel="新增單字"
-          showCategorySelector
+          showCategorySelector={!!defaultLanguageId}
+          showLanguageSelector={!defaultLanguageId}
         />
       </div>
     </div>

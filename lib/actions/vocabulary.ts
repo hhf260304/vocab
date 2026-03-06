@@ -63,8 +63,8 @@ export async function createVocabulary(data: {
     })
     .returning();
 
-  revalidatePath("/vocabulary");
   revalidatePath("/");
+  if (data.languageId) revalidatePath(`/languages/${data.languageId}`);
   return created;
 }
 
@@ -90,18 +90,18 @@ export async function updateVocabulary(
     })
     .where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
 
-  revalidatePath("/vocabulary");
   revalidatePath("/");
+  if (data.languageId) revalidatePath(`/languages/${data.languageId}`);
 }
 
-export async function deleteVocabulary(id: string) {
+export async function deleteVocabulary(id: string, languageId?: string) {
   const userId = await getUserId();
   await db
     .delete(vocabulary)
     .where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
 
-  revalidatePath("/vocabulary");
   revalidatePath("/");
+  if (languageId) revalidatePath(`/languages/${languageId}`);
 }
 
 export async function getVocabularyById(id: string) {

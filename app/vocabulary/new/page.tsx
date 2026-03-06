@@ -7,10 +7,10 @@ export default async function NewVocabPage({
 }: {
   searchParams: Promise<{ languageId?: string; categoryId?: string }>;
 }) {
-  const { languageId } = await searchParams;
+  const { languageId, categoryId } = await searchParams;
   return (
     <Suspense>
-      <NewVocabPageInner languageId={languageId} />
+      <NewVocabPageInner languageId={languageId} categoryId={categoryId} />
     </Suspense>
   );
 }

@@ -21,7 +21,6 @@ export interface Language {
   id: string;
   name: string;
   ttsCode: string;
-  defaultSide: "front" | "back";
 }
 
 export type VocabFormData = {
