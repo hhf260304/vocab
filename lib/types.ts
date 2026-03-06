@@ -4,6 +4,7 @@ export interface Vocabulary {
   front: string;
   back: string;
   exampleJp: string;
+  zhuyin: string;
   categoryId: string | null;
   languageId: string | null;
   createdAt: number;
@@ -27,6 +28,7 @@ export type VocabFormData = {
   front: string;
   back: string;
   exampleJp: string;
+  zhuyin: string;
   categoryId: string | null;
   languageId: string | null;
 };
