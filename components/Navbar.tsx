@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 
 const links = [
   { href: "/", label: "首頁" },
-  { href: "/vocabulary", label: "單字庫" },
 ];
 
 export default function Navbar() {
@@ -21,10 +20,10 @@ export default function Navbar() {
   return (
     <nav className="border-b border-border bg-card sticky top-0 z-10">
       <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-        <Link href="/" className="font-bold text-foreground text-lg tracking-wide">
+        <Link href="/" className="font-bold text-foreground text-lg tracking-wide min-w-0 truncate">
           📚 VocabFlow
         </Link>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 shrink-0">
           {links.map(({ href, label }) => (
             <Link
               key={href}
