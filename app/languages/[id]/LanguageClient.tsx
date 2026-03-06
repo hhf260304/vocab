@@ -210,6 +210,7 @@ export default function LanguageClient({
     setBatchOpen(false);
     setBatchText("");
     setBatchDuplicates([]);
+    router.refresh();
   }
 
   const groups = initialCategories.map((cat) => ({
