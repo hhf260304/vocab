@@ -78,6 +78,11 @@ export default function FlashCard({
                 <Volume2 className="h-5 w-5" />
               </button>
             </div>
+            {vocab.zhuyin && (
+              <div className="mt-4 text-center">
+                <p className="text-stone-200 text-sm">{vocab.zhuyin}</p>
+              </div>
+            )}
             {vocab.exampleJp && (
               <div className="mt-4 text-center">
                 <p className="text-stone-200 text-sm">{vocab.exampleJp}</p>
