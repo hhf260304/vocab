@@ -37,6 +37,7 @@ interface Props {
 	submitLabel: string;
 	showCategorySelector?: boolean;
 	showLanguageSelector?: boolean;
+	isChineseLanguage?: boolean;
 }
 
 export default function VocabForm({
@@ -49,6 +50,7 @@ export default function VocabForm({
 	submitLabel,
 	showCategorySelector = false,
 	showLanguageSelector = true,
+	isChineseLanguage = false,
 }: Props) {
 	const [catOpen, setCatOpen] = useState(false);
 	const [catSearch, setCatSearch] = useState("");
@@ -58,6 +60,7 @@ export default function VocabForm({
 		front: "",
 		back: "",
 		exampleJp: "",
+		zhuyin: "",
 		categoryId: null,
 		languageId: null,
 		...initialData,
@@ -218,15 +221,26 @@ export default function VocabForm({
 				</div>
 			</div>
 
-			{/* 例句 */}
-			<div className="flex flex-col gap-1.5">
-				<Label htmlFor="exampleJp">例句</Label>
-				<Input
-					id="exampleJp"
-					value={form.exampleJp}
-					onChange={(e) => setField("exampleJp", e.target.value)}
-				/>
-			</div>
+			{/* 注音（中文）或例句（其他語言） */}
+			{isChineseLanguage ? (
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor="zhuyin">注音</Label>
+					<Input
+						id="zhuyin"
+						value={form.zhuyin}
+						onChange={(e) => setField("zhuyin", e.target.value)}
+					/>
+				</div>
+			) : (
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor="exampleJp">例句</Label>
+					<Input
+						id="exampleJp"
+						value={form.exampleJp}
+						onChange={(e) => setField("exampleJp", e.target.value)}
+					/>
+				</div>
+			)}
 
 			{/* 分類（可選） */}
 			{showCategorySelector && (
