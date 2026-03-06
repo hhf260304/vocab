@@ -61,7 +61,6 @@ function CategorySection({
   categories,
   onDelete,
   onDeleteCategory,
-  onRename,
 }: {
   cat: Category;
   vocabs: Vocabulary[];
@@ -71,7 +70,6 @@ function CategorySection({
   categories: Category[];
   onDelete: (id: string) => void;
   onDeleteCategory: (id: string) => void;
-  onRename: (id: string, newName: string) => void;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -492,7 +490,6 @@ export default function LanguageClient({
                 categories={initialCategories}
                 onDelete={handleDeleteVocab}
                 onDeleteCategory={handleDeleteCategory}
-                onRename={() => {}}
               />
             ))}
             {uncategorizedVocabs.length > 0 && (
