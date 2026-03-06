@@ -54,7 +54,7 @@ function CategorySection({
       <div className="flex items-center justify-between px-5 py-3.5 hover:bg-muted/50 transition-colors">
         <CollapsibleTrigger className="flex items-center gap-2 flex-1 min-w-0 text-left">
           <span className="font-semibold text-foreground truncate min-w-0">{cat.name}</span>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm text-muted-foreground shrink-0">
             {vocabs.length} 個單字
           </span>
           <span className="text-muted-foreground text-xs ml-auto">
