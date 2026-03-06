@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Vocabulary } from "@/lib/db/schema";
 
@@ -62,7 +63,7 @@ export default function FlashCard({
           </div>
 
           {/* 反面 */}
-          <div className="backface-hidden rotate-y-180 absolute inset-0 bg-stone-800 rounded-3xl flex flex-col items-center justify-center p-6 shadow-sm">
+          <div className="backface-hidden rotate-y-180 absolute inset-0 bg-teal-700 rounded-3xl flex flex-col items-center justify-center p-6 shadow-sm">
             <p className="text-4xl font-bold text-white text-center">
               {backContent}
             </p>
@@ -72,9 +73,9 @@ export default function FlashCard({
                   e.stopPropagation();
                   speakBack();
                 }}
-                className="text-stone-300 hover:text-white transition-colors text-xl"
+                className="text-teal-200 hover:text-white transition-colors"
               >
-                🔊
+                <Volume2 className="h-5 w-5" />
               </button>
             </div>
             {vocab.exampleJp && (

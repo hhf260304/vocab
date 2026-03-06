@@ -8,7 +8,7 @@ import "./globals.css";
 const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "VocabFlow — 單字練習本",
+  title: "詞流 — 單字練習本",
   description: "使用間隔重複法練習單字",
 };
 

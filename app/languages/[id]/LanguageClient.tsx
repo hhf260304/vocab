@@ -286,7 +286,7 @@ export default function LanguageClient({
           </div>
         )}
 
-        {initialCategories.length === 0 ? (
+        {initialCategories.length === 0 && uncategorizedVocabs.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
             <p className="text-4xl mb-3">📂</p>
             <p className="font-medium">先新增分類，再加入單字</p>
