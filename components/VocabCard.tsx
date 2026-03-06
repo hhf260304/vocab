@@ -55,7 +55,7 @@ export default function VocabCard({ vocab, ttsCode, onDelete }: Props) {
                 {STAGE_LABELS[vocab.reviewStage]}
               </Badge>
             )}
-<span className="text-xs text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               新增 {formatDate(vocab.createdAt)}
             </span>
             <span className="text-xs text-muted-foreground">
