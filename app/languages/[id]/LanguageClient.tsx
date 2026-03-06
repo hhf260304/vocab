@@ -58,14 +58,17 @@ function CategorySection({
   languageId,
   ttsCode,
   isChineseLanguage,
+  categories,
   onDelete,
   onDeleteCategory,
+  onRename,
 }: {
   cat: Category;
   vocabs: Vocabulary[];
   languageId: string;
   ttsCode: string;
   isChineseLanguage: boolean;
+  categories: Category[];
   onDelete: (id: string) => void;
   onDeleteCategory: (id: string) => void;
   onRename: (id: string, newName: string) => void;
@@ -112,9 +115,17 @@ function CategorySection({
       setEditName(cat.name);
       return;
     }
+    const isDuplicate = categories.some(
+      (c) => c.id !== cat.id && c.name.trim().toLowerCase() === trimmed.toLowerCase()
+    );
+    if (isDuplicate) {
+      setEditName(cat.name);
+      setIsEditing(false);
+      return;
+    }
     await updateCategory(cat.id, trimmed, languageId);
-    onRename(cat.id, trimmed);
     setIsEditing(false);
+    router.refresh();
   }
 
   return (
@@ -478,6 +489,7 @@ export default function LanguageClient({
                 languageId={language.id}
                 ttsCode={language.ttsCode}
                 isChineseLanguage={language.ttsCode === "zh-TW"}
+                categories={initialCategories}
                 onDelete={handleDeleteVocab}
                 onDeleteCategory={handleDeleteCategory}
                 onRename={() => {}}
