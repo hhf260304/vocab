@@ -23,7 +23,16 @@ import {
 } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
 import VocabCard from "@/components/VocabCard";
-import { createCategory, deleteCategory } from "@/lib/actions/categories";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { createCategory, createCategories, deleteCategory } from "@/lib/actions/categories";
 import { deleteLanguage } from "@/lib/actions/languages";
 import { deleteVocabulary } from "@/lib/actions/vocabulary";
 import type { Category, Language, Vocabulary } from "@/lib/db/schema";
@@ -128,6 +137,10 @@ export default function LanguageClient({
     id: string;
     name: string;
   } | null>(null);
+  const [batchOpen, setBatchOpen] = useState(false);
+  const [batchText, setBatchText] = useState("");
+  const [batchDuplicates, setBatchDuplicates] = useState<string[]>([]);
+  const [isBatchSubmitting, setIsBatchSubmitting] = useState(false);
 
   function handleDelete() {
     startTransition(async () => {
@@ -176,6 +189,27 @@ export default function LanguageClient({
     setNewCatName("");
     setCatError("");
     setShowCatInput(false);
+  }
+
+  async function handleBatchCreate() {
+    const names = batchText
+      .split("\n")
+      .map((n) => n.trim())
+      .filter(Boolean);
+    if (names.length === 0) return;
+
+    setIsBatchSubmitting(true);
+    const result = await createCategories(names, language.id);
+    setIsBatchSubmitting(false);
+
+    if ("duplicates" in result) {
+      setBatchDuplicates(result.duplicates);
+      return;
+    }
+
+    setBatchOpen(false);
+    setBatchText("");
+    setBatchDuplicates([]);
   }
 
   const groups = initialCategories.map((cat) => ({
@@ -251,7 +285,16 @@ export default function LanguageClient({
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">單字庫</h2>
-          <Button onClick={() => setShowCatInput((s) => !s)}>+ 新增分類</Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => {
+              setBatchOpen(true);
+              setBatchText("");
+              setBatchDuplicates([]);
+            }}>
+              批次新增
+            </Button>
+            <Button onClick={() => setShowCatInput((s) => !s)}>+ 新增分類</Button>
+          </div>
         </div>
 
         {showCatInput && (
@@ -350,6 +393,49 @@ export default function LanguageClient({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <Dialog open={batchOpen} onOpenChange={(open) => {
+        setBatchOpen(open);
+        if (!open) {
+          setBatchText("");
+          setBatchDuplicates([]);
+        }
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>批次新增分類</DialogTitle>
+            <DialogDescription>每行輸入一個分類名稱</DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-2">
+            <Textarea
+              autoFocus
+              rows={8}
+              placeholder={"動詞\n名詞\n形容詞"}
+              value={batchText}
+              onChange={(e) => {
+                setBatchText(e.target.value);
+                if (batchDuplicates.length > 0) setBatchDuplicates([]);
+              }}
+            />
+            {batchDuplicates.length > 0 && (
+              <p className="text-sm text-destructive">
+                以下名稱重複，請修改後再送出：
+                {batchDuplicates.map((d) => (
+                  <span key={d} className="block font-medium">・{d}</span>
+                ))}
+              </p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBatchOpen(false)}>
+              取消
+            </Button>
+            <Button onClick={handleBatchCreate} disabled={isBatchSubmitting}>
+              {isBatchSubmitting ? "建立中…" : "建立"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
