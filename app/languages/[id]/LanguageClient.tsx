@@ -53,7 +53,7 @@ function CategorySection({
     >
       <div className="flex items-center justify-between px-5 py-3.5 hover:bg-muted/50 transition-colors">
         <CollapsibleTrigger className="flex items-center gap-2 flex-1 min-w-0 text-left">
-          <span className="font-semibold text-foreground">{cat.name}</span>
+          <span className="font-semibold text-foreground truncate min-w-0">{cat.name}</span>
           <span className="text-sm text-muted-foreground">
             {vocabs.length} 個單字
           </span>
@@ -268,10 +268,11 @@ export default function LanguageClient({
                 }}
                 onKeyDown={(e) => e.key === "Escape" && setShowCatInput(false)}
               />
-              <Button type="submit">建立</Button>
+              <Button type="submit" className="shrink-0">建立</Button>
               <Button
                 type="button"
                 variant="outline"
+                className="shrink-0"
                 onClick={() => {
                   setShowCatInput(false);
                   setNewCatName("");
