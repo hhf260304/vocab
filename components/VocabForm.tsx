@@ -3,6 +3,7 @@
 
 import { Check, ChevronsUpDown, Plus, Volume2 } from "lucide-react";
 import { useState } from "react";
+import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -30,7 +31,7 @@ interface Props {
 	categories: CategoryLike[];
 	languages: LanguageLike[];
 	initialData?: VocabFormData & { id?: string };
-	onSubmit: (data: VocabFormData) => void;
+	onSubmit: (data: VocabFormData) => Promise<void>;
 	onCreateCategory?: (name: string) => Promise<CategoryLike>;
 	onCreateLanguage?: (name: string, ttsCode: string) => Promise<LanguageLike>;
 	submitLabel: string;
@@ -52,6 +53,7 @@ export default function VocabForm({
 	const [catOpen, setCatOpen] = useState(false);
 	const [catSearch, setCatSearch] = useState("");
 	const [langOpen, setLangOpen] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [form, setForm] = useState<VocabFormData>({
 		front: "",
 		back: "",
@@ -92,10 +94,15 @@ export default function VocabForm({
 		setLangOpen(false);
 	}
 
-	function handleSubmit(e: React.FormEvent) {
+	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
 		if (!form.front || !form.back) return;
-		onSubmit(form);
+		setIsSubmitting(true);
+		try {
+			await onSubmit(form);
+		} finally {
+			setIsSubmitting(false);
+		}
 	}
 
 	const selectedLang = languages.find((l) => l.id === form.languageId);
@@ -306,8 +313,12 @@ export default function VocabForm({
 				</div>
 			)}
 
-			<Button type="submit" className="w-full mt-2">
-				{submitLabel}
+			<Button type="submit" className="w-full mt-2" disabled={isSubmitting}>
+				{isSubmitting ? (
+					<ThreeDots height="20" width="40" color="currentColor" />
+				) : (
+					submitLabel
+				)}
 			</Button>
 		</form>
 	);

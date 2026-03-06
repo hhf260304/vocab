@@ -21,7 +21,7 @@ export default function Navbar() {
     <nav className="border-b border-border bg-card sticky top-0 z-10">
       <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
         <Link href="/" className="font-bold text-foreground text-lg tracking-wide min-w-0 truncate">
-          📚 詞流
+          📚 快快樂樂背單字
         </Link>
         <div className="flex items-center gap-1 shrink-0">
           {links.map(({ href, label }) => (

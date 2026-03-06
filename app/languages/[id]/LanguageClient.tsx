@@ -34,8 +34,15 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { createCategory, createCategories, deleteCategory } from "@/lib/actions/categories";
 import { deleteLanguage } from "@/lib/actions/languages";
-import { deleteVocabulary } from "@/lib/actions/vocabulary";
+import { createVocabularies, deleteVocabulary } from "@/lib/actions/vocabulary";
 import type { Category, Language, Vocabulary } from "@/lib/db/schema";
+
+function parseBatchVocabLine(line: string): { back: string; front: string; exampleJp: string } | null {
+  const parts = line.includes("\t") ? line.split("\t") : line.split("|");
+  const [front, back, exampleJp] = parts.map((p) => p.trim());
+  if (!front || !back) return null;
+  return { front, back, exampleJp: exampleJp ?? "" };
+}
 
 function CategorySection({
   cat,
@@ -52,7 +59,38 @@ function CategorySection({
   onDelete: (id: string) => void;
   onDeleteCategory: (id: string) => void;
 }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [batchOpen, setBatchOpen] = useState(false);
+  const [batchText, setBatchText] = useState("");
+  const [batchErrors, setBatchErrors] = useState<number[]>([]);
+  const [isBatchSubmitting, setIsBatchSubmitting] = useState(false);
+
+  async function handleBatchCreate() {
+    const lines = batchText.split("\n").filter((l) => l.trim());
+    const errorLines: number[] = [];
+    const items: { back: string; front: string; exampleJp: string }[] = [];
+
+    lines.forEach((line, i) => {
+      const parsed = parseBatchVocabLine(line);
+      if (!parsed) errorLines.push(i + 1);
+      else items.push(parsed);
+    });
+
+    if (errorLines.length > 0) {
+      setBatchErrors(errorLines);
+      return;
+    }
+    if (items.length === 0) return;
+
+    setIsBatchSubmitting(true);
+    await createVocabularies(items, languageId, cat.id);
+    setIsBatchSubmitting(false);
+    setBatchOpen(false);
+    setBatchText("");
+    setBatchErrors([]);
+    router.refresh();
+  }
 
   return (
     <Collapsible
@@ -71,6 +109,9 @@ function CategorySection({
           </span>
         </CollapsibleTrigger>
         <div className="flex items-center gap-1.5 ml-2 shrink-0">
+          <Button size="sm" variant="outline" onClick={() => { setBatchOpen(true); setBatchText(""); setBatchErrors([]); }}>
+            批次新增
+          </Button>
           <Button size="sm" asChild>
             <Link href={`/vocabulary/new?languageId=${languageId}&categoryId=${cat.id}`}>
               + 單字
@@ -106,6 +147,38 @@ function CategorySection({
           )}
         </div>
       </CollapsibleContent>
+
+      <Dialog open={batchOpen} onOpenChange={(o) => { setBatchOpen(o); if (!o) { setBatchText(""); setBatchErrors([]); } }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>批次新增單字 — {cat.name}</DialogTitle>
+            <DialogDescription>每行一筆：翻譯 | 目標語單字 | 例句（選填）</DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-2">
+            <Textarea
+              autoFocus
+              rows={8}
+              placeholder={"吃 | 食べる | 私はご飯を食べる\n喝 | 飲む"}
+              value={batchText}
+              onChange={(e) => { setBatchText(e.target.value); if (batchErrors.length > 0) setBatchErrors([]); }}
+            />
+            {batchErrors.length > 0 && (
+              <p className="text-sm text-destructive">
+                以下行格式有誤（需至少「翻譯 | 目標語單字」）：
+                {batchErrors.map((n) => (
+                  <span key={n} className="block font-medium">・第 {n} 行</span>
+                ))}
+              </p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBatchOpen(false)}>取消</Button>
+            <Button onClick={handleBatchCreate} disabled={isBatchSubmitting}>
+              {isBatchSubmitting ? "新增中…" : "新增"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Collapsible>
   );
 }

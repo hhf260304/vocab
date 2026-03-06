@@ -94,6 +94,31 @@ export async function updateVocabulary(
   if (data.languageId) revalidatePath(`/languages/${data.languageId}`);
 }
 
+export async function createVocabularies(
+  items: { front: string; back: string; exampleJp: string }[],
+  languageId: string,
+  categoryId: string
+): Promise<{ created: number }> {
+  const userId = await getUserId();
+  if (items.length === 0) return { created: 0 };
+
+  await db.insert(vocabulary).values(
+    items.map((item) => ({
+      userId,
+      languageId,
+      categoryId,
+      front: item.front,
+      back: item.back,
+      exampleJp: item.exampleJp,
+      reviewStage: 0,
+      nextReviewAt: new Date(),
+    }))
+  );
+
+  revalidatePath(`/languages/${languageId}`);
+  return { created: items.length };
+}
+
 export async function deleteVocabulary(id: string, languageId?: string) {
   const userId = await getUserId();
   await db

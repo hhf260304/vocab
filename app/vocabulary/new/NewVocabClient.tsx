@@ -77,10 +77,9 @@ export default function NewVocabClient({
             languageId: defaultLanguageId,
           }}
           onSubmit={handleSubmit}
-          onCreateCategory={defaultLanguageId ? handleCreateCategory : undefined}
           onCreateLanguage={defaultLanguageId ? undefined : handleCreateLanguage}
           submitLabel="新增單字"
-          showCategorySelector={!!defaultLanguageId}
+          showCategorySelector={false}
           showLanguageSelector={!defaultLanguageId}
         />
       </div>

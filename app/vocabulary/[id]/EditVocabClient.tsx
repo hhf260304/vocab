@@ -3,6 +3,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ThreeDots } from "react-loader-spinner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,6 +34,7 @@ export default function EditVocabClient({
 }) {
   const router = useRouter();
   const [vocabError, setVocabError] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
   const [categories, setCategories] = useState(initialCategories);
   const [languages, setLanguages] = useState(initialLanguages);
 
@@ -53,6 +55,7 @@ export default function EditVocabClient({
   }
 
   async function handleDelete() {
+    setIsDeleting(true);
     await deleteVocabulary(vocab.id, vocab.languageId ?? undefined);
     router.push(vocab.languageId ? `/languages/${vocab.languageId}` : "/");
   }
@@ -90,8 +93,12 @@ export default function EditVocabClient({
         </div>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="destructive" size="sm">
-              刪除單字
+            <Button variant="destructive" size="sm" disabled={isDeleting}>
+              {isDeleting ? (
+                <ThreeDots height="16" width="32" color="currentColor" />
+              ) : (
+                "刪除單字"
+              )}
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
