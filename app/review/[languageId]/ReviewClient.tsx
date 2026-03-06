@@ -17,27 +17,40 @@ export default function ReviewClient({
   language: Language;
 }) {
   const router = useRouter();
+  const originalTotal = queue.length;
+  const [cards, setCards] = useState<Vocabulary[]>([...queue]);
   const [index, setIndex] = useState(0);
+  const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
+  const [completedCount, setCompletedCount] = useState(0);
   const [results, setResults] = useState({ remembered: 0, forgot: 0 });
   const [done, setDone] = useState(false);
 
-  const current = queue[index];
-  const total = queue.length;
+  const current = cards[index];
 
   async function handleAnswer(remembered: boolean) {
-    await markReview(current.id, remembered);
-    setResults((r) => ({
-      remembered: r.remembered + (remembered ? 1 : 0),
-      forgot: r.forgot + (remembered ? 0 : 1),
-    }));
-    if (index + 1 >= total) {
-      setDone(true);
-    } else {
+    const currentId = current.id;
+
+    if (!remembered) {
+      setFailedIds((prev) => new Set(prev).add(currentId));
+      setCards((prev) => [...prev, current]);
       setIndex((i) => i + 1);
+    } else {
+      const wasEverFailed = failedIds.has(currentId);
+      await markReview(currentId, !wasEverFailed);
+      setCompletedCount((c) => c + 1);
+      setResults((r) => ({
+        remembered: r.remembered + (wasEverFailed ? 0 : 1),
+        forgot: r.forgot + (wasEverFailed ? 1 : 0),
+      }));
+      if (index + 1 >= cards.length) {
+        setDone(true);
+      } else {
+        setIndex((i) => i + 1);
+      }
     }
   }
 
-  if (total === 0) {
+  if (originalTotal === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
         <p className="text-5xl">🎉</p>
@@ -90,7 +103,7 @@ export default function ReviewClient({
         <div className="flex flex-col">
           <span className="text-sm text-muted-foreground">{language.name} 進度</span>
           <span className="font-bold text-foreground">
-            {index + 1} / {total}
+            {completedCount + 1} / {originalTotal}
           </span>
         </div>
         <Button
@@ -102,9 +115,9 @@ export default function ReviewClient({
           離開
         </Button>
       </div>
-      <Progress value={(index / total) * 100} className="w-full" />
+      <Progress value={(completedCount / originalTotal) * 100} className="w-full" />
       <FlashCard
-        key={current.id}
+        key={index}
         vocab={current}
         ttsCode={language.ttsCode}
         onRemembered={() => handleAnswer(true)}
