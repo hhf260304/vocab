@@ -49,7 +49,7 @@ export const vocabulary = pgTable("vocabulary", {
     onDelete: "set null",
   }),
   categoryId: text("category_id").references(() => categories.id, {
-    onDelete: "set null",
+    onDelete: "cascade",
   }),
   // 欄位別名：DB 欄位名稱不變，TypeScript 使用 front/back
   front: text("japanese").notNull(),
