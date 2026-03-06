@@ -45,6 +45,7 @@ export async function createVocabulary(data: {
   front: string;
   back: string;
   exampleJp?: string;
+  zhuyin?: string;
   categoryId: string | null;
   languageId: string | null;
 }) {
@@ -56,6 +57,7 @@ export async function createVocabulary(data: {
       front: data.front.trim(),
       back: data.back.trim(),
       exampleJp: data.exampleJp?.trim() ?? "",
+      zhuyin: data.zhuyin?.trim() ?? "",
       categoryId: data.categoryId,
       languageId: data.languageId,
       reviewStage: 0,
@@ -74,6 +76,7 @@ export async function updateVocabulary(
     front?: string;
     back?: string;
     exampleJp?: string;
+    zhuyin?: string;
     categoryId?: string | null;
     languageId?: string | null;
   }
@@ -85,6 +88,7 @@ export async function updateVocabulary(
       ...(data.front !== undefined && { front: data.front.trim() }),
       ...(data.back !== undefined && { back: data.back.trim() }),
       ...(data.exampleJp !== undefined && { exampleJp: data.exampleJp.trim() }),
+      ...(data.zhuyin !== undefined && { zhuyin: data.zhuyin.trim() }),
       ...(data.categoryId !== undefined && { categoryId: data.categoryId }),
       ...(data.languageId !== undefined && { languageId: data.languageId }),
     })
@@ -95,7 +99,7 @@ export async function updateVocabulary(
 }
 
 export async function createVocabularies(
-  items: { front: string; back: string; exampleJp: string }[],
+  items: { front: string; back: string; exampleJp: string; zhuyin: string }[],
   languageId: string,
   categoryId: string
 ): Promise<{ created: number }> {
@@ -110,6 +114,7 @@ export async function createVocabularies(
       front: item.front,
       back: item.back,
       exampleJp: item.exampleJp,
+      zhuyin: item.zhuyin,
       reviewStage: 0,
       nextReviewAt: new Date(),
     }))
