@@ -33,6 +33,7 @@ export default function NewVocabClient({
         front: data.front,
         back: data.back,
         exampleJp: data.exampleJp,
+        zhuyin: data.zhuyin,
         categoryId: data.categoryId,
         languageId: data.languageId,
       });
@@ -56,6 +57,9 @@ export default function NewVocabClient({
     return created;
   }
 
+  const selectedLanguage = languages.find((l) => l.id === (defaultLanguageId ?? ""));
+  const isChineseLanguage = selectedLanguage?.ttsCode === "zh-TW";
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -73,9 +77,11 @@ export default function NewVocabClient({
             front: "",
             back: "",
             exampleJp: "",
+            zhuyin: "",
             categoryId: defaultCategoryId,
             languageId: defaultLanguageId,
           }}
+          isChineseLanguage={isChineseLanguage}
           onSubmit={handleSubmit}
           onCreateLanguage={defaultLanguageId ? undefined : handleCreateLanguage}
           submitLabel="新增單字"
