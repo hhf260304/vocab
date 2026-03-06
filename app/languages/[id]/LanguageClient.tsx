@@ -32,7 +32,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { createCategory, createCategories, deleteCategory } from "@/lib/actions/categories";
+import { createCategory, createCategories, deleteCategory, updateCategory } from "@/lib/actions/categories";
 import { deleteLanguage } from "@/lib/actions/languages";
 import { createVocabularies, deleteVocabulary } from "@/lib/actions/vocabulary";
 import type { Category, Language, Vocabulary } from "@/lib/db/schema";
@@ -68,6 +68,7 @@ function CategorySection({
   isChineseLanguage: boolean;
   onDelete: (id: string) => void;
   onDeleteCategory: (id: string) => void;
+  onRename: (id: string, newName: string) => void;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -75,6 +76,8 @@ function CategorySection({
   const [batchText, setBatchText] = useState("");
   const [batchErrors, setBatchErrors] = useState<number[]>([]);
   const [isBatchSubmitting, setIsBatchSubmitting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState(cat.name);
 
   async function handleBatchCreate() {
     const lines = batchText.split("\n").filter((l) => l.trim());
@@ -102,6 +105,18 @@ function CategorySection({
     router.refresh();
   }
 
+  async function handleRename() {
+    const trimmed = editName.trim();
+    if (!trimmed || trimmed === cat.name) {
+      setIsEditing(false);
+      setEditName(cat.name);
+      return;
+    }
+    await updateCategory(cat.id, trimmed, languageId);
+    onRename(cat.id, trimmed);
+    setIsEditing(false);
+  }
+
   return (
     <Collapsible
       open={open}
@@ -109,34 +124,62 @@ function CategorySection({
       className="bg-card rounded-2xl border border-border overflow-hidden"
     >
       <div className="flex items-center justify-between px-5 py-3.5 hover:bg-muted/50 transition-colors">
-        <CollapsibleTrigger className="flex items-center gap-2 flex-1 min-w-0 text-left">
-          <span className="font-semibold text-foreground truncate min-w-0">{cat.name}</span>
-          <span className="text-sm text-muted-foreground shrink-0">
-            {vocabs.length} 個單字
-          </span>
-          <span className="text-muted-foreground text-xs ml-auto">
-            {open ? "▼" : "▶"}
-          </span>
-        </CollapsibleTrigger>
-        <div className="flex items-center gap-1.5 ml-2 shrink-0">
-          <Button size="sm" variant="outline" onClick={() => { setBatchOpen(true); setBatchText(""); setBatchErrors([]); }}>
-            批次新增
-          </Button>
-          <Button size="sm" asChild>
-            <Link href={`/vocabulary/new?languageId=${languageId}&categoryId=${cat.id}`}>
-              + 單字
-            </Link>
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground hover:text-destructive px-2"
-            onClick={() => onDeleteCategory(cat.id)}
-            aria-label={`刪除分類「${cat.name}」`}
-          >
-            ×
-          </Button>
-        </div>
+        {isEditing ? (
+          <div className="flex items-center gap-2 flex-1 min-w-0" onClick={(e) => e.stopPropagation()}>
+            <Input
+              autoFocus
+              className="h-7 text-sm font-semibold"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleRename();
+                if (e.key === "Escape") { setIsEditing(false); setEditName(cat.name); }
+              }}
+            />
+            <Button size="sm" variant="outline" onClick={handleRename} className="shrink-0">✓</Button>
+            <Button size="sm" variant="ghost" onClick={() => { setIsEditing(false); setEditName(cat.name); }} className="shrink-0">✕</Button>
+          </div>
+        ) : (
+          <CollapsibleTrigger className="flex items-center gap-2 flex-1 min-w-0 text-left">
+            <span className="font-semibold text-foreground truncate min-w-0">{cat.name}</span>
+            <span className="text-sm text-muted-foreground shrink-0">
+              {vocabs.length} 個單字
+            </span>
+            <span className="text-muted-foreground text-xs ml-auto">
+              {open ? "▼" : "▶"}
+            </span>
+          </CollapsibleTrigger>
+        )}
+        {!isEditing && (
+          <div className="flex items-center gap-1.5 ml-2 shrink-0">
+            <Button size="sm" variant="outline" onClick={() => { setBatchOpen(true); setBatchText(""); setBatchErrors([]); }}>
+              批次新增
+            </Button>
+            <Button size="sm" asChild>
+              <Link href={`/vocabulary/new?languageId=${languageId}&categoryId=${cat.id}`}>
+                + 單字
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-foreground px-2"
+              onClick={(e) => { e.stopPropagation(); setIsEditing(true); }}
+              aria-label={`編輯分類「${cat.name}」`}
+            >
+              ✏️
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-destructive px-2"
+              onClick={() => onDeleteCategory(cat.id)}
+              aria-label={`刪除分類「${cat.name}」`}
+            >
+              ×
+            </Button>
+          </div>
+        )}
       </div>
       <CollapsibleContent>
         <div className="flex flex-col gap-px border-t border-border">
@@ -437,6 +480,7 @@ export default function LanguageClient({
                 isChineseLanguage={language.ttsCode === "zh-TW"}
                 onDelete={handleDeleteVocab}
                 onDeleteCategory={handleDeleteCategory}
+                onRename={() => {}}
               />
             ))}
             {uncategorizedVocabs.length > 0 && (
