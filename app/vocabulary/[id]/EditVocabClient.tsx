@@ -84,9 +84,6 @@ export default function EditVocabClient({
     languageId: vocab.languageId,
   };
 
-  const selectedLanguage = languages.find((l) => l.id === (vocab.languageId ?? ""));
-  const isChineseLanguage = selectedLanguage?.ttsCode === "zh-TW";
-
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-start justify-between">
@@ -139,7 +136,6 @@ export default function EditVocabClient({
           submitLabel="儲存變更"
           showCategorySelector={!!vocab.languageId}
           showLanguageSelector={!vocab.languageId}
-          isChineseLanguage={isChineseLanguage}
         />
       </div>
     </div>

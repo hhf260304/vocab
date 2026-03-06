@@ -57,9 +57,6 @@ export default function NewVocabClient({
     return created;
   }
 
-  const selectedLanguage = languages.find((l) => l.id === (defaultLanguageId ?? ""));
-  const isChineseLanguage = selectedLanguage?.ttsCode === "zh-TW";
-
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -81,7 +78,6 @@ export default function NewVocabClient({
             categoryId: defaultCategoryId,
             languageId: defaultLanguageId,
           }}
-          isChineseLanguage={isChineseLanguage}
           onSubmit={handleSubmit}
           onCreateLanguage={defaultLanguageId ? undefined : handleCreateLanguage}
           submitLabel="新增單字"

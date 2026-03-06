@@ -37,7 +37,6 @@ interface Props {
 	submitLabel: string;
 	showCategorySelector?: boolean;
 	showLanguageSelector?: boolean;
-	isChineseLanguage?: boolean;
 }
 
 export default function VocabForm({
@@ -50,7 +49,6 @@ export default function VocabForm({
 	submitLabel,
 	showCategorySelector = false,
 	showLanguageSelector = true,
-	isChineseLanguage = false,
 }: Props) {
 	const [catOpen, setCatOpen] = useState(false);
 	const [catSearch, setCatSearch] = useState("");
@@ -107,6 +105,8 @@ export default function VocabForm({
 			setIsSubmitting(false);
 		}
 	}
+
+	const isChineseLanguage = languages.find((l) => l.id === form.languageId)?.ttsCode === "zh-TW";
 
 	const selectedLang = languages.find((l) => l.id === form.languageId);
 
