@@ -37,11 +37,19 @@ import { deleteLanguage } from "@/lib/actions/languages";
 import { createVocabularies, deleteVocabulary } from "@/lib/actions/vocabulary";
 import type { Category, Language, Vocabulary } from "@/lib/db/schema";
 
-function parseBatchVocabLine(line: string): { back: string; front: string; exampleJp: string } | null {
+function parseBatchVocabLine(
+  line: string,
+  isChineseLanguage: boolean
+): { back: string; front: string; exampleJp: string; zhuyin: string } | null {
   const parts = line.includes("\t") ? line.split("\t") : line.split("|");
-  const [front, back, exampleJp] = parts.map((p) => p.trim());
+  const [front, back, third] = parts.map((p) => p.trim());
   if (!front || !back) return null;
-  return { front, back, exampleJp: exampleJp ?? "" };
+  return {
+    front,
+    back,
+    exampleJp: isChineseLanguage ? "" : (third ?? ""),
+    zhuyin: isChineseLanguage ? (third ?? "") : "",
+  };
 }
 
 function CategorySection({
@@ -49,6 +57,7 @@ function CategorySection({
   vocabs,
   languageId,
   ttsCode,
+  isChineseLanguage,
   onDelete,
   onDeleteCategory,
 }: {
@@ -56,6 +65,7 @@ function CategorySection({
   vocabs: Vocabulary[];
   languageId: string;
   ttsCode: string;
+  isChineseLanguage: boolean;
   onDelete: (id: string) => void;
   onDeleteCategory: (id: string) => void;
 }) {
@@ -69,10 +79,10 @@ function CategorySection({
   async function handleBatchCreate() {
     const lines = batchText.split("\n").filter((l) => l.trim());
     const errorLines: number[] = [];
-    const items: { back: string; front: string; exampleJp: string }[] = [];
+    const items: { back: string; front: string; exampleJp: string; zhuyin: string }[] = [];
 
     lines.forEach((line, i) => {
-      const parsed = parseBatchVocabLine(line);
+      const parsed = parseBatchVocabLine(line, isChineseLanguage);
       if (!parsed) errorLines.push(i + 1);
       else items.push(parsed);
     });
@@ -152,7 +162,11 @@ function CategorySection({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>批次新增單字 — {cat.name}</DialogTitle>
-            <DialogDescription>每行一筆：翻譯 | 目標語單字 | 例句（選填）</DialogDescription>
+            <DialogDescription>
+              {isChineseLanguage
+                ? "每行一筆：母語 | 目標語言 | 注音（選填）"
+                : "每行一筆：翻譯 | 目標語單字 | 例句（選填）"}
+            </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2">
             <Textarea
@@ -164,7 +178,9 @@ function CategorySection({
             />
             {batchErrors.length > 0 && (
               <p className="text-sm text-destructive">
-                以下行格式有誤（需至少「翻譯 | 目標語單字」）：
+                {isChineseLanguage
+                  ? "以下行格式有誤（需至少「母語 | 目標語言」）："
+                  : "以下行格式有誤（需至少「翻譯 | 目標語單字」）："}
                 {batchErrors.map((n) => (
                   <span key={n} className="block font-medium">・第 {n} 行</span>
                 ))}
@@ -418,6 +434,7 @@ export default function LanguageClient({
                 vocabs={vocabs}
                 languageId={language.id}
                 ttsCode={language.ttsCode}
+                isChineseLanguage={language.ttsCode === "zh-TW"}
                 onDelete={handleDeleteVocab}
                 onDeleteCategory={handleDeleteCategory}
               />
