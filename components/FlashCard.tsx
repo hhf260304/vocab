@@ -37,11 +37,8 @@ export default function FlashCard({
   }, [flipped, vocab.back, ttsCode]);
 
   function handleAnswer(remembered: boolean) {
-    setFlipped(false);
-    setTimeout(() => {
-      if (remembered) onRemembered();
-      else onForgot();
-    }, 150);
+    if (remembered) onRemembered();
+    else onForgot();
   }
 
   const frontContent = vocab.front;

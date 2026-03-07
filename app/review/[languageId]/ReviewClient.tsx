@@ -18,7 +18,14 @@ export default function ReviewClient({
 }) {
   const router = useRouter();
   const originalTotal = queue.length;
-  const [cards, setCards] = useState<Vocabulary[]>([...queue]);
+  const [cards, setCards] = useState<Vocabulary[]>(() => {
+    const shuffled = [...queue];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  });
   const [index, setIndex] = useState(0);
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
   const [completedCount, setCompletedCount] = useState(0);
