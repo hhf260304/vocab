@@ -6,8 +6,20 @@ import { useState } from "react";
 import FlashCard from "@/components/FlashCard";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { markReview } from "@/lib/actions/vocabulary";
+import { Trash2 } from "lucide-react";
+import { markReview, deleteVocabulary } from "@/lib/actions/vocabulary";
 import type { Language, Vocabulary } from "@/lib/db/schema";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function ReviewClient({
   queue,
@@ -33,6 +45,19 @@ export default function ReviewClient({
   const [done, setDone] = useState(false);
 
   const current = cards[index];
+
+  async function handleDelete() {
+    const idToDelete = current.id;
+    await deleteVocabulary(idToDelete);
+    const newCards = cards.filter((c) => c.id !== idToDelete);
+    if (newCards.length === 0) {
+      setDone(true);
+      return;
+    }
+    const newIndex = index >= newCards.length ? newCards.length - 1 : index;
+    setCards(newCards);
+    setIndex(newIndex);
+  }
 
   async function handleAnswer(remembered: boolean) {
     const currentId = current.id;
@@ -107,11 +132,37 @@ export default function ReviewClient({
   return (
     <div className="flex flex-col items-center gap-8">
       <div className="w-full flex items-center justify-between">
-        <div className="flex flex-col">
-          <span className="text-sm text-muted-foreground">{language.name} 進度</span>
-          <span className="font-bold text-foreground">
-            {completedCount + 1} / {originalTotal}
-          </span>
+        <div className="flex items-center gap-3">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-red-500 h-8 w-8">
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>刪除單字？</AlertDialogTitle>
+                <AlertDialogDescription>
+                  「{current.front}」將被永久刪除，無法復原。
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>取消</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-red-600 hover:bg-red-700"
+                  onClick={handleDelete}
+                >
+                  刪除
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <div className="flex flex-col">
+            <span className="text-sm text-muted-foreground">{language.name} 進度</span>
+            <span className="font-bold text-foreground">
+              {completedCount} / {originalTotal}
+            </span>
+          </div>
         </div>
         <Button
           variant="ghost"
