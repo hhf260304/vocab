@@ -31,8 +31,7 @@ export default function ReviewClient({
   categoryMap: Record<string, string>;
 }) {
   const router = useRouter();
-  const originalTotal = queue.length;
-  const [cards, setCards] = useState<Vocabulary[]>(() => {
+  const [currentCards, setCurrentCards] = useState<Vocabulary[]>(() => {
     const shuffled = [...queue];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -42,11 +41,11 @@ export default function ReviewClient({
   });
   const [index, setIndex] = useState(0);
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
-  const [completedCount, setCompletedCount] = useState(0);
-  const [results, setResults] = useState({ remembered: 0, forgot: 0 });
-  const [done, setDone] = useState(false);
+  const [forgottenThisRound, setForgottenThisRound] = useState<Vocabulary[]>([]);
+  const [roundRemembered, setRoundRemembered] = useState(0);
+  const [view, setView] = useState<"reviewing" | "results">("reviewing");
 
-  const current = cards[index];
+  const current = currentCards[index];
 
   async function handleDelete() {
     const idToDelete = current.id;
