@@ -12,7 +12,7 @@ interface Props {
   onDelete: () => void;
 }
 
-const STAGE_LABELS = ["新", "第1次", "第2次", "第3次", "第4次", "畢業"];
+const STAGE_LABELS = ["新", "已完成 1 次", "已完成 2 次", "已完成 3 次", "已完成 4 次", "畢業"];
 
 function formatDate(date: Date | string | null): string {
   if (!date) return "-";
@@ -50,11 +50,9 @@ export default function VocabCard({ vocab, ttsCode, onDelete }: Props) {
             )}
           </div>
           <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-            {vocab.reviewStage > 0 && (
-              <Badge variant="secondary" className="text-xs">
-                {STAGE_LABELS[vocab.reviewStage]}
-              </Badge>
-            )}
+            <Badge variant="secondary" className="text-xs">
+              {STAGE_LABELS[vocab.reviewStage]}
+            </Badge>
             <span className="text-xs text-muted-foreground">
               新增 {formatDate(vocab.createdAt)}
             </span>

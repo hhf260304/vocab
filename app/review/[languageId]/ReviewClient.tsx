@@ -24,9 +24,11 @@ import {
 export default function ReviewClient({
   queue,
   language,
+  categoryMap,
 }: {
   queue: Vocabulary[];
   language: Language;
+  categoryMap: Record<string, string>;
 }) {
   const router = useRouter();
   const originalTotal = queue.length;
@@ -178,6 +180,7 @@ export default function ReviewClient({
         key={index}
         vocab={current}
         ttsCode={language.ttsCode}
+        categoryName={current.categoryId ? categoryMap[current.categoryId] : undefined}
         onRemembered={() => handleAnswer(true)}
         onForgot={() => handleAnswer(false)}
       />

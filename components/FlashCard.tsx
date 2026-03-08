@@ -4,11 +4,13 @@
 import { useEffect, useState } from "react";
 import { Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import type { Vocabulary } from "@/lib/db/schema";
 
 interface Props {
   vocab: Vocabulary;
   ttsCode: string;
+  categoryName?: string;
   onRemembered: () => void;
   onForgot: () => void;
 }
@@ -16,6 +18,7 @@ interface Props {
 export default function FlashCard({
   vocab,
   ttsCode,
+  categoryName,
   onRemembered,
   onForgot,
 }: Props) {
@@ -53,6 +56,11 @@ export default function FlashCard({
         >
           {/* 正面 */}
           <div className="backface-hidden absolute inset-0 bg-white rounded-3xl border-2 border-stone-200 flex flex-col items-center justify-center p-6 shadow-sm">
+            {categoryName && (
+              <Badge className="absolute top-4 left-4 bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-100 font-medium text-xs">
+                {categoryName}
+              </Badge>
+            )}
             <p className="text-4xl font-bold text-stone-900 text-center">
               {frontContent}
             </p>

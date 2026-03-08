@@ -17,9 +17,11 @@ export function getNextReviewAt(stage: number, remembered: boolean): { stage: nu
   if (nextStage === 5) {
     return { stage: 5, nextReviewAt: Infinity }
   }
+  const next = new Date(Date.now() + INTERVALS_MS[stage])
+  next.setHours(0, 0, 0, 0)
   return {
     stage: nextStage,
-    nextReviewAt: Date.now() + INTERVALS_MS[stage],
+    nextReviewAt: next.getTime(),
   }
 }
 

@@ -66,7 +66,10 @@ export async function createVocabulary(data: {
     .returning();
 
   revalidatePath("/");
-  if (data.languageId) revalidatePath(`/languages/${data.languageId}`);
+  if (data.languageId) {
+    revalidatePath(`/languages/${data.languageId}`);
+    revalidatePath(`/review/${data.languageId}`);
+  }
   return created;
 }
 
@@ -121,6 +124,7 @@ export async function createVocabularies(
   );
 
   revalidatePath(`/languages/${languageId}`);
+  revalidatePath(`/review/${languageId}`);
   return { created: items.length };
 }
 

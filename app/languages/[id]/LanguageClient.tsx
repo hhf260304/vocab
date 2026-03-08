@@ -203,94 +203,49 @@ function CategorySection({
 					</CollapsibleTrigger>
 				)}
 				{!isEditing && (
-					<>
-						{/* 桌機：按鈕列 */}
-						<div className="hidden sm:flex items-center gap-1.5 ml-2 shrink-0">
-							<Button
-								size="sm"
-								variant="outline"
-								onClick={() => {
-									setBatchOpen(true);
-									setBatchText("");
-									setBatchErrors([]);
-								}}
+					<div className="ml-2 shrink-0">
+						<DropdownMenu>
+							<DropdownMenuTrigger
+								asChild
+								onClick={(e) => e.stopPropagation()}
 							>
-								批次新增
-							</Button>
-							<Button size="sm" asChild>
-								<Link
-									href={`/vocabulary/new?languageId=${languageId}&categoryId=${cat.id}`}
+								<Button
+									variant="ghost"
+									size="sm"
+									className="px-2 text-muted-foreground"
 								>
-									+ 單字
-								</Link>
-							</Button>
-							<Button
-								variant="ghost"
-								size="sm"
-								className="text-muted-foreground hover:text-foreground px-2"
-								onClick={(e) => {
-									e.stopPropagation();
-									setIsEditing(true);
-								}}
-								aria-label={`編輯分類「${cat.name}」`}
-							>
-								✏️
-							</Button>
-							<Button
-								variant="ghost"
-								size="sm"
-								className="text-muted-foreground hover:text-destructive px-2"
-								onClick={() => onDeleteCategory(cat.id)}
-								aria-label={`刪除分類「${cat.name}」`}
-							>
-								×
-							</Button>
-						</div>
-						{/* 手機：⋮ 下拉選單 */}
-						<div className="sm:hidden ml-2 shrink-0">
-							<DropdownMenu>
-								<DropdownMenuTrigger
-									asChild
-									onClick={(e) => e.stopPropagation()}
+									⋮
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								<DropdownMenuItem asChild>
+									<Link
+										href={`/vocabulary/new?languageId=${languageId}&categoryId=${cat.id}`}
+									>
+										新增單字
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									onSelect={() => {
+										setBatchOpen(true);
+										setBatchText("");
+										setBatchErrors([]);
+									}}
 								>
-									<Button
-										variant="ghost"
-										size="sm"
-										className="px-2 text-muted-foreground"
-									>
-										⋮
-									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent align="end">
-									<DropdownMenuItem asChild>
-										<Link
-											href={`/vocabulary/new?languageId=${languageId}&categoryId=${cat.id}`}
-										>
-											新增單字
-										</Link>
-									</DropdownMenuItem>
-									<DropdownMenuItem
-										onSelect={() => {
-											setBatchOpen(true);
-											setBatchText("");
-											setBatchErrors([]);
-										}}
-									>
-										批次新增單字
-									</DropdownMenuItem>
-									<DropdownMenuItem onSelect={() => setIsEditing(true)}>
-										重新命名
-									</DropdownMenuItem>
-									<DropdownMenuItem
-										onSelect={() => onDeleteCategory(cat.id)}
-										className="text-destructive focus:text-destructive"
-									>
-										刪除分類
-									</DropdownMenuItem>
-								</DropdownMenuContent>
-							</DropdownMenu>
-						</div>
-					</>
+									批次新增單字
+								</DropdownMenuItem>
+								<DropdownMenuItem onSelect={() => setIsEditing(true)}>
+									重新命名
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									onSelect={() => onDeleteCategory(cat.id)}
+									className="text-destructive focus:text-destructive"
+								>
+									刪除分類
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
 				)}
 			</div>
 			<CollapsibleContent>
