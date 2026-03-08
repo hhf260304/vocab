@@ -84,6 +84,19 @@ export default function ReviewClient({
     }
   }
 
+  function startNextRound() {
+    const nextCards = [...forgottenThisRound];
+    for (let i = nextCards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [nextCards[i], nextCards[j]] = [nextCards[j], nextCards[i]];
+    }
+    setCurrentCards(nextCards);
+    setForgottenThisRound([]);
+    setRoundRemembered(0);
+    setIndex(0);
+    setView("reviewing");
+  }
+
   if (originalTotal === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
@@ -102,27 +115,38 @@ export default function ReviewClient({
     );
   }
 
-  if (done) {
+  if (view === "results") {
+    const forgotCount = forgottenThisRound.length;
+    const allDone = forgotCount === 0;
+
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-6 text-center">
-        <p className="text-5xl">✅</p>
-        <h2 className="text-2xl font-bold text-foreground">複習完成！</h2>
+        <p className="text-5xl">{allDone ? "🎉" : "✅"}</p>
+        <h2 className="text-2xl font-bold text-foreground">
+          {allDone ? "全部記得！" : "這輪複習完成！"}
+        </h2>
         <div className="flex gap-6">
           <div className="flex flex-col items-center">
             <span className="text-3xl font-bold text-emerald-600">
-              {results.remembered}
+              {roundRemembered}
             </span>
             <span className="text-sm text-muted-foreground">記得</span>
           </div>
           <div className="flex flex-col items-center">
             <span className="text-3xl font-bold text-red-500">
-              {results.forgot}
+              {forgotCount}
             </span>
             <span className="text-sm text-muted-foreground">忘記</span>
           </div>
         </div>
+        {!allDone && (
+          <Button className="px-8" onClick={startNextRound}>
+            複習忘記的字 ({forgotCount})
+          </Button>
+        )}
         <Button
-          className="px-8"
+          variant={allDone ? "default" : "ghost"}
+          className={allDone ? "px-8" : "text-muted-foreground"}
           onClick={() => router.push(`/languages/${language.id}`)}
         >
           回到{language.name}
