@@ -49,9 +49,11 @@ export default function ReviewClient({
   const current = currentCards[index];
 
   async function handleDelete() {
+    if (!current) return;
     const idToDelete = current.id;
     await deleteVocabulary(idToDelete);
     const newCards = currentCards.filter((c) => c.id !== idToDelete);
+    setForgottenThisRound((prev) => prev.filter((c) => c.id !== idToDelete));
     if (newCards.length === 0) {
       setView("results");
       return;
@@ -62,6 +64,7 @@ export default function ReviewClient({
   }
 
   async function handleAnswer(remembered: boolean) {
+    if (!current) return;
     const currentCard = current;
     const nextIndex = index + 1;
     const isLastCard = nextIndex >= currentCards.length;
