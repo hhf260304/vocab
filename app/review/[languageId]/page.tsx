@@ -7,13 +7,16 @@ import { getCategories } from "@/lib/actions/categories";
 
 export default async function ReviewPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ languageId: string }>;
+  searchParams: Promise<{ categoryId?: string }>;
 }) {
   const { languageId } = await params;
+  const { categoryId } = await searchParams;
   const [language, queue, cats] = await Promise.all([
     getLanguageById(languageId),
-    getTodayReviews(languageId),
+    getTodayReviews(languageId, categoryId),
     getCategories(languageId),
   ]);
 
