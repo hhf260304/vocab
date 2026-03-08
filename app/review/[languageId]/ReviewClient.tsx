@@ -51,36 +51,33 @@ export default function ReviewClient({
   async function handleDelete() {
     const idToDelete = current.id;
     await deleteVocabulary(idToDelete);
-    const newCards = cards.filter((c) => c.id !== idToDelete);
+    const newCards = currentCards.filter((c) => c.id !== idToDelete);
     if (newCards.length === 0) {
-      setDone(true);
+      setView("results");
       return;
     }
     const newIndex = index >= newCards.length ? newCards.length - 1 : index;
-    setCards(newCards);
+    setCurrentCards(newCards);
     setIndex(newIndex);
   }
 
   async function handleAnswer(remembered: boolean) {
-    const currentId = current.id;
+    const currentCard = current;
+    const nextIndex = index + 1;
+    const isLastCard = nextIndex >= currentCards.length;
 
     if (!remembered) {
-      setFailedIds((prev) => new Set(prev).add(currentId));
-      setCards((prev) => [...prev, current]);
-      setIndex((i) => i + 1);
+      setFailedIds((prev) => new Set(prev).add(currentCard.id));
+      setForgottenThisRound((prev) => [...prev, currentCard]);
     } else {
-      const wasEverFailed = failedIds.has(currentId);
-      await markReview(currentId, !wasEverFailed);
-      setCompletedCount((c) => c + 1);
-      setResults((r) => ({
-        remembered: r.remembered + (wasEverFailed ? 0 : 1),
-        forgot: r.forgot + (wasEverFailed ? 1 : 0),
-      }));
-      if (index + 1 >= cards.length) {
-        setDone(true);
-      } else {
-        setIndex((i) => i + 1);
-      }
+      await markReview(currentCard.id, !failedIds.has(currentCard.id));
+      setRoundRemembered((n) => n + 1);
+    }
+
+    if (isLastCard) {
+      setView("results");
+    } else {
+      setIndex(nextIndex);
     }
   }
 
