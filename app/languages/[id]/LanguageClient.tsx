@@ -219,6 +219,11 @@ function CategorySection({
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
 								<DropdownMenuItem asChild>
+									<Link href={`/review/${languageId}?categoryId=${cat.id}`}>
+										複習此分類
+									</Link>
+								</DropdownMenuItem>
+								<DropdownMenuItem asChild>
 									<Link
 										href={`/vocabulary/new?languageId=${languageId}&categoryId=${cat.id}`}
 									>
