@@ -13,7 +13,6 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,7 +43,6 @@ import {
 	deleteCategory,
 	updateCategory,
 } from "@/lib/actions/categories";
-import { deleteLanguage } from "@/lib/actions/languages";
 import { createVocabularies, deleteVocabulary } from "@/lib/actions/vocabulary";
 import type { Category, Language, Vocabulary } from "@/lib/db/schema";
 
@@ -366,13 +364,6 @@ export default function LanguageClient({
 	const [batchDuplicates, setBatchDuplicates] = useState<string[]>([]);
 	const [isBatchSubmitting, setIsBatchSubmitting] = useState(false);
 
-	function handleDelete() {
-		startTransition(async () => {
-			await deleteLanguage(language.id);
-			router.push("/");
-		});
-	}
-
 	function handleDeleteVocab(id: string) {
 		const vocab = initialVocabularies.find((v) => v.id === id);
 		if (vocab) setPendingDelete({ type: "vocab", id, name: vocab.front });
@@ -447,36 +438,10 @@ export default function LanguageClient({
 	return (
 		<div className="flex flex-col gap-6">
 			{/* 標題 */}
-			<div className="flex items-start justify-between">
-				<div>
-					<h1 className="text-2xl font-bold text-foreground">
-						{language.name}
-					</h1>
-				</div>
-				<AlertDialog>
-					<AlertDialogTrigger asChild>
-						<Button variant="ghost" size="sm" className="text-muted-foreground">
-							刪除語言
-						</Button>
-					</AlertDialogTrigger>
-					<AlertDialogContent>
-						<AlertDialogHeader>
-							<AlertDialogTitle>刪除語言</AlertDialogTitle>
-							<AlertDialogDescription>
-								確定刪除「{language.name}」？此語言的單字與分類將一併刪除。
-							</AlertDialogDescription>
-						</AlertDialogHeader>
-						<AlertDialogFooter>
-							<AlertDialogCancel>取消</AlertDialogCancel>
-							<AlertDialogAction
-								onClick={handleDelete}
-								className="bg-destructive text-white hover:bg-destructive/90"
-							>
-								刪除
-							</AlertDialogAction>
-						</AlertDialogFooter>
-					</AlertDialogContent>
-				</AlertDialog>
+			<div>
+				<h1 className="text-2xl font-bold text-foreground">
+					{language.name}
+				</h1>
 			</div>
 
 			{/* 統計 */}

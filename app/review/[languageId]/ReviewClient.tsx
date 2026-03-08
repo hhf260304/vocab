@@ -45,6 +45,7 @@ export default function ReviewClient({
   const [forgottenThisRound, setForgottenThisRound] = useState<Vocabulary[]>([]);
   const [roundRemembered, setRoundRemembered] = useState(0);
   const [view, setView] = useState<"reviewing" | "results">("reviewing");
+  const [resetKey, setResetKey] = useState(0);
 
   const current = currentCards[index];
 
@@ -61,6 +62,7 @@ export default function ReviewClient({
     const newIndex = index >= newCards.length ? newCards.length - 1 : index;
     setCurrentCards(newCards);
     setIndex(newIndex);
+    setResetKey((k) => k + 1);
   }
 
   async function handleAnswer(remembered: boolean) {
@@ -158,7 +160,13 @@ export default function ReviewClient({
   return (
     <div className="flex flex-col items-center gap-8">
       <div className="w-full flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col">
+          <span className="text-sm text-muted-foreground">{language.name} 進度</span>
+          <span className="font-bold text-foreground">
+            {index + 1} / {currentCards.length}
+          </span>
+        </div>
+        <div className="flex items-center gap-1">
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-red-500 h-8 w-8">
@@ -183,25 +191,19 @@ export default function ReviewClient({
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <div className="flex flex-col">
-            <span className="text-sm text-muted-foreground">{language.name} 進度</span>
-            <span className="font-bold text-foreground">
-              {index + 1} / {currentCards.length}
-            </span>
-          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground"
+            onClick={() => router.push(`/languages/${language.id}`)}
+          >
+            離開
+          </Button>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-muted-foreground"
-          onClick={() => router.push(`/languages/${language.id}`)}
-        >
-          離開
-        </Button>
       </div>
       <Progress value={((index + 1) / currentCards.length) * 100} className="w-full" />
       <FlashCard
-        key={index}
+        key={`${index}-${resetKey}`}
         vocab={current}
         ttsCode={language.ttsCode}
         categoryName={current.categoryId ? categoryMap[current.categoryId] : undefined}
