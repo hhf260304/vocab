@@ -97,7 +97,7 @@ export default function ReviewClient({
     setView("reviewing");
   }
 
-  if (originalTotal === 0) {
+  if (queue.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
         <p className="text-5xl">🎉</p>
@@ -186,7 +186,7 @@ export default function ReviewClient({
           <div className="flex flex-col">
             <span className="text-sm text-muted-foreground">{language.name} 進度</span>
             <span className="font-bold text-foreground">
-              {completedCount} / {originalTotal}
+              {index} / {currentCards.length}
             </span>
           </div>
         </div>
@@ -199,7 +199,7 @@ export default function ReviewClient({
           離開
         </Button>
       </div>
-      <Progress value={(completedCount / originalTotal) * 100} className="w-full" />
+      <Progress value={(index / currentCards.length) * 100} className="w-full" />
       <FlashCard
         key={index}
         vocab={current}
