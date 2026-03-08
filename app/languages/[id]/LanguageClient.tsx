@@ -144,6 +144,9 @@ function CategorySection({
 		router.refresh();
 	}
 
+	const contentId = `collapsible-content-${cat.id}`;
+	const menuTriggerId = `category-menu-${cat.id}`;
+
 	return (
 		<Collapsible
 			open={open}
@@ -190,7 +193,7 @@ function CategorySection({
 						</Button>
 					</div>
 				) : (
-					<CollapsibleTrigger className="flex items-center gap-2 flex-1 min-w-0 text-left">
+					<CollapsibleTrigger aria-controls={contentId} className="flex items-center gap-2 flex-1 min-w-0 text-left">
 						<span className="font-semibold text-foreground truncate min-w-0">
 							{cat.name}
 						</span>
@@ -207,6 +210,7 @@ function CategorySection({
 						<DropdownMenu>
 							<DropdownMenuTrigger
 								asChild
+								id={menuTriggerId}
 								onClick={(e) => e.stopPropagation()}
 							>
 								<Button
@@ -253,7 +257,7 @@ function CategorySection({
 					</div>
 				)}
 			</div>
-			<CollapsibleContent>
+			<CollapsibleContent id={contentId}>
 				<div className="flex flex-col gap-px border-t border-border">
 					{vocabs.length === 0 ? (
 						<p className="text-sm text-muted-foreground px-5 py-4">

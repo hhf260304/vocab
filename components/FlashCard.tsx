@@ -51,7 +51,7 @@ export default function FlashCard({
     <div className="flex flex-col items-center gap-6 w-full">
       <div className="perspective w-full max-w-sm">
         <div
-          className={`relative w-full h-56 cursor-pointer transform-style-3d transition-transform duration-500 ${flipped ? "rotate-y-180" : ""}`}
+          className={`relative w-full h-56 cursor-pointer transform-style-3d transition-transform duration-200 ${flipped ? "rotate-y-180" : ""}`}
           onClick={() => setFlipped((f) => !f)}
         >
           {/* 正面 */}
