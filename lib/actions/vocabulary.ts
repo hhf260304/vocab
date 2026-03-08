@@ -25,20 +25,17 @@ export async function getVocabularies(languageId?: string) {
     .orderBy(vocabulary.createdAt);
 }
 
-export async function getTodayReviews(languageId: string) {
+export async function getTodayReviews(languageId: string, categoryId?: string) {
   const userId = await getUserId();
   const now = new Date();
-  return db
-    .select()
-    .from(vocabulary)
-    .where(
-      and(
-        eq(vocabulary.userId, userId),
-        eq(vocabulary.languageId, languageId),
-        lt(vocabulary.reviewStage, 5),
-        lte(vocabulary.nextReviewAt, now)
-      )
-    );
+  const conditions = [
+    eq(vocabulary.userId, userId),
+    eq(vocabulary.languageId, languageId),
+    lt(vocabulary.reviewStage, 5),
+    lte(vocabulary.nextReviewAt, now),
+  ];
+  if (categoryId) conditions.push(eq(vocabulary.categoryId, categoryId));
+  return db.select().from(vocabulary).where(and(...conditions));
 }
 
 export async function createVocabulary(data: {
