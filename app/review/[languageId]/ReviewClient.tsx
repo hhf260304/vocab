@@ -41,6 +41,7 @@ export default function ReviewClient({
   });
   const [index, setIndex] = useState(0);
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
+  // Full objects needed to seed the next round via setCurrentCards(shuffle(forgottenThisRound))
   const [forgottenThisRound, setForgottenThisRound] = useState<Vocabulary[]>([]);
   const [roundRemembered, setRoundRemembered] = useState(0);
   const [view, setView] = useState<"reviewing" | "results">("reviewing");
