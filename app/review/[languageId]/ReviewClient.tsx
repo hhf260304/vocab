@@ -186,7 +186,7 @@ export default function ReviewClient({
           <div className="flex flex-col">
             <span className="text-sm text-muted-foreground">{language.name} 進度</span>
             <span className="font-bold text-foreground">
-              {index} / {currentCards.length}
+              {index + 1} / {currentCards.length}
             </span>
           </div>
         </div>
@@ -199,7 +199,7 @@ export default function ReviewClient({
           離開
         </Button>
       </div>
-      <Progress value={(index / currentCards.length) * 100} className="w-full" />
+      <Progress value={((index + 1) / currentCards.length) * 100} className="w-full" />
       <FlashCard
         key={index}
         vocab={current}
