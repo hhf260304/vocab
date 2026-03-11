@@ -57,7 +57,7 @@ export default function FlashCard({
           {/* 正面 */}
           <div className="backface-hidden absolute inset-0 bg-white rounded-3xl border-2 border-stone-200 flex flex-col items-center justify-center p-6 shadow-sm">
             {categoryName && (
-              <Badge className="absolute top-4 left-4 bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-100 font-medium text-xs">
+              <Badge className="absolute top-4 left-4 bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-100 font-medium text-xs">
                 {categoryName}
               </Badge>
             )}
@@ -68,7 +68,7 @@ export default function FlashCard({
           </div>
 
           {/* 反面 */}
-          <div className="backface-hidden rotate-y-180 absolute inset-0 bg-teal-700 rounded-3xl flex flex-col items-center justify-center p-6 shadow-sm">
+          <div className="backface-hidden rotate-y-180 absolute inset-0 rounded-3xl flex flex-col items-center justify-center p-6 shadow-sm" style={{background: 'linear-gradient(135deg, #1E3A5F, #0369A1)'}}>
             <p className="text-4xl font-bold text-white text-center">
               {backContent}
             </p>
@@ -78,7 +78,7 @@ export default function FlashCard({
                   e.stopPropagation();
                   speakBack();
                 }}
-                className="text-teal-200 hover:text-white transition-colors"
+                className="text-blue-200 hover:text-white transition-colors"
               >
                 <Volume2 className="h-5 w-5" />
               </button>

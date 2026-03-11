@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la /Users/user/Desktop/vocab/components/*.tsx)",
+      "Bash(grep -r \"zustand\\\\|useState\\\\|useContext\\\\|Redux\" /Users/user/Desktop/vocab/lib --include=\"*.ts\" --include=\"*.tsx\" 2>/dev/null | head -20)",
+      "Bash(find /Users/user/Desktop/vocab -maxdepth 2 -name \"*.md\" -o -name \"CLAUDE.md\" -o -name \".cursorrules\" 2>/dev/null | grep -v node_modules)",
+      "Bash(head -50 /Users/user/Desktop/vocab/app/review/\\\\[languageId\\\\]/ReviewClient.tsx)",
+      "Bash(git add:*)"
+    ]
+  }
+}

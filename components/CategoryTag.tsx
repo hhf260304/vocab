@@ -8,7 +8,7 @@ interface Props {
 
 export default function CategoryTag({ category, onDelete }: Props) {
 	return (
-		<Badge className="bg-orange-100 text-orange-700 border-orange-200 hover:bg-orange-100 gap-1 font-medium">
+		<Badge className="bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-100 gap-1 font-medium">
 			{category.name}
 			{onDelete && (
 				<button

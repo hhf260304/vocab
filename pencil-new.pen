@@ -1,0 +1,1438 @@
+{
+  "version": "2.8",
+  "children": [
+    {
+      "type": "frame",
+      "id": "bi8Au",
+      "x": 0,
+      "y": 0,
+      "name": "Frame",
+      "clip": true,
+      "width": 800,
+      "height": 600,
+      "fill": "#FFFFFF",
+      "layout": "none"
+    },
+    {
+      "type": "frame",
+      "id": "oRtW0",
+      "x": 0,
+      "y": 0,
+      "name": "方案一：晴空藍",
+      "width": 760,
+      "height": 900,
+      "fill": "#EFF6FF",
+      "children": [
+        {
+          "type": "frame",
+          "id": "FCvEH",
+          "name": "Navbar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "#FFFFFF",
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#BFDBFE"
+          },
+          "padding": [
+            0,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "4V4mc",
+              "name": "brand1",
+              "fill": "#1E40AF",
+              "content": "📚 快快樂樂背單字",
+              "fontFamily": "Inter",
+              "fontSize": 17,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "Eg1Ik",
+              "name": "logout1",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "SsowJ",
+                  "name": "avatar1",
+                  "fill": "#BFDBFE",
+                  "width": 28,
+                  "height": 28
+                },
+                {
+                  "type": "text",
+                  "id": "K8ykY",
+                  "name": "logoutBtn1",
+                  "fill": "#64748B",
+                  "content": "登出",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ugM94",
+          "name": "Body",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": [
+            24,
+            32
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "4ajuu",
+              "name": "sectionTitle1",
+              "fill": "#1E3A8A",
+              "content": "我的語言",
+              "fontFamily": "Inter",
+              "fontSize": 22,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "BcKbG",
+              "name": "LanguageCard",
+              "width": "fill_container",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "#BFDBFE"
+              },
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#3B82F620",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 8
+              },
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                18,
+                20
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "N97QW",
+                  "name": "langCardRow1",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "6Yitf",
+                      "name": "langName1",
+                      "fill": "#1E3A8A",
+                      "content": "日語",
+                      "fontFamily": "Inter",
+                      "fontSize": 17,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "YIOFs",
+                      "name": "badge1",
+                      "fill": "#2563EB",
+                      "cornerRadius": 99,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "CQRse",
+                          "name": "badgeText1",
+                          "fill": "#FFFFFF",
+                          "content": "12",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "fw1wj",
+                  "name": "langSub1",
+                  "fill": "#60A5FA",
+                  "content": "48 個單字・12 個待複習",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "q9Q99",
+              "name": "progressRow1",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "n8pUs",
+                  "name": "progLabel1",
+                  "fill": "#60A5FA",
+                  "content": "日語 進度",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "QJpx3",
+                  "name": "progCount1",
+                  "fill": "#1E3A8A",
+                  "content": "3 / 12",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "AwN9x",
+              "name": "progressBar1",
+              "width": "fill_container",
+              "height": 6,
+              "fill": "#BFDBFE",
+              "cornerRadius": 99,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "F1nqv",
+                  "x": 0,
+                  "y": 0,
+                  "name": "progressFill1",
+                  "width": 180,
+                  "height": 6,
+                  "fill": "#2563EB",
+                  "cornerRadius": 99
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "CsTig",
+              "name": "CardArea",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "L61EA",
+                  "name": "CardFront",
+                  "width": "fill_container",
+                  "height": 200,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 24,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 2,
+                    "fill": "#BFDBFE"
+                  },
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#3B82F625",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "TwEUL",
+                      "name": "catBadge1",
+                      "fill": "#DBEAFE",
+                      "cornerRadius": 99,
+                      "padding": [
+                        4,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wTkM3",
+                          "name": "catBadgeText1",
+                          "fill": "#1D4ED8",
+                          "content": "動詞",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "c3j95",
+                      "name": "cardWord1",
+                      "fill": "#1E3A8A",
+                      "content": "食べる",
+                      "fontFamily": "Inter",
+                      "fontSize": 40,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "vx6vY",
+                      "name": "cardHint1",
+                      "fill": "#93C5FD",
+                      "content": "點擊翻轉",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "vDloF",
+                  "name": "CardBack",
+                  "width": "fill_container",
+                  "height": 200,
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 135,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#1D4ED8",
+                        "position": 0
+                      },
+                      {
+                        "color": "#38BDF8",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "cornerRadius": 24,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "8cjrf",
+                      "name": "cardBackWord1",
+                      "fill": "#FFFFFF",
+                      "content": "たべる",
+                      "fontFamily": "Inter",
+                      "fontSize": 38,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "svr0M",
+                      "name": "cardBackRomaji1",
+                      "fill": "#BAE6FD",
+                      "content": "taberu",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "6H7Wi",
+                  "name": "btnRow1",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "OIPdh",
+                      "name": "forgotBtn1",
+                      "width": "fill_container",
+                      "fill": "#FEF2F2",
+                      "cornerRadius": 16,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": 1,
+                        "fill": "#FECACA"
+                      },
+                      "padding": [
+                        14,
+                        0
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "RFLRv",
+                          "name": "forgotText1",
+                          "fill": "#DC2626",
+                          "content": "😞 忘記",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "RT2sA",
+                      "name": "rememberBtn1",
+                      "width": "fill_container",
+                      "fill": "#F0FDF4",
+                      "cornerRadius": 16,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": 1,
+                        "fill": "#BBF7D0"
+                      },
+                      "padding": [
+                        14,
+                        0
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "YiJMe",
+                          "name": "rememberText1",
+                          "fill": "#16A34A",
+                          "content": "😊 記得",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ZYCHg",
+      "x": 840,
+      "y": 0,
+      "name": "方案二：深洋藍",
+      "width": 760,
+      "height": 900,
+      "fill": "#F0F4F8",
+      "children": [
+        {
+          "type": "frame",
+          "id": "SWdSr",
+          "name": "Navbar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "#1E3A5F",
+          "padding": [
+            0,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "qhd1W",
+              "name": "brand2",
+              "fill": "#FFFFFF",
+              "content": "📚 快快樂樂背單字",
+              "fontFamily": "Inter",
+              "fontSize": 17,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "Kl1XG",
+              "name": "logout2",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "Ak1W7",
+                  "name": "avatar2",
+                  "fill": "#4A7FA5",
+                  "width": 28,
+                  "height": 28
+                },
+                {
+                  "type": "text",
+                  "id": "kOruc",
+                  "name": "logoutBtn2",
+                  "fill": "#93C5FD",
+                  "content": "登出",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "KlYRI",
+          "name": "Body",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": [
+            24,
+            32
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "Jjroa",
+              "name": "sectionTitle2",
+              "fill": "#0F172A",
+              "content": "我的語言",
+              "fontFamily": "Inter",
+              "fontSize": 22,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "YEImR",
+              "name": "LanguageCard",
+              "width": "fill_container",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "#CBD5E1"
+              },
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#0F172A15",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 10
+              },
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                18,
+                20
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "744h7",
+                  "name": "langCardRow2",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "70835",
+                      "name": "langName2",
+                      "fill": "#0F172A",
+                      "content": "日語",
+                      "fontFamily": "Inter",
+                      "fontSize": 17,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "s98dh",
+                      "name": "badge2",
+                      "fill": "#1E3A5F",
+                      "cornerRadius": 99,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "GYgKo",
+                          "name": "badgeText2",
+                          "fill": "#FFFFFF",
+                          "content": "12",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "mwhSe",
+                  "name": "langSub2",
+                  "fill": "#64748B",
+                  "content": "48 個單字・12 個待複習",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "EsRMZ",
+              "name": "progressRow2",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "jJyfR",
+                  "name": "progLabel2",
+                  "fill": "#64748B",
+                  "content": "日語 進度",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "LUV5m",
+                  "name": "progCount2",
+                  "fill": "#0F172A",
+                  "content": "3 / 12",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "frsPz",
+              "name": "progressBar2",
+              "width": "fill_container",
+              "height": 6,
+              "fill": "#E2E8F0",
+              "cornerRadius": 99,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "uglk6",
+                  "x": 0,
+                  "y": 0,
+                  "name": "progressFill2",
+                  "width": 180,
+                  "height": 6,
+                  "fill": "#1E3A5F",
+                  "cornerRadius": 99
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "MHWfU",
+              "name": "CardArea",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "NcOH6",
+                  "name": "CardFront",
+                  "width": "fill_container",
+                  "height": 200,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 20,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1.5,
+                    "fill": "#CBD5E1"
+                  },
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#0F172A12",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "rayuU",
+                      "name": "catBadge2",
+                      "fill": "#E0F2FE",
+                      "cornerRadius": 99,
+                      "padding": [
+                        4,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "fgleW",
+                          "name": "catBadgeText2",
+                          "fill": "#0369A1",
+                          "content": "動詞",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "KMQT1",
+                      "name": "cardWord2",
+                      "fill": "#0F172A",
+                      "content": "食べる",
+                      "fontFamily": "Inter",
+                      "fontSize": 40,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "iN01p",
+                      "name": "cardHint2",
+                      "fill": "#94A3B8",
+                      "content": "點擊翻轉",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "3jzPF",
+                  "name": "CardBack",
+                  "width": "fill_container",
+                  "height": 200,
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 135,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#1E3A5F",
+                        "position": 0
+                      },
+                      {
+                        "color": "#0369A1",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "cornerRadius": 20,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kpIk7",
+                      "name": "cardBackWord2",
+                      "fill": "#FFFFFF",
+                      "content": "たべる",
+                      "fontFamily": "Inter",
+                      "fontSize": 38,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "vD9zU",
+                      "name": "cardBackRomaji2",
+                      "fill": "#BAE6FD",
+                      "content": "taberu",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "7mh9Y",
+                  "name": "btnRow2",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "6tIay",
+                      "name": "forgotBtn2",
+                      "width": "fill_container",
+                      "fill": "#FEF2F2",
+                      "cornerRadius": 14,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": 1,
+                        "fill": "#FECACA"
+                      },
+                      "padding": [
+                        14,
+                        0
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "VSuao",
+                          "name": "forgotText2",
+                          "fill": "#DC2626",
+                          "content": "😞 忘記",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "2aqwX",
+                      "name": "rememberBtn2",
+                      "width": "fill_container",
+                      "fill": "#F0FDF4",
+                      "cornerRadius": 14,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": 1,
+                        "fill": "#BBF7D0"
+                      },
+                      "padding": [
+                        14,
+                        0
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "KBEN2",
+                          "name": "rememberText2",
+                          "fill": "#16A34A",
+                          "content": "😊 記得",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "jjL7O",
+      "x": 1680,
+      "y": 0,
+      "name": "方案三：薰衣草藍",
+      "width": 760,
+      "height": 900,
+      "fill": "#EEF2FF",
+      "children": [
+        {
+          "type": "frame",
+          "id": "vORVa",
+          "name": "Navbar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "#FFFFFF",
+          "stroke": {
+            "align": "inside",
+            "thickness": {
+              "bottom": 1
+            },
+            "fill": "#C7D2FE"
+          },
+          "padding": [
+            0,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "PdmxK",
+              "name": "brand3",
+              "fill": "#4338CA",
+              "content": "📚 快快樂樂背單字",
+              "fontFamily": "Inter",
+              "fontSize": 17,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "mxLMf",
+              "name": "logout3",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "1gUt6",
+                  "name": "avatar3",
+                  "fill": "#C7D2FE",
+                  "width": 28,
+                  "height": 28
+                },
+                {
+                  "type": "text",
+                  "id": "OKfkW",
+                  "name": "logoutBtn3",
+                  "fill": "#818CF8",
+                  "content": "登出",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "V57Gs",
+          "name": "Body",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": [
+            24,
+            32
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "st7BM",
+              "name": "sectionTitle3",
+              "fill": "#312E81",
+              "content": "我的語言",
+              "fontFamily": "Inter",
+              "fontSize": 22,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "RDLh8",
+              "name": "LanguageCard",
+              "width": "fill_container",
+              "fill": "#FFFFFF",
+              "cornerRadius": 20,
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "#C7D2FE"
+              },
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#6366F120",
+                "offset": {
+                  "x": 0,
+                  "y": 2
+                },
+                "blur": 12
+              },
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                18,
+                20
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "qe3tu",
+                  "name": "langCardRow3",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "uOGkG",
+                      "name": "langName3",
+                      "fill": "#312E81",
+                      "content": "日語",
+                      "fontFamily": "Inter",
+                      "fontSize": 17,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "5iBtG",
+                      "name": "badge3",
+                      "fill": "#4F46E5",
+                      "cornerRadius": 99,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ioOks",
+                          "name": "badgeText3",
+                          "fill": "#FFFFFF",
+                          "content": "12",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "MQQ3a",
+                  "name": "langSub3",
+                  "fill": "#818CF8",
+                  "content": "48 個單字・12 個待複習",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "CxJAc",
+              "name": "progressRow3",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "oMET5",
+                  "name": "progLabel3",
+                  "fill": "#818CF8",
+                  "content": "日語 進度",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "GVpMg",
+                  "name": "progCount3",
+                  "fill": "#312E81",
+                  "content": "3 / 12",
+                  "fontFamily": "Inter",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "CN7yj",
+              "name": "progressBar3",
+              "width": "fill_container",
+              "height": 6,
+              "fill": "#C7D2FE",
+              "cornerRadius": 99,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Kbhzj",
+                  "x": 0,
+                  "y": 0,
+                  "name": "progressFill3",
+                  "width": 180,
+                  "height": 6,
+                  "fill": "#4F46E5",
+                  "cornerRadius": 99
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "agJUZ",
+              "name": "CardArea",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "s6LRu",
+                  "name": "CardFront",
+                  "width": "fill_container",
+                  "height": 200,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 24,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 2,
+                    "fill": "#C7D2FE"
+                  },
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#6366F120",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "dxKEQ",
+                      "name": "catBadge3",
+                      "fill": "#E0E7FF",
+                      "cornerRadius": 99,
+                      "padding": [
+                        4,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "zkMzO",
+                          "name": "catBadgeText3",
+                          "fill": "#4338CA",
+                          "content": "動詞",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "n3D15",
+                      "name": "cardWord3",
+                      "fill": "#312E81",
+                      "content": "食べる",
+                      "fontFamily": "Inter",
+                      "fontSize": 40,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "smOZl",
+                      "name": "cardHint3",
+                      "fill": "#A5B4FC",
+                      "content": "點擊翻轉",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gShhr",
+                  "name": "CardBack",
+                  "width": "fill_container",
+                  "height": 200,
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 135,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#4F46E5",
+                        "position": 0
+                      },
+                      {
+                        "color": "#818CF8",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "cornerRadius": 24,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "NjXSt",
+                      "name": "cardBackWord3",
+                      "fill": "#FFFFFF",
+                      "content": "たべる",
+                      "fontFamily": "Inter",
+                      "fontSize": 38,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Azjry",
+                      "name": "cardBackRomaji3",
+                      "fill": "#C7D2FE",
+                      "content": "taberu",
+                      "fontFamily": "Inter",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "WBQPn",
+                  "name": "btnRow3",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "7uHTl",
+                      "name": "forgotBtn3",
+                      "width": "fill_container",
+                      "fill": "#FFF1F2",
+                      "cornerRadius": 18,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": 1,
+                        "fill": "#FECDD3"
+                      },
+                      "padding": [
+                        14,
+                        0
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "OSJL0",
+                          "name": "forgotText3",
+                          "fill": "#E11D48",
+                          "content": "😞 忘記",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "3G74q",
+                      "name": "rememberBtn3",
+                      "width": "fill_container",
+                      "fill": "#F0FDF4",
+                      "cornerRadius": 18,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": 1,
+                        "fill": "#BBF7D0"
+                      },
+                      "padding": [
+                        14,
+                        0
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "w7RRQ",
+                          "name": "rememberText3",
+                          "fill": "#16A34A",
+                          "content": "😊 記得",
+                          "fontFamily": "Inter",
+                          "fontSize": 15,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "8Ij5X",
+      "x": 0,
+      "y": 920,
+      "name": "label1",
+      "width": 760,
+      "layout": "vertical",
+      "gap": 4,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "gP1e2",
+          "name": "t1",
+          "fill": "#1E3A8A",
+          "content": "方案一：晴空藍",
+          "fontFamily": "Inter",
+          "fontSize": 20,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "WnXhh",
+          "name": "d1",
+          "fill": "#64748B",
+          "content": "淺藍背景・藍色主色・卡片白底藍框・柔和清爽",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ATAi0",
+      "x": 840,
+      "y": 920,
+      "name": "label2",
+      "width": 760,
+      "layout": "vertical",
+      "gap": 4,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "O6lbF",
+          "name": "t2",
+          "fill": "#1E3A5F",
+          "content": "方案二：深洋藍",
+          "fontFamily": "Inter",
+          "fontSize": 20,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "h3cS2",
+          "name": "d2",
+          "fill": "#64748B",
+          "content": "深藍 Navbar・深海漸層卡片背面・專業沉穩感",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Pze7t",
+      "x": 1680,
+      "y": 920,
+      "name": "label3",
+      "width": 760,
+      "layout": "vertical",
+      "gap": 4,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "vpwl9",
+          "name": "t3",
+          "fill": "#4338CA",
+          "content": "方案三：薰衣草藍",
+          "fontFamily": "Inter",
+          "fontSize": 20,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "o4Lmt",
+          "name": "d3",
+          "fill": "#64748B",
+          "content": "靛藍薰衣草調・柔紫漸層卡片・最溫柔的藍",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    }
+  ]
+}
