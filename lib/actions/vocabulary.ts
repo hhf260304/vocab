@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { and, eq, lte, lt } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { vocabulary } from "@/lib/db/schema";
+import { vocabulary, categories } from "@/lib/db/schema";
 import { getNextReviewAt } from "@/lib/srs";
 
 async function getUserId(): Promise<string> {
@@ -142,6 +142,37 @@ export async function getVocabularyById(id: string) {
     .from(vocabulary)
     .where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
   return vocab ?? null;
+}
+
+export type GraduatedVocab = {
+  id: string;
+  front: string;
+  back: string;
+  categoryName: string | null;
+  lastReviewedAt: Date | null;
+};
+
+export async function getGraduatedVocab(
+  languageId: string
+): Promise<GraduatedVocab[]> {
+  const userId = await getUserId();
+  return db
+    .select({
+      id: vocabulary.id,
+      front: vocabulary.front,
+      back: vocabulary.back,
+      categoryName: categories.name,
+      lastReviewedAt: vocabulary.lastReviewedAt,
+    })
+    .from(vocabulary)
+    .leftJoin(categories, eq(vocabulary.categoryId, categories.id))
+    .where(
+      and(
+        eq(vocabulary.userId, userId),
+        eq(vocabulary.languageId, languageId),
+        eq(vocabulary.reviewStage, 5)
+      )
+    );
 }
 
 export async function markReview(id: string, remembered: boolean) {
