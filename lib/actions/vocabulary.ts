@@ -31,7 +31,7 @@ export async function getTodayReviews(languageId: string, categoryId?: string) {
   const conditions = [
     eq(vocabulary.userId, userId),
     eq(vocabulary.languageId, languageId),
-    lt(vocabulary.reviewStage, 5),
+    lt(vocabulary.reviewStage, 6),
     lte(vocabulary.nextReviewAt, now),
   ];
   if (categoryId) conditions.push(eq(vocabulary.categoryId, categoryId));
@@ -170,7 +170,7 @@ export async function getGraduatedVocab(
       and(
         eq(vocabulary.userId, userId),
         eq(vocabulary.languageId, languageId),
-        eq(vocabulary.reviewStage, 5)
+        eq(vocabulary.reviewStage, 6)
       )
     );
 }
