@@ -2,7 +2,7 @@
 "use client";
 
 import { Check, ChevronsUpDown, Plus, Volume2 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,6 +57,7 @@ export default function VocabForm({
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [zhuyinLoading, setZhuyinLoading] = useState(false);
 	const [zhuyinNotFound, setZhuyinNotFound] = useState(false);
+	const zhuyinAbortedRef = useRef(false);
 	const [form, setForm] = useState<VocabFormData>({
 		front: "",
 		back: "",
@@ -89,6 +90,7 @@ export default function VocabForm({
 	function handleSelectLanguage(langId: string) {
 		setField("languageId", form.languageId === langId ? null : langId);
 		setLangOpen(false);
+		setZhuyinNotFound(false);
 	}
 
 	async function handleCreatePresetLanguage(name: string, ttsCode: string) {
@@ -109,22 +111,25 @@ export default function VocabForm({
 		}
 	}
 
-	async function handleBackBlur() {
-		if (!isChineseLanguage || !form.back.trim() || zhuyinLoading) return;
-		setZhuyinLoading(true);
-		setZhuyinNotFound(false);
-		const result = await lookupZhuyin(form.back);
-		if (result !== null) {
-			setField("zhuyin", result);
-		} else {
-			setZhuyinNotFound(true);
-		}
-		setZhuyinLoading(false);
-	}
-
 	const isChineseLanguage = languages.find((l) => l.id === form.languageId)?.ttsCode === "zh-TW";
 
 	const selectedLang = languages.find((l) => l.id === form.languageId);
+
+	async function handleBackBlur() {
+		if (!isChineseLanguage || !form.back.trim() || zhuyinLoading) return;
+		zhuyinAbortedRef.current = false;
+		setZhuyinLoading(true);
+		setZhuyinNotFound(false);
+		const result = await lookupZhuyin(form.back);
+		if (!zhuyinAbortedRef.current) {
+			if (result !== null) {
+				setField("zhuyin", result);
+			} else {
+				setZhuyinNotFound(true);
+			}
+			setZhuyinLoading(false);
+		}
+	}
 
 	// 預設清單中尚未被使用者建立的語言
 	const availablePresets = PRESET_LANGUAGES.filter(
@@ -216,7 +221,13 @@ export default function VocabForm({
 					<Input
 						id="back"
 						value={form.back}
-						onChange={(e) => setField("back", e.target.value)}
+						onChange={(e) => {
+							setField("back", e.target.value);
+							if (zhuyinLoading) {
+								zhuyinAbortedRef.current = true;
+								setZhuyinLoading(false);
+							}
+						}}
 						onBlur={handleBackBlur}
 						required
 					/>
