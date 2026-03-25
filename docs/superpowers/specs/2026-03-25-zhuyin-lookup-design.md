@@ -22,30 +22,44 @@ When a user is adding or editing a vocabulary word with Chinese (zh-TW) as the t
 export async function lookupZhuyin(word: string): Promise<string | null>
 ```
 
-- Calls `https://www.moedict.tw/api/{encodeURIComponent(word)}`
-- Parses `heteronyms[0].bopomofo` from the response
-- Returns `null` on fetch failure or missing result (no throw)
-- No auth check required — queries public data only
+**Implementation details:**
+- Input: trim the word before use; return `null` immediately if trimmed value is empty
+- URL: `https://www.moedict.tw/api/${encodeURIComponent(word.trim())}`
+- Headers: include `User-Agent` and `Accept` headers to pass Cloudflare checks (moedict.tw uses Cloudflare which blocks bare server requests)
+- Parse `heteronyms[0].bopomofo2` from the response — `bopomofo2` contains unicode tone-marked zhuyin symbols (e.g. `ㄋㄧˇ`), which is the correct representation for display and storage
+- Return `null` on fetch failure, non-200 response, or missing field — never throw
 
-**Multi-pronunciation handling:** Returns only the first heteronym (most common reading). User can override manually.
+**Note on MoE API field names:**
+- `bopomofo` — tone-number notation (e.g. `ㄋㄧ3`)
+- `bopomofo2` — unicode tone-mark notation (e.g. `ㄋㄧˇ`) ← use this one
+
+**Multi-pronunciation handling:** Returns only the first heteronym (`heteronyms[0]`), the most common reading. User can override manually.
+
+**No auth check required** — queries public data only.
 
 ### Frontend: VocabForm.tsx
 
+The component already has an `isChineseLanguage` boolean derived from `languages.find(l => l.id === form.languageId)?.ttsCode === "zh-TW"`. Use this existing variable as the guard — do not re-derive it.
+
 **New state:**
 ```ts
-const [zhuyinStatus, setZhuyinStatus] = useState<"idle" | "loading" | "not-found">("idle")
+const [zhuyinLoading, setZhuyinLoading] = useState(false)
+const [zhuyinNotFound, setZhuyinNotFound] = useState(false)
 ```
 
-**Trigger:** `onBlur` on the `back` input field, only when:
+**Trigger:** `onBlur` on the `back` input field, only when ALL of the following are true:
 - `isChineseLanguage === true`
-- `form.back` is non-empty
+- `form.back.trim()` is non-empty
+- `zhuyinLoading === false` (guard against concurrent in-flight requests)
 
 **Behavior:**
-- **Loading:** zhuyin input is disabled and shows a small spinner
-- **Success:** auto-fills `form.zhuyin` (always overwrites existing value), status → `"idle"`
-- **Not found / error:** status → `"not-found"`, shows helper text below zhuyin input: 「查無結果，請手動輸入」
+- **Loading:** set `zhuyinLoading = true`, `zhuyinNotFound = false`; zhuyin input is `disabled` while loading
+- **Success:** auto-fill `form.zhuyin` (always overwrites existing value), set `zhuyinLoading = false`
+- **Not found / error:** set `zhuyinLoading = false`, `zhuyinNotFound = true`; show helper text below zhuyin input: 「查無結果，請手動輸入」
 
-**Reset:** When the user manually edits the zhuyin field, `zhuyinStatus` resets to `"idle"` (clears the not-found message).
+**Submit while loading:** The submit button is disabled while `zhuyinLoading === true` to prevent submitting without the lookup result.
+
+**Reset:** When the user manually edits the zhuyin field (`onChange`), set `zhuyinNotFound = false` (clears the not-found message).
 
 ---
 
@@ -56,14 +70,14 @@ User types in "back" field
        ↓
 User leaves field (onBlur)
        ↓
-isChineseLanguage && back non-empty?
+isChineseLanguage && back.trim() non-empty && !zhuyinLoading?
        ↓ yes
-setZhuyinStatus("loading")
+setZhuyinLoading(true), setZhuyinNotFound(false)
 lookupZhuyin(form.back)   ← server action → moedict.tw API
        ↓
   result?
-  ├─ string → setField("zhuyin", result), setZhuyinStatus("idle")
-  └─ null   → setZhuyinStatus("not-found")
+  ├─ string → setField("zhuyin", result), setZhuyinLoading(false)
+  └─ null   → setZhuyinLoading(false), setZhuyinNotFound(true)
 ```
 
 ---
@@ -72,10 +86,12 @@ lookupZhuyin(form.back)   ← server action → moedict.tw API
 
 | Scenario | Behavior |
 |---|---|
-| Word found in MoE dict | Auto-fill zhuyin |
+| Word found in MoE dict | Auto-fill zhuyin, overwrite any existing value |
 | Word not in MoE dict | Show 「查無結果，請手動輸入」 |
-| Network / fetch error | Return `null`, show same not-found message |
-| User manually edits zhuyin | Clear not-found status |
+| Network / fetch / Cloudflare error | Return `null`, show same not-found message |
+| User blurs while lookup in flight | Skip (guard: `zhuyinLoading === true`) |
+| User manually edits zhuyin | Clear not-found message |
+| Submit while lookup in flight | Submit button disabled until lookup completes |
 
 ---
 
