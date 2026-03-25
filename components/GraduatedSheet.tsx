@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, type ReactNode } from "react";
 import {
   Sheet,
   SheetContent,
@@ -14,7 +14,7 @@ import { getGraduatedVocab, type GraduatedVocab } from "@/lib/actions/vocabulary
 interface GraduatedSheetProps {
   languageId: string;
   totalCount: number;
-  children: React.ReactNode; // trigger element
+  children: ReactNode; // trigger element
 }
 
 type GroupBy = "category" | "date";
@@ -64,7 +64,7 @@ export function GraduatedSheet({
       if (!map.has(key)) map.set(key, []);
       map.get(key)!.push(v);
     }
-    return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b));
+    return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b, "zh-TW"));
   }, [vocab]);
 
   // 依畢業時間降序排列，null 置於最後
@@ -90,6 +90,7 @@ export function GraduatedSheet({
         {/* Toggle */}
         <div className="flex gap-2 px-5 py-3 border-b border-border">
           <button
+            type="button"
             onClick={() => setGroupBy("category")}
             className={`flex-1 py-1.5 rounded-md text-xs font-semibold transition-colors ${
               groupBy === "category"
@@ -100,6 +101,7 @@ export function GraduatedSheet({
             依分類
           </button>
           <button
+            type="button"
             onClick={() => setGroupBy("date")}
             className={`flex-1 py-1.5 rounded-md text-xs font-semibold transition-colors ${
               groupBy === "date"
@@ -138,7 +140,7 @@ export function GraduatedSheet({
               {groupBy === "category" &&
                 groupedByCategory.map(([categoryName, items]) => (
                   <div key={categoryName}>
-                    <div className="px-5 py-2 bg-muted/30 sticky top-0">
+                    <div className="px-5 py-2 bg-muted sticky top-0">
                       <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
                         {categoryName} · {items.length} 個
                       </span>
