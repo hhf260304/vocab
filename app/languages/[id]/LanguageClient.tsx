@@ -1,6 +1,7 @@
 // app/languages/[id]/LanguageClient.tsx
 "use client";
 
+import { GraduatedSheet } from "@/components/GraduatedSheet";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -454,10 +455,12 @@ export default function LanguageClient({
 					<p className="text-2xl font-bold text-foreground">{totalCount}</p>
 					<p className="text-xs text-muted-foreground mt-1">總單字</p>
 				</div>
-				<div className="bg-card border border-border rounded-2xl p-4 text-center">
-					<p className="text-2xl font-bold text-foreground">{graduatedCount}</p>
-					<p className="text-xs text-muted-foreground mt-1">已畢業</p>
-				</div>
+				<GraduatedSheet languageId={language.id} totalCount={graduatedCount}>
+					<div className="bg-card border border-border rounded-2xl p-4 text-center cursor-pointer hover:bg-accent transition-colors">
+						<p className="text-2xl font-bold text-foreground">{graduatedCount}</p>
+						<p className="text-xs text-muted-foreground mt-1">已畢業</p>
+					</div>
+				</GraduatedSheet>
 			</div>
 
 			{/* 開始複習 */}
