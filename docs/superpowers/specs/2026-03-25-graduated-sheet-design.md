@@ -46,10 +46,16 @@ type GraduatedVocab = {
   id: string
   front: string
   back: string
-  categoryName: string | null  // join categories table
-  lastReviewedAt: Date | null  // 用作畢業日期
+  categoryName: string | null  // LEFT JOIN categories table（未分類的字不可被排除）
+  lastReviewedAt: Date | null  // 用作畢業日期；null 時顯示「—」，排序時置於最後
 }
 ```
+
+**JOIN 策略：** 必須使用 LEFT JOIN categories，確保未分類（`categoryId = null`）的已畢業單字也被包含在結果中。
+
+**`lastReviewedAt` 為 null 的處理：**
+- 畢業日期顯示為「—」
+- 「依畢業時間」排序時，null 值排在最後（非 null 的依降序排列）
 
 ---
 
