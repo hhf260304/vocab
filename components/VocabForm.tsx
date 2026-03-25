@@ -23,6 +23,7 @@ import {
 import { PRESET_LANGUAGES } from "@/lib/languages-config";
 import type { VocabFormData } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { lookupZhuyin } from "@/lib/actions/zhuyin";
 
 type CategoryLike = { id: string; name: string };
 type LanguageLike = { id: string; name: string; ttsCode: string };
@@ -54,6 +55,8 @@ export default function VocabForm({
 	const [catSearch, setCatSearch] = useState("");
 	const [langOpen, setLangOpen] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [zhuyinLoading, setZhuyinLoading] = useState(false);
+	const [zhuyinNotFound, setZhuyinNotFound] = useState(false);
 	const [form, setForm] = useState<VocabFormData>({
 		front: "",
 		back: "",
@@ -104,6 +107,19 @@ export default function VocabForm({
 		} finally {
 			setIsSubmitting(false);
 		}
+	}
+
+	async function handleBackBlur() {
+		if (!isChineseLanguage || !form.back.trim() || zhuyinLoading) return;
+		setZhuyinLoading(true);
+		setZhuyinNotFound(false);
+		const result = await lookupZhuyin(form.back);
+		if (result !== null) {
+			setField("zhuyin", result);
+		} else {
+			setZhuyinNotFound(true);
+		}
+		setZhuyinLoading(false);
 	}
 
 	const isChineseLanguage = languages.find((l) => l.id === form.languageId)?.ttsCode === "zh-TW";
@@ -201,6 +217,7 @@ export default function VocabForm({
 						id="back"
 						value={form.back}
 						onChange={(e) => setField("back", e.target.value)}
+						onBlur={handleBackBlur}
 						required
 					/>
 					{selectedLang && (
@@ -228,8 +245,18 @@ export default function VocabForm({
 					<Input
 						id="zhuyin"
 						value={form.zhuyin}
-						onChange={(e) => setField("zhuyin", e.target.value)}
+						onChange={(e) => {
+							setField("zhuyin", e.target.value);
+							setZhuyinNotFound(false);
+						}}
+						disabled={zhuyinLoading}
 					/>
+					{zhuyinLoading && (
+						<p className="text-xs text-muted-foreground">查詢中…</p>
+					)}
+					{zhuyinNotFound && !zhuyinLoading && (
+						<p className="text-xs text-muted-foreground">查無結果，請手動輸入</p>
+					)}
 				</div>
 			) : (
 				<div className="flex flex-col gap-1.5">
@@ -327,7 +354,7 @@ export default function VocabForm({
 				</div>
 			)}
 
-			<Button type="submit" className="w-full mt-2" disabled={isSubmitting}>
+			<Button type="submit" className="w-full mt-2" disabled={isSubmitting || zhuyinLoading}>
 				{isSubmitting ? (
 					<ThreeDots height="20" width="40" color="currentColor" />
 				) : (
