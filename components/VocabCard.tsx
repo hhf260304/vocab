@@ -12,7 +12,7 @@ interface Props {
   onDelete: () => void;
 }
 
-const STAGE_LABELS = ["新", "已完成 1 次", "已完成 2 次", "已完成 3 次", "已完成 4 次", "畢業"];
+const STAGE_LABELS = ["新", "已完成 1 次", "已完成 2 次", "已完成 3 次", "已完成 4 次", "已完成 5 次", "畢業"];
 
 function formatDate(date: Date | string | null): string {
   if (!date) return "-";

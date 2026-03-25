@@ -21,7 +21,7 @@ export default function CategoryBar({
         <div className="flex flex-col gap-3">
           {categories.map((cat) => {
             const catVocabs = vocabularies.filter((v) => v.categoryId === cat.id);
-            const graduated = catVocabs.filter((v) => v.reviewStage === 5).length;
+            const graduated = catVocabs.filter((v) => v.reviewStage === 6).length;
             const total = catVocabs.length;
             const pct = total === 0 ? 0 : Math.round((graduated / total) * 100);
 

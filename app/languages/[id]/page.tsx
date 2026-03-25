@@ -20,7 +20,7 @@ export default async function LanguagePage({
 
   if (!language) notFound();
 
-  const graduatedCount = allVocab.filter((v) => v.reviewStage === 5).length;
+  const graduatedCount = allVocab.filter((v) => v.reviewStage === 6).length;
 
   return (
     <LanguageClient
