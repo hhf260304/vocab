@@ -3,7 +3,7 @@ const INTERVALS_MS = [
   3 * 24 * 60 * 60 * 1000,
   7 * 24 * 60 * 60 * 1000,
   14 * 24 * 60 * 60 * 1000,
-  28 * 24 * 60 * 60 * 1000,
+  30 * 24 * 60 * 60 * 1000,
 ]
 
 export function getNextReviewAt(stage: number, remembered: boolean): { stage: number; nextReviewAt: number } {
@@ -13,9 +13,9 @@ export function getNextReviewAt(stage: number, remembered: boolean): { stage: nu
       nextReviewAt: Date.now() + INTERVALS_MS[0],
     }
   }
-  const nextStage = Math.min(stage + 1, 5) as 0 | 1 | 2 | 3 | 4 | 5
-  if (nextStage === 5) {
-    return { stage: 5, nextReviewAt: Infinity }
+  const nextStage = Math.min(stage + 1, 6) as 0 | 1 | 2 | 3 | 4 | 5 | 6
+  if (nextStage === 6) {
+    return { stage: 6, nextReviewAt: Infinity }
   }
   const next = new Date(Date.now() + INTERVALS_MS[stage])
   next.setHours(0, 0, 0, 0)

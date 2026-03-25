@@ -8,7 +8,7 @@ export interface Vocabulary {
   categoryId: string | null;
   languageId: string | null;
   createdAt: number;
-  reviewStage: 0 | 1 | 2 | 3 | 4 | 5;
+  reviewStage: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   nextReviewAt: number;
   lastReviewedAt?: number;
 }
