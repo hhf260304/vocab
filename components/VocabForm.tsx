@@ -91,6 +91,10 @@ export default function VocabForm({
 		setField("languageId", form.languageId === langId ? null : langId);
 		setLangOpen(false);
 		setZhuyinNotFound(false);
+		if (zhuyinLoading) {
+			zhuyinAbortedRef.current = true;
+			setZhuyinLoading(false);
+		}
 	}
 
 	async function handleCreatePresetLanguage(name: string, ttsCode: string) {
