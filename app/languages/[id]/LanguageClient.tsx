@@ -47,6 +47,8 @@ import {
 import { createVocabularies, deleteVocabulary } from "@/lib/actions/vocabulary";
 import type { Category, Language, Vocabulary } from "@/lib/db/schema";
 
+const UNCATEGORIZED_ID = "__uncategorized__";
+
 function parseBatchVocabLine(
 	line: string,
 	isChineseLanguage: boolean,
@@ -124,6 +126,7 @@ function CategorySection({
 	}
 
 	async function handleRename() {
+		if (isVirtual) return;
 		const trimmed = editName.trim();
 		if (!trimmed || trimmed === cat.name) {
 			setIsEditing(false);
@@ -441,12 +444,26 @@ export default function LanguageClient({
 		router.refresh();
 	}
 
-	const groups = initialCategories.map((cat) => ({
-		cat,
-		vocabs: initialVocabularies.filter((v) => v.categoryId === cat.id),
-	}));
+	const virtualCategory: Category = {
+		id: UNCATEGORIZED_ID,
+		name: "未分類",
+		userId: language.userId,
+		languageId: language.id,
+		createdAt: language.createdAt,
+	};
 
-	const uncategorizedVocabs = initialVocabularies.filter((v) => !v.categoryId);
+	const groups = [
+		{
+			cat: virtualCategory,
+			vocabs: initialVocabularies.filter((v) => v.categoryId === null),
+			isVirtual: true,
+		},
+		...initialCategories.map((cat) => ({
+			cat,
+			vocabs: initialVocabularies.filter((v) => v.categoryId === cat.id),
+			isVirtual: false,
+		})),
+	];
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -543,45 +560,20 @@ export default function LanguageClient({
 					</div>
 				)}
 
-				{initialCategories.length === 0 && uncategorizedVocabs.length === 0 ? (
-					<div className="text-center py-12 text-muted-foreground">
-						<p className="text-4xl mb-3">📂</p>
-						<p className="font-medium">先新增分類，再加入單字</p>
-						<p className="text-sm mt-1">點右上角「+ 新增分類」開始</p>
-					</div>
-				) : (
-					<>
-						{groups.map(({ cat, vocabs }) => (
-							<CategorySection
-								key={cat.id}
-								cat={cat}
-								vocabs={vocabs}
-								languageId={language.id}
-								ttsCode={language.ttsCode}
-								isChineseLanguage={language.ttsCode === "zh-TW"}
-								categories={initialCategories}
-								onDelete={handleDeleteVocab}
-								onDeleteCategory={handleDeleteCategory}
-							/>
-						))}
-						{uncategorizedVocabs.length > 0 && (
-							<div className="bg-card rounded-2xl border border-border p-4">
-								<p className="font-semibold text-foreground mb-2">
-									未分類 ({uncategorizedVocabs.length})
-								</p>
-								{uncategorizedVocabs.map((vocab) => (
-									<div key={vocab.id} className="px-2 py-1">
-										<VocabCard
-											vocab={vocab}
-											ttsCode={language.ttsCode}
-											onDelete={() => handleDeleteVocab(vocab.id)}
-										/>
-									</div>
-								))}
-							</div>
-						)}
-					</>
-				)}
+			{groups.map(({ cat, vocabs, isVirtual }) => (
+				<CategorySection
+					key={cat.id}
+					cat={cat}
+					vocabs={vocabs}
+					languageId={language.id}
+					ttsCode={language.ttsCode}
+					isChineseLanguage={language.ttsCode === "zh-TW"}
+					categories={initialCategories}
+					onDelete={handleDeleteVocab}
+					onDeleteCategory={handleDeleteCategory}
+					isVirtual={isVirtual}
+				/>
+			))}
 			</div>
 
 			{/* 刪除確認對話框 */}
