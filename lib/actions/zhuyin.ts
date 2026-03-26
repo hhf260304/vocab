@@ -1,26 +1,17 @@
 "use server";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const convert = require("hanzi-to-zhuyin");
 
 export async function lookupZhuyin(word: string): Promise<string | null> {
   const trimmed = word.trim();
   if (!trimmed) return null;
 
   try {
-    const res = await fetch(
-      `https://www.moedict.tw/api/${encodeURIComponent(trimmed)}`,
-      {
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-          Accept: "application/json",
-        },
-      },
-    );
-
-    if (!res.ok) return null;
-
-    const data = await res.json();
-    const bopomofo2 = data?.heteronyms?.[0]?.bopomofo2;
-    return typeof bopomofo2 === "string" ? bopomofo2 : null;
+    const result: (string | string[])[] = await convert(trimmed);
+    if (!result.length) return null;
+    // 多音字回傳 [["ㄏㄤˊ","ㄒㄧㄥˊ"]]，取第一個讀音
+    const first = result[0];
+    return Array.isArray(first) ? first[0] : first;
   } catch {
     return null;
   }
