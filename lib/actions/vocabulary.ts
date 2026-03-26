@@ -2,7 +2,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, eq, lte, lt } from "drizzle-orm";
+import { and, eq, isNull, lte, lt } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { vocabulary, categories } from "@/lib/db/schema";
@@ -34,7 +34,11 @@ export async function getTodayReviews(languageId: string, categoryId?: string) {
     lt(vocabulary.reviewStage, 6),
     lte(vocabulary.nextReviewAt, now),
   ];
-  if (categoryId) conditions.push(eq(vocabulary.categoryId, categoryId));
+  if (categoryId === "uncategorized") {
+    conditions.push(isNull(vocabulary.categoryId));
+  } else if (categoryId) {
+    conditions.push(eq(vocabulary.categoryId, categoryId));
+  }
   return db.select().from(vocabulary).where(and(...conditions));
 }
 
