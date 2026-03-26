@@ -101,7 +101,7 @@ export async function updateVocabulary(
 export async function createVocabularies(
   items: { front: string; back: string; exampleJp: string; zhuyin: string }[],
   languageId: string,
-  categoryId: string
+  categoryId: string | null
 ): Promise<{ created: number }> {
   const userId = await getUserId();
   if (items.length === 0) return { created: 0 };

@@ -71,6 +71,7 @@ function CategorySection({
 	categories,
 	onDelete,
 	onDeleteCategory,
+	isVirtual = false,
 }: {
 	cat: Category;
 	vocabs: Vocabulary[];
@@ -80,6 +81,7 @@ function CategorySection({
 	categories: Category[];
 	onDelete: (id: string) => void;
 	onDeleteCategory: (id: string) => void;
+	isVirtual?: boolean;
 }) {
 	const router = useRouter();
 	const [open, setOpen] = useState(false);
@@ -113,7 +115,7 @@ function CategorySection({
 		if (items.length === 0) return;
 
 		setIsBatchSubmitting(true);
-		await createVocabularies(items, languageId, cat.id);
+		await createVocabularies(items, languageId, isVirtual ? null : cat.id);
 		setIsBatchSubmitting(false);
 		setBatchOpen(false);
 		setBatchText("");
@@ -222,13 +224,19 @@ function CategorySection({
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
 								<DropdownMenuItem asChild>
-									<Link href={`/review/${languageId}?categoryId=${cat.id}`}>
+									<Link href={isVirtual
+										? `/review/${languageId}?categoryId=uncategorized`
+										: `/review/${languageId}?categoryId=${cat.id}`
+									}>
 										複習此分類
 									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem asChild>
 									<Link
-										href={`/vocabulary/new?languageId=${languageId}&categoryId=${cat.id}`}
+										href={isVirtual
+											? `/vocabulary/new?languageId=${languageId}`
+											: `/vocabulary/new?languageId=${languageId}&categoryId=${cat.id}`
+										}
 									>
 										新增單字
 									</Link>
@@ -242,15 +250,19 @@ function CategorySection({
 								>
 									批次新增單字
 								</DropdownMenuItem>
-								<DropdownMenuItem onSelect={() => setIsEditing(true)}>
-									重新命名
-								</DropdownMenuItem>
-								<DropdownMenuItem
-									onSelect={() => onDeleteCategory(cat.id)}
-									className="text-destructive focus:text-destructive"
-								>
-									刪除分類
-								</DropdownMenuItem>
+								{!isVirtual && (
+									<>
+										<DropdownMenuItem onSelect={() => setIsEditing(true)}>
+											重新命名
+										</DropdownMenuItem>
+										<DropdownMenuItem
+											onSelect={() => onDeleteCategory(cat.id)}
+											className="text-destructive focus:text-destructive"
+										>
+											刪除分類
+										</DropdownMenuItem>
+									</>
+								)}
 							</DropdownMenuContent>
 						</DropdownMenu>
 					</div>
