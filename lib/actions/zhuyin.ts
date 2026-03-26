@@ -1,17 +1,25 @@
 "use server";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const convert = require("hanzi-to-zhuyin");
+const { pinyin, PINYIN_STYLE } = require("@napi-rs/pinyin");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { pinyinToZhuyin } = require("pinyin-zhuyin");
 
 export async function lookupZhuyin(word: string): Promise<string | null> {
   const trimmed = word.trim();
   if (!trimmed) return null;
 
   try {
-    const result: (string | string[])[] = await convert(trimmed);
-    if (!result.length) return null;
-    // 多音字回傳 [["ㄏㄤˊ","ㄒㄧㄥˊ"]]，取第一個讀音
-    const first = result[0];
-    return Array.isArray(first) ? first[0] : first;
+    const syllables: string[] = pinyin(trimmed, {
+      style: PINYIN_STYLE.WithToneNumEnd,
+    });
+    if (!syllables.length) return null;
+
+    const result = syllables
+      .map((s: string) => pinyinToZhuyin(s))
+      .filter(Boolean)
+      .join(" ");
+
+    return result || null;
   } catch {
     return null;
   }

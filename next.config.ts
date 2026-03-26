@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["hanzi-to-zhuyin", "hanzi-tokenizer", "mdbg", "cedict"],
+  serverExternalPackages: ["@napi-rs/pinyin"],
 };
 
 export default nextConfig;
