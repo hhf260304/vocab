@@ -40,7 +40,7 @@ import {
 } from "@/lib/actions/categories";
 import type { Category, Language } from "@/lib/db/schema";
 
-const UNCATEGORIZED_ID = "__uncategorized__";
+const UNCATEGORIZED_ID = "uncategorized";
 
 function CategorySection({
   cat,
