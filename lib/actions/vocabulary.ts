@@ -2,7 +2,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, eq, isNull, lte, lt } from "drizzle-orm";
+import { and, eq, isNull, lte, lt, count, sql } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { vocabulary, categories } from "@/lib/db/schema";
@@ -14,15 +14,54 @@ async function getUserId(): Promise<string> {
   return session.user.id;
 }
 
-export async function getVocabularies(languageId?: string) {
+export async function getVocabularies(languageId?: string, categoryId?: string) {
   const userId = await getUserId();
   const conditions = [eq(vocabulary.userId, userId)];
   if (languageId) conditions.push(eq(vocabulary.languageId, languageId));
+  if (categoryId === "uncategorized") {
+    conditions.push(isNull(vocabulary.categoryId));
+  } else if (categoryId) {
+    conditions.push(eq(vocabulary.categoryId, categoryId));
+  }
   return db
     .select()
     .from(vocabulary)
     .where(and(...conditions))
     .orderBy(vocabulary.createdAt);
+}
+
+export async function getVocabularyCounts(
+  languageId: string
+): Promise<{ total: number; graduated: number }> {
+  const userId = await getUserId();
+  const [result] = await db
+    .select({
+      total: count(),
+      graduated: sql<number>`count(*) filter (where ${vocabulary.reviewStage} = 6)`,
+    })
+    .from(vocabulary)
+    .where(and(eq(vocabulary.userId, userId), eq(vocabulary.languageId, languageId)));
+  return { total: result?.total ?? 0, graduated: Number(result?.graduated ?? 0) };
+}
+
+export async function getCategoryVocabCounts(
+  languageId: string
+): Promise<Record<string, number>> {
+  const userId = await getUserId();
+  const rows = await db
+    .select({
+      categoryId: vocabulary.categoryId,
+      count: count(),
+    })
+    .from(vocabulary)
+    .where(and(eq(vocabulary.userId, userId), eq(vocabulary.languageId, languageId)))
+    .groupBy(vocabulary.categoryId);
+
+  const result: Record<string, number> = {};
+  for (const row of rows) {
+    result[row.categoryId ?? "uncategorized"] = row.count;
+  }
+  return result;
 }
 
 export async function getTodayReviews(languageId: string, categoryId?: string) {
@@ -124,7 +163,7 @@ export async function createVocabularies(
     }))
   );
 
-  revalidatePath(`/languages/${languageId}`);
+  revalidatePath(`/languages/${languageId}`, "layout");
   revalidatePath(`/review/${languageId}`);
   return { created: items.length };
 }
@@ -136,7 +175,7 @@ export async function deleteVocabulary(id: string, languageId?: string) {
     .where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
 
   revalidatePath("/");
-  if (languageId) revalidatePath(`/languages/${languageId}`);
+  if (languageId) revalidatePath(`/languages/${languageId}`, "layout");
 }
 
 export async function getVocabularyById(id: string) {
