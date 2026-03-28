@@ -3,6 +3,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
 import { ThreeDots } from "react-loader-spinner";
 import {
   AlertDialog,
@@ -84,12 +85,23 @@ export default function EditVocabClient({
     languageId: vocab.languageId,
   };
 
+  const backHref = vocab.languageId ? `/languages/${vocab.languageId}` : "/";
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-start justify-between">
-        <div>
+        <div className="flex flex-col gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="self-start -ml-2 text-muted-foreground"
+            onClick={() => router.push(backHref)}
+          >
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            返回
+          </Button>
           <h1 className="text-2xl font-bold text-foreground">編輯單字</h1>
-          <p className="text-muted-foreground text-sm mt-1">
+          <p className="text-muted-foreground text-sm">
             修改 {vocab.back} 的資料
           </p>
         </div>

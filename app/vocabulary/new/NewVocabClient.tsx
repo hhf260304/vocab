@@ -3,6 +3,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import VocabForm from "@/components/VocabForm";
 import { createCategory } from "@/lib/actions/categories";
 import { createLanguage } from "@/lib/actions/languages";
@@ -57,11 +59,22 @@ export default function NewVocabClient({
     return created;
   }
 
+  const backHref = defaultLanguageId ? `/languages/${defaultLanguageId}` : "/";
+
   return (
     <div className="flex flex-col gap-6">
-      <div>
+      <div className="flex flex-col gap-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="self-start -ml-2 text-muted-foreground"
+          onClick={() => router.push(backHref)}
+        >
+          <ArrowLeft className="w-4 h-4 mr-1" />
+          返回
+        </Button>
         <h1 className="text-2xl font-bold text-stone-900">新增單字</h1>
-        <p className="text-stone-500 text-sm mt-1">加入新的單字到你的單字庫</p>
+        <p className="text-stone-500 text-sm">加入新的單字到你的單字庫</p>
       </div>
       <div className="bg-card rounded-2xl border border-border p-6">
         {vocabError && (

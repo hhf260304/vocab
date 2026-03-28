@@ -1,6 +1,7 @@
 // app/languages/[id]/categories/[categoryId]/CategoryClient.tsx
 "use client";
 
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -110,21 +111,20 @@ export default function CategoryClient({
 
   return (
     <div className="flex flex-col gap-6">
-      {/* 返回 */}
-      <div>
-        <Link
-          href={`/languages/${language.id}`}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          ← {language.name}
-        </Link>
-      </div>
-
       {/* 標題列 */}
       <div className="flex items-center justify-between gap-4">
-        <div>
+        <div className="flex flex-col gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="self-start -ml-2 text-muted-foreground"
+            onClick={() => router.push(`/languages/${language.id}`)}
+          >
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            {language.name}
+          </Button>
           <h1 className="text-2xl font-bold text-foreground">{category.name}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
+          <p className="text-sm text-muted-foreground">
             {initialVocabularies.length} 個單字
           </p>
         </div>

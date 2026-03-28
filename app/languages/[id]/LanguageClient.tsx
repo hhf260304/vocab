@@ -4,16 +4,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,20 +13,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { GraduatedSheet } from "@/components/GraduatedSheet";
 import {
   createCategories,
   createCategory,
-  deleteCategory,
-  updateCategory,
 } from "@/lib/actions/categories";
 import type { Category, Language } from "@/lib/db/schema";
 
@@ -46,149 +28,30 @@ function CategorySection({
   cat,
   languageId,
   vocabCount,
-  categories,
-  onDeleteCategory,
   isVirtual = false,
 }: {
   cat: Category;
   languageId: string;
   vocabCount: number;
-  categories: Category[];
-  onDeleteCategory: (id: string) => void;
   isVirtual?: boolean;
 }) {
-  const router = useRouter();
-  const [isEditing, setIsEditing] = useState(false);
-  const [editName, setEditName] = useState(cat.name);
-
-  async function handleRename() {
-    if (isVirtual) return;
-    const trimmed = editName.trim();
-    if (!trimmed || trimmed === cat.name) {
-      setIsEditing(false);
-      setEditName(cat.name);
-      return;
-    }
-    const isDuplicate = categories.some(
-      (c) =>
-        c.id !== cat.id &&
-        c.name.trim().toLowerCase() === trimmed.toLowerCase(),
-    );
-    if (isDuplicate) {
-      setEditName(cat.name);
-      setIsEditing(false);
-      return;
-    }
-    await updateCategory(cat.id, trimmed, languageId);
-    setIsEditing(false);
-    router.refresh();
-  }
-
   const href = isVirtual
     ? `/languages/${languageId}/categories/uncategorized`
     : `/languages/${languageId}/categories/${cat.id}`;
 
   return (
-    <div className="bg-card rounded-2xl border border-border overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-3.5 hover:bg-muted/50 transition-colors">
-        {isEditing ? (
-          <div
-            className="flex items-center gap-2 flex-1 min-w-0"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Input
-              autoFocus
-              className="h-7 text-sm font-semibold"
-              value={editName}
-              onChange={(e) => setEditName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleRename();
-                if (e.key === "Escape") {
-                  setIsEditing(false);
-                  setEditName(cat.name);
-                }
-              }}
-            />
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleRename}
-              className="shrink-0"
-            >
-              ✓
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => {
-                setIsEditing(false);
-                setEditName(cat.name);
-              }}
-              className="shrink-0"
-            >
-              ✕
-            </Button>
-          </div>
-        ) : (
-          <Link
-            href={href}
-            className="flex items-center gap-2 flex-1 min-w-0"
-          >
-            <span className="font-semibold text-foreground truncate min-w-0">
-              {cat.name}
-            </span>
-            <span className="text-sm text-muted-foreground shrink-0">
-              {vocabCount} 個單字
-            </span>
-            <span className="text-muted-foreground text-xs ml-auto">▶</span>
-          </Link>
-        )}
-        {!isEditing && (
-          <div className="ml-2 shrink-0">
-            <DropdownMenu>
-              <DropdownMenuTrigger
-                asChild
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="px-2 text-muted-foreground"
-                >
-                  ⋮
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link
-                    href={
-                      isVirtual
-                        ? `/review/${languageId}?categoryId=uncategorized`
-                        : `/review/${languageId}?categoryId=${cat.id}`
-                    }
-                  >
-                    複習此分類
-                  </Link>
-                </DropdownMenuItem>
-                {!isVirtual && (
-                  <>
-                    <DropdownMenuItem onSelect={() => setIsEditing(true)}>
-                      重新命名
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => onDeleteCategory(cat.id)}
-                      className="text-destructive focus:text-destructive"
-                    >
-                      刪除分類
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
-      </div>
-    </div>
+    <Link
+      href={href}
+      className="bg-card rounded-2xl border border-border overflow-hidden flex items-center gap-2 px-5 py-3.5 hover:bg-muted/50 transition-colors"
+    >
+      <span className="font-semibold text-foreground truncate min-w-0">
+        {cat.name}
+      </span>
+      <span className="text-sm text-muted-foreground shrink-0 ml-auto">
+        {vocabCount} 個單字
+      </span>
+
+    </Link>
   );
 }
 
@@ -214,28 +77,10 @@ export default function LanguageClient({
   const [showCatInput, setShowCatInput] = useState(false);
   const [newCatName, setNewCatName] = useState("");
   const [catError, setCatError] = useState("");
-  const [pendingDelete, setPendingDelete] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
   const [batchOpen, setBatchOpen] = useState(false);
   const [batchText, setBatchText] = useState("");
   const [batchDuplicates, setBatchDuplicates] = useState<string[]>([]);
   const [isBatchSubmitting, setIsBatchSubmitting] = useState(false);
-
-  function handleDeleteCategory(id: string) {
-    const cat = initialCategories.find((c) => c.id === id);
-    if (cat) setPendingDelete({ id, name: cat.name });
-  }
-
-  function confirmDelete() {
-    if (!pendingDelete) return;
-    const snapshot = pendingDelete;
-    setPendingDelete(null);
-    startTransition(async () => {
-      await deleteCategory(snapshot.id, language.id);
-    });
-  }
 
   function handleAddCategory(e: React.FormEvent) {
     e.preventDefault();
@@ -278,6 +123,9 @@ export default function LanguageClient({
     router.refresh();
   }
 
+  const realUncategorized = initialCategories.find((c) => c.name === "未分類");
+  const otherCategories = initialCategories.filter((c) => c.name !== "未分類");
+
   const virtualCategory: Category = {
     id: UNCATEGORIZED_ID,
     name: "未分類",
@@ -286,14 +134,23 @@ export default function LanguageClient({
     createdAt: language.createdAt,
   };
 
-  const groups = [
-    { cat: virtualCategory, vocabCount: vocabCounts["uncategorized"] ?? 0, isVirtual: true },
-    ...initialCategories.map((cat) => ({
-      cat,
-      vocabCount: vocabCounts[cat.id] ?? 0,
-      isVirtual: false,
-    })),
-  ];
+  const groups = realUncategorized
+    ? [
+        { cat: realUncategorized, vocabCount: vocabCounts[realUncategorized.id] ?? 0, isVirtual: false },
+        ...otherCategories.map((cat) => ({
+          cat,
+          vocabCount: vocabCounts[cat.id] ?? 0,
+          isVirtual: false,
+        })),
+      ]
+    : [
+        { cat: virtualCategory, vocabCount: vocabCounts["uncategorized"] ?? 0, isVirtual: true },
+        ...initialCategories.map((cat) => ({
+          cat,
+          vocabCount: vocabCounts[cat.id] ?? 0,
+          isVirtual: false,
+        })),
+      ];
 
   return (
     <div className="flex flex-col gap-6">
@@ -353,6 +210,11 @@ export default function LanguageClient({
             <Button onClick={() => setShowCatInput((s) => !s)}>
               + 新增分類
             </Button>
+            <Button asChild>
+              <Link href={realUncategorized ? `/vocabulary/new?languageId=${language.id}&categoryId=${realUncategorized.id}` : `/vocabulary/new?languageId=${language.id}`}>
+                + 新增單字
+              </Link>
+            </Button>
           </div>
         </div>
 
@@ -396,36 +258,10 @@ export default function LanguageClient({
             cat={cat}
             languageId={language.id}
             vocabCount={vocabCount}
-            categories={initialCategories}
-            onDeleteCategory={handleDeleteCategory}
             isVirtual={isVirtual}
           />
         ))}
       </div>
-
-      {/* 刪除確認對話框 */}
-      <AlertDialog
-        open={!!pendingDelete}
-        onOpenChange={(open) => !open && setPendingDelete(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>確認刪除</AlertDialogTitle>
-            <AlertDialogDescription>
-              確定刪除分類「{pendingDelete?.name}」？此分類底下的所有單字將一併刪除，此操作無法復原。
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>取消</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmDelete}
-              className="bg-destructive text-white hover:bg-destructive/90"
-            >
-              刪除
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       <Dialog
         open={batchOpen}

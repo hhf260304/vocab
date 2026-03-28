@@ -214,6 +214,7 @@ export default function VocabForm({
 					id="front"
 					value={form.front}
 					onChange={(e) => setField("front", e.target.value)}
+					autoComplete="off"
 					required
 				/>
 			</div>
@@ -233,6 +234,7 @@ export default function VocabForm({
 							}
 						}}
 						onBlur={handleBackBlur}
+						autoComplete="off"
 						required
 					/>
 					{selectedLang && (
@@ -264,6 +266,7 @@ export default function VocabForm({
 							setField("zhuyin", e.target.value);
 							setZhuyinNotFound(false);
 						}}
+						autoComplete="off"
 						disabled={zhuyinLoading}
 					/>
 					{zhuyinLoading && (
@@ -280,6 +283,7 @@ export default function VocabForm({
 						id="exampleJp"
 						value={form.exampleJp}
 						onChange={(e) => setField("exampleJp", e.target.value)}
+						autoComplete="off"
 					/>
 				</div>
 			)}
