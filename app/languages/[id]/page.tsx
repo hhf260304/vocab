@@ -3,7 +3,11 @@ import { notFound } from "next/navigation";
 import LanguageClient from "./LanguageClient";
 import { getCategories } from "@/lib/actions/categories";
 import { getLanguageById } from "@/lib/actions/languages";
-import { getVocabularies, getTodayReviews } from "@/lib/actions/vocabulary";
+import {
+  getVocabularyCounts,
+  getCategoryVocabCounts,
+  getTodayReviews,
+} from "@/lib/actions/vocabulary";
 
 export default async function LanguagePage({
   params,
@@ -11,25 +15,24 @@ export default async function LanguagePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [language, allVocab, reviews, categories] = await Promise.all([
+  const [language, reviews, counts, vocabCounts, categories] = await Promise.all([
     getLanguageById(id),
-    getVocabularies(id),
     getTodayReviews(id),
+    getVocabularyCounts(id),
+    getCategoryVocabCounts(id),
     getCategories(id),
   ]);
 
   if (!language) notFound();
 
-  const graduatedCount = allVocab.filter((v) => v.reviewStage === 6).length;
-
   return (
     <LanguageClient
       language={language}
       reviewCount={reviews.length}
-      totalCount={allVocab.length}
-      graduatedCount={graduatedCount}
+      totalCount={counts.total}
+      graduatedCount={counts.graduated}
       initialCategories={categories}
-      initialVocabularies={allVocab}
+      vocabCounts={vocabCounts}
     />
   );
 }
