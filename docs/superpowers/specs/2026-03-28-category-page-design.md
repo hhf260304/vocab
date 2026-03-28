@@ -21,7 +21,11 @@ New files:
 - `"uncategorized"` → filter `WHERE categoryId IS NULL`
 - any other string → filter `WHERE categoryId = <id>`
 
-## Language Page Changes (`LanguageClient.tsx`)
+## Language Page Changes (`LanguageClient.tsx` + `page.tsx`)
+
+`page.tsx` removes the `getVocabularies` call and stops passing `initialVocabularies` to `LanguageClient` (vocab is no longer displayed inline). A new server action `getVocabularyCounts(languageId)` returns `{ total, graduated }` so the language page can still show the stats without fetching full vocab rows.
+
+`LanguageClient` removes the `initialVocabularies` prop.
 
 `CategorySection` becomes a plain link card (no Collapsible):
 - Clicking the category name navigates to `/languages/[id]/categories/[categoryId]`
