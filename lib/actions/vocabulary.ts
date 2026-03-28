@@ -107,7 +107,7 @@ export async function createVocabulary(data: {
 
   revalidatePath("/");
   if (data.languageId) {
-    revalidatePath(`/languages/${data.languageId}`);
+    revalidatePath(`/languages/${data.languageId}`, "layout");
     revalidatePath(`/review/${data.languageId}`);
   }
   return created;
@@ -138,7 +138,7 @@ export async function updateVocabulary(
     .where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
 
   revalidatePath("/");
-  if (data.languageId) revalidatePath(`/languages/${data.languageId}`);
+  if (data.languageId) revalidatePath(`/languages/${data.languageId}`, "layout");
 }
 
 export async function createVocabularies(
