@@ -6,7 +6,7 @@ import { useState } from "react";
 import FlashCard from "@/components/FlashCard";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Trash2 } from "lucide-react";
+import { RotateCcw, Trash2 } from "lucide-react";
 import { markReview, deleteVocabulary } from "@/lib/actions/vocabulary";
 import type { Language, Vocabulary } from "@/lib/db/schema";
 import {
@@ -143,7 +143,7 @@ export default function ReviewClient({
         </div>
         {!allDone && (
           <Button className="px-8" onClick={startNextRound}>
-            複習忘記的字 ({forgotCount})
+            <RotateCcw className="w-4 h-4 mr-1" />複習忘記的字 ({forgotCount})
           </Button>
         )}
         <Button
@@ -183,10 +183,10 @@ export default function ReviewClient({
               <AlertDialogFooter>
                 <AlertDialogCancel>取消</AlertDialogCancel>
                 <AlertDialogAction
-                  className="bg-red-600 hover:bg-red-700"
+                  variant="destructive"
                   onClick={handleDelete}
                 >
-                  刪除
+                  <Trash2 className="w-4 h-4 mr-1" />刪除
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

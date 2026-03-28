@@ -2,6 +2,7 @@
 "use client";
 
 import { Check, ChevronsUpDown, Plus, Volume2 } from "lucide-react";
+import type { ReactNode } from "react";
 import { useRef, useState } from "react";
 import { ThreeDots } from "react-loader-spinner";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,7 @@ interface Props {
 	onCreateCategory?: (name: string) => Promise<CategoryLike>;
 	onCreateLanguage?: (name: string, ttsCode: string) => Promise<LanguageLike>;
 	submitLabel: string;
+	submitIcon?: ReactNode;
 	showCategorySelector?: boolean;
 	showLanguageSelector?: boolean;
 }
@@ -48,6 +50,7 @@ export default function VocabForm({
 	onCreateCategory,
 	onCreateLanguage,
 	submitLabel,
+	submitIcon,
 	showCategorySelector = false,
 	showLanguageSelector = true,
 }: Props) {
@@ -377,7 +380,7 @@ export default function VocabForm({
 				{isSubmitting ? (
 					<ThreeDots height="20" width="40" color="currentColor" />
 				) : (
-					submitLabel
+					<>{submitIcon}{submitLabel}</>
 				)}
 			</Button>
 		</form>

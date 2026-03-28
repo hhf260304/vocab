@@ -1,5 +1,6 @@
 "use client";
 
+import { Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -63,10 +64,10 @@ export default function VocabCard({ vocab, ttsCode, onDelete }: Props) {
         </div>
         <div className="flex gap-2 shrink-0 self-end sm:self-auto">
           <Button variant="outline" size="sm" asChild>
-            <Link href={`/vocabulary/${vocab.id}`}>編輯</Link>
+            <Link href={`/vocabulary/${vocab.id}`}><Pencil className="w-3.5 h-3.5 mr-1" />編輯</Link>
           </Button>
           <Button variant="destructive" size="sm" onClick={onDelete}>
-            刪除
+            <Trash2 className="w-3.5 h-3.5 mr-1" />刪除
           </Button>
         </div>
       </CardContent>

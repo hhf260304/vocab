@@ -1,25 +1,13 @@
 // app/languages/[id]/LanguageClient.tsx
 "use client";
 
+import { FolderPlus, Plus } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { GraduatedSheet } from "@/components/GraduatedSheet";
-import {
-  createCategories,
-  createCategory,
-} from "@/lib/actions/categories";
+import { createCategory } from "@/lib/actions/categories";
 import type { Category, Language } from "@/lib/db/schema";
 
 const UNCATEGORIZED_ID = "uncategorized";
@@ -72,15 +60,10 @@ export default function LanguageClient({
   initialCategories,
   vocabCounts,
 }: Props) {
-  const router = useRouter();
   const [, startTransition] = useTransition();
   const [showCatInput, setShowCatInput] = useState(false);
   const [newCatName, setNewCatName] = useState("");
   const [catError, setCatError] = useState("");
-  const [batchOpen, setBatchOpen] = useState(false);
-  const [batchText, setBatchText] = useState("");
-  const [batchDuplicates, setBatchDuplicates] = useState<string[]>([]);
-  const [isBatchSubmitting, setIsBatchSubmitting] = useState(false);
 
   function handleAddCategory(e: React.FormEvent) {
     e.preventDefault();
@@ -99,28 +82,6 @@ export default function LanguageClient({
     setNewCatName("");
     setCatError("");
     setShowCatInput(false);
-  }
-
-  async function handleBatchCreate() {
-    const names = batchText
-      .split("\n")
-      .map((n) => n.trim())
-      .filter(Boolean);
-    if (names.length === 0) return;
-
-    setIsBatchSubmitting(true);
-    const result = await createCategories(names, language.id);
-    setIsBatchSubmitting(false);
-
-    if ("duplicates" in result) {
-      setBatchDuplicates(result.duplicates);
-      return;
-    }
-
-    setBatchOpen(false);
-    setBatchText("");
-    setBatchDuplicates([]);
-    router.refresh();
   }
 
   const realUncategorized = initialCategories.find((c) => c.name === "未分類");
@@ -197,22 +158,12 @@ export default function LanguageClient({
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">單字庫</h2>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setBatchOpen(true);
-                setBatchText("");
-                setBatchDuplicates([]);
-              }}
-            >
-              批次新增
-            </Button>
             <Button onClick={() => setShowCatInput((s) => !s)}>
-              + 新增分類
+              <FolderPlus className="w-4 h-4 mr-1" />新增分類
             </Button>
             <Button asChild>
               <Link href={realUncategorized ? `/vocabulary/new?languageId=${language.id}&categoryId=${realUncategorized.id}` : `/vocabulary/new?languageId=${language.id}`}>
-                + 新增單字
+                <Plus className="w-4 h-4 mr-1" />新增單字
               </Link>
             </Button>
           </div>
@@ -233,7 +184,7 @@ export default function LanguageClient({
                 onKeyDown={(e) => e.key === "Escape" && setShowCatInput(false)}
               />
               <Button type="submit" className="shrink-0">
-                建立
+                <Plus className="w-4 h-4 mr-1" />建立
               </Button>
               <Button
                 type="button"
@@ -263,53 +214,6 @@ export default function LanguageClient({
         ))}
       </div>
 
-      <Dialog
-        open={batchOpen}
-        onOpenChange={(open) => {
-          setBatchOpen(open);
-          if (!open) {
-            setBatchText("");
-            setBatchDuplicates([]);
-          }
-        }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>批次新增分類</DialogTitle>
-            <DialogDescription>每行輸入一個分類名稱</DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-2">
-            <Textarea
-              autoFocus
-              rows={8}
-              placeholder={"動詞\n名詞\n形容詞"}
-              value={batchText}
-              onChange={(e) => {
-                setBatchText(e.target.value);
-                if (batchDuplicates.length > 0) setBatchDuplicates([]);
-              }}
-            />
-            {batchDuplicates.length > 0 && (
-              <p className="text-sm text-destructive">
-                以下名稱重複，請修改後再送出：
-                {batchDuplicates.map((d) => (
-                  <span key={d} className="block font-medium">
-                    ・{d}
-                  </span>
-                ))}
-              </p>
-            )}
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setBatchOpen(false)}>
-              取消
-            </Button>
-            <Button onClick={handleBatchCreate} disabled={isBatchSubmitting}>
-              {isBatchSubmitting ? "建立中…" : "建立"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

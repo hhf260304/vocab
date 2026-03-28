@@ -3,7 +3,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import VocabForm from "@/components/VocabForm";
 import { createCategory } from "@/lib/actions/categories";
@@ -94,6 +94,7 @@ export default function NewVocabClient({
           onSubmit={handleSubmit}
           onCreateLanguage={defaultLanguageId ? undefined : handleCreateLanguage}
           submitLabel="新增單字"
+          submitIcon={<Plus className="w-4 h-4 mr-1" />}
           showCategorySelector={false}
           showLanguageSelector={!defaultLanguageId}
         />

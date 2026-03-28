@@ -3,7 +3,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Save, Trash2 } from "lucide-react";
 import { ThreeDots } from "react-loader-spinner";
 import {
   AlertDialog,
@@ -111,7 +111,7 @@ export default function EditVocabClient({
               {isDeleting ? (
                 <ThreeDots height="16" width="32" color="currentColor" />
               ) : (
-                "刪除單字"
+                <><Trash2 className="w-4 h-4 mr-1" />刪除單字</>
               )}
             </Button>
           </AlertDialogTrigger>
@@ -126,9 +126,9 @@ export default function EditVocabClient({
               <AlertDialogCancel>取消</AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleDelete}
-                className="bg-destructive text-white hover:bg-destructive/90"
+                variant="destructive"
               >
-                刪除
+                <Trash2 className="w-4 h-4 mr-1" />刪除
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -146,6 +146,7 @@ export default function EditVocabClient({
           onCreateCategory={vocab.languageId ? handleCreateCategory : undefined}
           onCreateLanguage={!vocab.languageId ? handleCreateLanguage : undefined}
           submitLabel="儲存變更"
+          submitIcon={<Save className="w-4 h-4 mr-1" />}
           showCategorySelector={!!vocab.languageId}
           showLanguageSelector={!vocab.languageId}
         />
