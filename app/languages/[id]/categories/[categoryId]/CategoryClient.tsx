@@ -173,7 +173,7 @@ export default function CategoryClient({
 								<Button
 									variant="ghost"
 									size="icon"
-									className="text-muted-foreground hover:text-destructive"
+									className="text-destructive hover:text-destructive"
 									onClick={() => setDeleteOpen(true)}
 								>
 									<Trash2 className="w-4 h-4" />
