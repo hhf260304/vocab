@@ -1,6 +1,6 @@
 "use client";
 
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Volume2 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,26 @@ interface Props {
   onDelete: () => void;
 }
 
-const STAGE_LABELS = ["新", "已完成 1 次", "已完成 2 次", "已完成 3 次", "已完成 4 次", "已完成 5 次", "畢業"];
+const STAGE_LABELS = ["新", "Lv.1", "Lv.2", "Lv.3", "Lv.4", "Lv.5", "已畢業"];
+
+function getStageStyle(stage: number): string {
+  if (stage === 0) return "bg-sky-50 text-sky-600 border-sky-200";
+  if (stage === 6) return "bg-emerald-50 text-emerald-600 border-emerald-200";
+  return "bg-indigo-50 text-indigo-600 border-indigo-200";
+}
+
+function formatRelativeDate(date: Date | string | null): string {
+  if (!date) return "";
+  const target = new Date(date);
+  const now = new Date();
+  // 比較日期（去掉時間部分）
+  target.setHours(0, 0, 0, 0);
+  now.setHours(0, 0, 0, 0);
+  const diffDays = Math.ceil((target.getTime() - now.getTime()) / 86400000);
+  if (diffDays <= 0) return "待複習";
+  if (diffDays === 1) return "明日複習";
+  return `${diffDays} 天後複習`;
+}
 
 function formatDate(date: Date | string | null): string {
   if (!date) return "-";
@@ -29,6 +48,8 @@ export default function VocabCard({ vocab, ttsCode, onDelete }: Props) {
     speechSynthesis.speak(utterance);
   }
 
+  const relativeReview = vocab.reviewStage < 6 ? formatRelativeDate(vocab.nextReviewAt) : null;
+
   return (
     <Card>
       <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -43,22 +64,24 @@ export default function VocabCard({ vocab, ttsCode, onDelete }: Props) {
             {ttsCode && (
               <button
                 onClick={speak}
-                className="text-muted-foreground hover:text-foreground transition-colors text-base leading-none"
+                className="text-muted-foreground hover:text-foreground transition-colors leading-none cursor-pointer"
                 aria-label="播放發音"
               >
-                🔊
+                <Volume2 className="w-4 h-4" />
               </button>
             )}
           </div>
           <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="outline" className={`text-xs ${getStageStyle(vocab.reviewStage)}`}>
               {STAGE_LABELS[vocab.reviewStage]}
             </Badge>
+            {relativeReview && (
+              <span className={`text-xs font-medium ${relativeReview === "待複習" ? "text-amber-600" : "text-muted-foreground"}`}>
+                {relativeReview}
+              </span>
+            )}
             <span className="text-xs text-muted-foreground">
               新增 {formatDate(vocab.createdAt)}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              複習 {formatDate(vocab.nextReviewAt)}
             </span>
           </div>
         </div>

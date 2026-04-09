@@ -1,7 +1,7 @@
 // app/languages/[id]/categories/[categoryId]/CategoryClient.tsx
 "use client";
 
-import { ArrowLeft, ListPlus, Pencil, Plus, Save, Trash2 } from "lucide-react";
+import { ArrowLeft, BookOpen, ListPlus, Pencil, Plus, Save, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -208,9 +208,30 @@ export default function CategoryClient({
 			{/* 單字列表 */}
 			<div className="flex flex-col gap-2">
 				{initialVocabularies.length === 0 ? (
-					<p className="text-sm text-muted-foreground py-4">
-						還沒有單字，點「+ 新增單字」開始新增
-					</p>
+					<div className="flex flex-col items-center gap-4 py-14 text-center">
+						<BookOpen className="w-12 h-12 text-muted-foreground/30" />
+						<div>
+							<p className="font-medium text-foreground">還沒有單字</p>
+							<p className="text-sm text-muted-foreground mt-1">新增第一個單字，開始學習之旅</p>
+						</div>
+						<div className="flex gap-2">
+							<Button
+								variant="outline"
+								onClick={() => {
+									setBatchOpen(true);
+									setBatchText("");
+									setBatchErrors([]);
+								}}
+							>
+								<ListPlus className="w-4 h-4 mr-1" />批次新增
+							</Button>
+							<Button asChild>
+								<Link href={newVocabHref}>
+									<Plus className="w-4 h-4 mr-1" />新增單字
+								</Link>
+							</Button>
+						</div>
+					</div>
 				) : (
 					initialVocabularies.map((vocab) => (
 						<VocabCard

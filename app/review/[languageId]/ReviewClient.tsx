@@ -6,7 +6,7 @@ import { useState } from "react";
 import FlashCard from "@/components/FlashCard";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { RotateCcw, Trash2 } from "lucide-react";
+import { CheckCircle2, RotateCcw, Sparkles, Trash2 } from "lucide-react";
 import { markReview, deleteVocabulary } from "@/lib/actions/vocabulary";
 import type { Language, Vocabulary } from "@/lib/db/schema";
 import {
@@ -41,11 +41,12 @@ export default function ReviewClient({
   });
   const [index, setIndex] = useState(0);
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
-  // Full objects needed to seed the next round via setCurrentCards(shuffle(forgottenThisRound))
   const [forgottenThisRound, setForgottenThisRound] = useState<Vocabulary[]>([]);
   const [roundRemembered, setRoundRemembered] = useState(0);
+  const [round, setRound] = useState(1);
   const [view, setView] = useState<"reviewing" | "results">("reviewing");
   const [resetKey, setResetKey] = useState(0);
+  const [isPending, setIsPending] = useState(false);
 
   const current = currentCards[index];
 
@@ -66,7 +67,7 @@ export default function ReviewClient({
   }
 
   async function handleAnswer(remembered: boolean) {
-    if (!current) return;
+    if (!current || isPending) return;
     const currentCard = current;
     const nextIndex = index + 1;
     const isLastCard = nextIndex >= currentCards.length;
@@ -74,15 +75,15 @@ export default function ReviewClient({
     if (!remembered) {
       setFailedIds((prev) => new Set(prev).add(currentCard.id));
       setForgottenThisRound((prev) => [...prev, currentCard]);
+      if (isLastCard) setView("results");
+      else setIndex(nextIndex);
     } else {
+      setIsPending(true);
       await markReview(currentCard.id, !failedIds.has(currentCard.id));
       setRoundRemembered((n) => n + 1);
-    }
-
-    if (isLastCard) {
-      setView("results");
-    } else {
-      setIndex(nextIndex);
+      setIsPending(false);
+      if (isLastCard) setView("results");
+      else setIndex(nextIndex);
     }
   }
 
@@ -97,12 +98,14 @@ export default function ReviewClient({
     setRoundRemembered(0);
     setIndex(0);
     setView("reviewing");
+    setRound((r) => r + 1);
+    setResetKey((k) => k + 1);
   }
 
   if (queue.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
-        <p className="text-5xl">🎉</p>
+        <Sparkles className="w-14 h-14 text-primary" />
         <h2 className="text-xl font-bold text-foreground">
           今日沒有待複習單字
         </h2>
@@ -123,7 +126,10 @@ export default function ReviewClient({
 
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-6 text-center">
-        <p className="text-5xl">{allDone ? "🎉" : "✅"}</p>
+        {allDone
+          ? <Sparkles className="w-14 h-14 text-primary" />
+          : <CheckCircle2 className="w-14 h-14 text-emerald-500" />
+        }
         <h2 className="text-2xl font-bold text-foreground">
           {allDone ? "全部記得！" : "這輪複習完成！"}
         </h2>
@@ -142,13 +148,13 @@ export default function ReviewClient({
           </div>
         </div>
         {!allDone && (
-          <Button className="px-8" onClick={startNextRound}>
+          <Button className="px-8 active:scale-[0.98] transition-transform" onClick={startNextRound}>
             <RotateCcw className="w-4 h-4 mr-1" />複習忘記的字 ({forgotCount})
           </Button>
         )}
         <Button
           variant={allDone ? "default" : "ghost"}
-          className={allDone ? "px-8" : "text-muted-foreground"}
+          className={`active:scale-[0.98] transition-transform ${allDone ? "px-8" : "text-muted-foreground"}`}
           onClick={() => router.push(`/languages/${language.id}`)}
         >
           回到{language.name}
@@ -161,7 +167,14 @@ export default function ReviewClient({
     <div className="flex flex-col items-center gap-8">
       <div className="w-full flex items-center justify-between">
         <div className="flex flex-col">
-          <span className="text-sm text-muted-foreground">{language.name} 進度</span>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">{language.name}</span>
+            {round > 1 && (
+              <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">
+                第 {round} 輪
+              </span>
+            )}
+          </div>
           <span className="font-bold text-foreground">
             {index + 1} / {currentCards.length}
           </span>
@@ -207,6 +220,7 @@ export default function ReviewClient({
         vocab={current}
         ttsCode={language.ttsCode}
         categoryName={current.categoryId ? categoryMap[current.categoryId] : undefined}
+        isAnswering={isPending}
         onRemembered={() => handleAnswer(true)}
         onForgot={() => handleAnswer(false)}
       />

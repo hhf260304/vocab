@@ -30,7 +30,7 @@ function CategorySection({
   return (
     <Link
       href={href}
-      className="bg-card rounded-2xl border border-border overflow-hidden flex items-center gap-2 px-5 py-3.5 hover:bg-muted/50 transition-colors"
+      className="bg-card rounded-2xl border border-border overflow-hidden flex items-center gap-2 px-5 py-3.5 hover:bg-muted/60 hover:border-primary/30 transition-all active:scale-[0.99] cursor-pointer"
     >
       <span className="font-semibold text-foreground truncate min-w-0">
         {cat.name}
@@ -142,7 +142,7 @@ export default function LanguageClient({
 
       {/* 開始複習 */}
       {reviewCount > 0 ? (
-        <Button size="lg" className="w-full text-lg py-7" asChild>
+        <Button size="lg" className="w-full text-lg py-7 active:scale-[0.98] transition-transform" asChild>
           <Link href={`/review/${language.id}`}>
             開始複習（{reviewCount} 個）
           </Link>

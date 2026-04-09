@@ -1,5 +1,6 @@
 // app/page.tsx
 import Link from "next/link";
+import { Globe } from "lucide-react";
 import LanguageCard from "@/components/LanguageCard";
 import { Button } from "@/components/ui/button";
 import { createLanguage, getLanguages } from "@/lib/actions/languages";
@@ -33,7 +34,7 @@ export default async function DashboardPage() {
 
       {langs.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
-          <p className="text-5xl mb-4">🌍</p>
+          <Globe className="w-14 h-14 mx-auto mb-4 text-primary/40" />
           <p className="font-medium text-foreground">尚未新增任何語言</p>
           <p className="text-sm mt-1 mb-6">從下方選擇要學習的語言</p>
           {availablePresets.length > 0 && (
