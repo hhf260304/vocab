@@ -3,13 +3,11 @@ import { compare } from "bcryptjs";
 import { eq } from "drizzle-orm";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import Google from "next-auth/providers/google";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-    Google,
     Credentials({
       credentials: {
         username: { label: "Username", type: "text" },
@@ -36,22 +34,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   session: { strategy: "jwt" },
   callbacks: {
-    async jwt({ token, account }) {
-      // account is only present on first sign-in (Google)
-      if (account?.provider === "google") {
-        await db
-          .insert(users)
-          .values({
-            id: token.sub ?? (() => { throw new Error("Google token missing sub"); })(),
-            email: token.email ?? undefined,
-            name: token.name,
-            image: token.picture,
-          })
-          .onConflictDoUpdate({
-            target: users.id,
-            set: { name: token.name, image: token.picture },
-          });
-      }
+    async jwt({ token }) {
       return token;
     },
     async session({ session, token }) {
