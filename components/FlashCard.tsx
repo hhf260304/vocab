@@ -134,7 +134,45 @@ export default function FlashCard({
             <p className="text-4xl font-bold text-foreground text-center">
               {vocab.front}
             </p>
-            <p className="text-muted-foreground text-sm mt-4">點擊翻轉</p>
+            <div className="flex items-center gap-2 mt-4">
+              <p className="text-muted-foreground text-sm">點擊翻轉</p>
+              {frontRec.status === "idle" && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); startRecording("front"); }}
+                  className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                  aria-label="開始錄音"
+                >
+                  <Mic className="h-4 w-4" />
+                </button>
+              )}
+              {frontRec.status === "recording" && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); stopRecording(); }}
+                  className="text-red-400 animate-pulse cursor-pointer"
+                  aria-label="停止錄音"
+                >
+                  <Square className="h-4 w-4" />
+                </button>
+              )}
+              {frontRec.status === "recorded" && frontRec.blob && (
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); playRecording(frontRec.blob!); }}
+                    className="text-emerald-500 hover:text-emerald-600 transition-colors cursor-pointer"
+                    aria-label="播放錄音"
+                  >
+                    <Play className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); resetRecording("front"); }}
+                    className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                    aria-label="重新錄音"
+                  >
+                    <RotateCcw className="h-3 w-3" />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* 反面 */}
