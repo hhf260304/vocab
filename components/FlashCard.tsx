@@ -1,8 +1,8 @@
 // components/FlashCard.tsx
 "use client";
 
-import { useEffect, useState } from "react";
-import { ThumbsDown, ThumbsUp, Volume2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Mic, Play, RotateCcw, Square, ThumbsDown, ThumbsUp, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Vocabulary } from "@/lib/db/schema";
@@ -24,12 +24,58 @@ export default function FlashCard({
   onRemembered,
   onForgot,
 }: Props) {
+  type RecStatus = "idle" | "recording" | "recorded";
+  type RecState = { status: RecStatus; blob: Blob | null };
+
+  const [frontRec, setFrontRec] = useState<RecState>({ status: "idle", blob: null });
+  const [backRec, setBackRec]   = useState<RecState>({ status: "idle", blob: null });
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef        = useRef<BlobPart[]>([]);
+  const objectUrlRef     = useRef<string[]>([]);
+
   const [flipped, setFlipped] = useState(false);
 
   function speakBack() {
     const utterance = new SpeechSynthesisUtterance(vocab.back);
     utterance.lang = ttsCode;
     speechSynthesis.speak(utterance);
+  }
+
+  async function startRecording(side: "front" | "back") {
+    const setter = side === "front" ? setFrontRec : setBackRec;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      chunksRef.current = [];
+      const mr = new MediaRecorder(stream);
+      mr.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+      mr.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        setter({ status: "recorded", blob });
+        stream.getTracks().forEach((t) => t.stop());
+      };
+      mr.start();
+      mediaRecorderRef.current = mr;
+      setter({ status: "recording", blob: null });
+    } catch {
+      setter({ status: "idle", blob: null });
+    }
+  }
+
+  function stopRecording() {
+    mediaRecorderRef.current?.stop();
+  }
+
+  function playRecording(blob: Blob) {
+    const url = URL.createObjectURL(blob);
+    objectUrlRef.current.push(url);
+    new Audio(url).play();
+  }
+
+  function resetRecording(side: "front" | "back") {
+    const setter = side === "front" ? setFrontRec : setBackRec;
+    setter({ status: "idle", blob: null });
   }
 
   // 翻轉至反面時播音
@@ -61,6 +107,17 @@ export default function FlashCard({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [flipped, isAnswering, onForgot, onRemembered]);
+
+  useEffect(() => {
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      if (mediaRecorderRef.current?.state === "recording") {
+        mediaRecorderRef.current.stop();
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      objectUrlRef.current.forEach(URL.revokeObjectURL);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col items-center gap-6 w-full card-enter">
