@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Vocabulary } from "@/lib/db/schema";
 
+type RecStatus = "idle" | "recording" | "recorded";
+type RecState = { status: RecStatus; blob: Blob | null };
+
 interface Props {
   vocab: Vocabulary;
   ttsCode: string;
@@ -24,9 +27,6 @@ export default function FlashCard({
   onRemembered,
   onForgot,
 }: Props) {
-  type RecStatus = "idle" | "recording" | "recorded";
-  type RecState = { status: RecStatus; blob: Blob | null };
-
   const [frontRec, setFrontRec] = useState<RecState>({ status: "idle", blob: null });
   const [backRec, setBackRec]   = useState<RecState>({ status: "idle", blob: null });
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -70,7 +70,7 @@ export default function FlashCard({
   function playRecording(blob: Blob) {
     const url = URL.createObjectURL(blob);
     objectUrlRef.current.push(url);
-    new Audio(url).play();
+    new Audio(url).play().catch(() => {});
   }
 
   function resetRecording(side: "front" | "back") {
@@ -110,11 +110,9 @@ export default function FlashCard({
 
   useEffect(() => {
     return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       if (mediaRecorderRef.current?.state === "recording") {
         mediaRecorderRef.current.stop();
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       objectUrlRef.current.forEach(URL.revokeObjectURL);
     };
   }, []);
