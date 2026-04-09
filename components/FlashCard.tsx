@@ -109,11 +109,12 @@ export default function FlashCard({
   }, [flipped, isAnswering, onForgot, onRemembered]);
 
   useEffect(() => {
+    const urls = objectUrlRef.current;
     return () => {
       if (mediaRecorderRef.current?.state === "recording") {
         mediaRecorderRef.current.stop();
       }
-      objectUrlRef.current.forEach(URL.revokeObjectURL);
+      urls.forEach(URL.revokeObjectURL);
     };
   }, []);
 
@@ -138,6 +139,7 @@ export default function FlashCard({
               <p className="text-muted-foreground text-sm">點擊翻轉</p>
               {frontRec.status === "idle" && (
                 <button
+                  type="button"
                   onClick={(e) => { e.stopPropagation(); startRecording("front"); }}
                   className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                   aria-label="開始錄音"
@@ -147,6 +149,7 @@ export default function FlashCard({
               )}
               {frontRec.status === "recording" && (
                 <button
+                  type="button"
                   onClick={(e) => { e.stopPropagation(); stopRecording(); }}
                   className="text-red-400 animate-pulse cursor-pointer"
                   aria-label="停止錄音"
@@ -157,6 +160,7 @@ export default function FlashCard({
               {frontRec.status === "recorded" && frontRec.blob && (
                 <div className="flex items-center gap-1">
                   <button
+                    type="button"
                     onClick={(e) => { e.stopPropagation(); playRecording(frontRec.blob!); }}
                     className="text-emerald-500 hover:text-emerald-600 transition-colors cursor-pointer"
                     aria-label="播放錄音"
@@ -164,6 +168,7 @@ export default function FlashCard({
                     <Play className="h-4 w-4" />
                   </button>
                   <button
+                    type="button"
                     onClick={(e) => { e.stopPropagation(); resetRecording("front"); }}
                     className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                     aria-label="重新錄音"
