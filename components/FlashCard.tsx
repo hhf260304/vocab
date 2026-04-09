@@ -135,49 +135,7 @@ export default function FlashCard({
             <p className="text-4xl font-bold text-foreground text-center">
               {vocab.front}
             </p>
-            <div className="flex items-center gap-2 mt-4">
-              <p className="text-muted-foreground text-sm">點擊翻轉</p>
-              {frontRec.status === "idle" && (
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); startRecording("front"); }}
-                  className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                  aria-label="開始錄音"
-                >
-                  <Mic className="h-4 w-4" />
-                </button>
-              )}
-              {frontRec.status === "recording" && (
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); stopRecording(); }}
-                  className="text-red-400 animate-pulse cursor-pointer"
-                  aria-label="停止錄音"
-                >
-                  <Square className="h-4 w-4" />
-                </button>
-              )}
-              {frontRec.status === "recorded" && frontRec.blob && (
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); playRecording(frontRec.blob!); }}
-                    className="text-emerald-500 hover:text-emerald-600 transition-colors cursor-pointer"
-                    aria-label="播放錄音"
-                  >
-                    <Play className="h-4 w-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); resetRecording("front"); }}
-                    className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                    aria-label="重新錄音"
-                  >
-                    <RotateCcw className="h-3 w-3" />
-                  </button>
-                </div>
-              )}
-            </div>
+            <p className="text-muted-foreground text-sm mt-4">點擊翻轉</p>
           </div>
 
           {/* 反面 */}
@@ -188,59 +146,14 @@ export default function FlashCard({
             <p className="text-4xl font-bold text-white text-center">
               {vocab.back}
             </p>
-            <div className="flex items-center gap-2 mt-2">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  speakBack();
-                }}
-                className="text-indigo-200 hover:text-white transition-colors cursor-pointer"
-                aria-label="播放發音"
-              >
-                <Volume2 className="h-5 w-5" />
-              </button>
-              {backRec.status === "idle" && (
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); startRecording("back"); }}
-                  className="text-indigo-200 hover:text-white transition-colors cursor-pointer"
-                  aria-label="開始錄音"
-                >
-                  <Mic className="h-5 w-5" />
-                </button>
-              )}
-              {backRec.status === "recording" && (
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); stopRecording(); }}
-                  className="text-red-400 animate-pulse cursor-pointer"
-                  aria-label="停止錄音"
-                >
-                  <Square className="h-5 w-5" />
-                </button>
-              )}
-              {backRec.status === "recorded" && backRec.blob && (
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); playRecording(backRec.blob!); }}
-                    className="text-emerald-400 hover:text-white transition-colors cursor-pointer"
-                    aria-label="播放錄音"
-                  >
-                    <Play className="h-5 w-5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); resetRecording("back"); }}
-                    className="text-indigo-200 hover:text-white transition-colors cursor-pointer"
-                    aria-label="重新錄音"
-                  >
-                    <RotateCcw className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              )}
-            </div>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); speakBack(); }}
+              className="p-2.5 rounded-full text-indigo-200 hover:text-white hover:bg-white/10 transition-colors cursor-pointer mt-2"
+              aria-label="播放發音"
+            >
+              <Volume2 className="h-5 w-5" />
+            </button>
             {vocab.zhuyin && (
               <p className="mt-4 text-indigo-100 text-sm text-center">{vocab.zhuyin}</p>
             )}
@@ -249,6 +162,98 @@ export default function FlashCard({
             )}
           </div>
         </div>
+      </div>
+
+      {/* 錄音控制區：正面未翻時顯示正面錄音，翻轉後顯示反面錄音 */}
+      <div className="flex items-center gap-1">
+        {!flipped && (
+          <>
+            {frontRec.status === "idle" && (
+              <button
+                type="button"
+                onClick={() => startRecording("front")}
+                className="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+                aria-label="開始錄音"
+              >
+                <Mic className="h-5 w-5" />
+              </button>
+            )}
+            {frontRec.status === "recording" && (
+              <button
+                type="button"
+                onClick={() => stopRecording()}
+                className="p-2.5 rounded-full text-red-400 animate-pulse cursor-pointer"
+                aria-label="停止錄音"
+              >
+                <Square className="h-5 w-5" />
+              </button>
+            )}
+            {frontRec.status === "recorded" && frontRec.blob && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => playRecording(frontRec.blob!)}
+                  className="p-2.5 rounded-full text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 transition-colors cursor-pointer"
+                  aria-label="播放錄音"
+                >
+                  <Play className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => resetRecording("front")}
+                  className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+                  aria-label="重新錄音"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                </button>
+              </>
+            )}
+          </>
+        )}
+        {flipped && (
+          <>
+            {backRec.status === "idle" && (
+              <button
+                type="button"
+                onClick={() => startRecording("back")}
+                className="p-2.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+                aria-label="開始錄音"
+              >
+                <Mic className="h-5 w-5" />
+              </button>
+            )}
+            {backRec.status === "recording" && (
+              <button
+                type="button"
+                onClick={() => stopRecording()}
+                className="p-2.5 rounded-full text-red-400 animate-pulse cursor-pointer"
+                aria-label="停止錄音"
+              >
+                <Square className="h-5 w-5" />
+              </button>
+            )}
+            {backRec.status === "recorded" && backRec.blob && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => playRecording(backRec.blob!)}
+                  className="p-2.5 rounded-full text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 transition-colors cursor-pointer"
+                  aria-label="播放錄音"
+                >
+                  <Play className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => resetRecording("back")}
+                  className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+                  aria-label="重新錄音"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                </button>
+              </>
+            )}
+          </>
+        )}
       </div>
 
       {flipped ? (
