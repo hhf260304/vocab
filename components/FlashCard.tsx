@@ -190,6 +190,7 @@ export default function FlashCard({
             </p>
             <div className="flex items-center gap-2 mt-2">
               <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   speakBack();
@@ -199,6 +200,46 @@ export default function FlashCard({
               >
                 <Volume2 className="h-5 w-5" />
               </button>
+              {backRec.status === "idle" && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); startRecording("back"); }}
+                  className="text-indigo-200 hover:text-white transition-colors cursor-pointer"
+                  aria-label="開始錄音"
+                >
+                  <Mic className="h-5 w-5" />
+                </button>
+              )}
+              {backRec.status === "recording" && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); stopRecording(); }}
+                  className="text-red-400 animate-pulse cursor-pointer"
+                  aria-label="停止錄音"
+                >
+                  <Square className="h-5 w-5" />
+                </button>
+              )}
+              {backRec.status === "recorded" && backRec.blob && (
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); playRecording(backRec.blob!); }}
+                    className="text-emerald-400 hover:text-white transition-colors cursor-pointer"
+                    aria-label="播放錄音"
+                  >
+                    <Play className="h-5 w-5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); resetRecording("back"); }}
+                    className="text-indigo-200 hover:text-white transition-colors cursor-pointer"
+                    aria-label="重新錄音"
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              )}
             </div>
             {vocab.zhuyin && (
               <p className="mt-4 text-indigo-100 text-sm text-center">{vocab.zhuyin}</p>
