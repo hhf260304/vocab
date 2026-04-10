@@ -69,7 +69,7 @@ export default async function StatsPage({
               )}
 
               {/* 錯誤次數 */}
-              <span className="text-sm font-bold text-red-500 shrink-0">
+              <span className="text-sm font-bold text-destructive shrink-0">
                 {item.failCount} 次
               </span>
             </div>
