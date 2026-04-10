@@ -2,7 +2,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, eq, isNull, lte, lt, count, sql } from "drizzle-orm";
+import { and, eq, isNull, lte, lt, count, sql, gt, desc } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { vocabulary, categories } from "@/lib/db/schema";
@@ -245,4 +245,34 @@ export async function markReview(id: string, remembered: boolean) {
     .where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
 
   revalidatePath("/");
+}
+
+export type FailStat = {
+  id: string;
+  front: string;
+  back: string;
+  failCount: number;
+  categoryName: string | null;
+};
+
+export async function getFailStats(languageId: string): Promise<FailStat[]> {
+  const userId = await getUserId();
+  return db
+    .select({
+      id: vocabulary.id,
+      front: vocabulary.front,
+      back: vocabulary.back,
+      failCount: vocabulary.failCount,
+      categoryName: categories.name,
+    })
+    .from(vocabulary)
+    .leftJoin(categories, eq(vocabulary.categoryId, categories.id))
+    .where(
+      and(
+        eq(vocabulary.userId, userId),
+        eq(vocabulary.languageId, languageId),
+        gt(vocabulary.failCount, 0)
+      )
+    )
+    .orderBy(desc(vocabulary.failCount));
 }
