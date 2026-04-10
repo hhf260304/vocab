@@ -47,6 +47,8 @@ export async function changePassword(oldPassword: string, newPassword: string) {
     return { error: "請先登入" };
   }
 
+  if (!oldPassword) return { error: "請輸入目前密碼" };
+
   if (!newPassword || newPassword.length < 6) {
     return { error: "新密碼至少需要 6 個字元" };
   }
@@ -67,10 +69,15 @@ export async function changePassword(oldPassword: string, newPassword: string) {
   }
 
   const passwordHash = await hash(newPassword, 10);
-  await db
-    .update(users)
-    .set({ passwordHash })
-    .where(eq(users.id, session.user.id));
+
+  try {
+    await db
+      .update(users)
+      .set({ passwordHash })
+      .where(eq(users.id, session.user.id));
+  } catch {
+    return { error: "更新失敗，請稍後再試" };
+  }
 
   return { success: true };
 }
