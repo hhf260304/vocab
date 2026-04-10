@@ -245,6 +245,9 @@ export async function markReview(id: string, remembered: boolean) {
     .where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
 
   revalidatePath("/");
+  if (vocab.languageId) {
+    revalidatePath(`/languages/${vocab.languageId}/stats`);
+  }
 }
 
 export type FailStat = {
