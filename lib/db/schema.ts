@@ -59,6 +59,7 @@ export const vocabulary = pgTable("vocabulary", {
   reviewStage: integer("review_stage").notNull().default(0),
   nextReviewAt: timestamp("next_review_at").default(sql`now()`).notNull(),
   lastReviewedAt: timestamp("last_reviewed_at"),
+  failCount: integer("fail_count").notNull().default(0),
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
 });
 
