@@ -32,6 +32,7 @@ export default function FlashCard({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef        = useRef<BlobPart[]>([]);
   const objectUrlRef     = useRef<string[]>([]);
+  const audioRef         = useRef<HTMLAudioElement | null>(null);
 
   const [flipped, setFlipped] = useState(false);
 
@@ -51,7 +52,12 @@ export default function FlashCard({
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
       mr.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const mimeType = MediaRecorder.isTypeSupported("audio/mp4")
+          ? "audio/mp4"
+          : MediaRecorder.isTypeSupported("audio/webm")
+          ? "audio/webm"
+          : "audio/ogg";
+        const blob = new Blob(chunksRef.current, { type: mimeType });
         setter({ status: "recorded", blob });
         stream.getTracks().forEach((t) => t.stop());
       };
@@ -70,7 +76,8 @@ export default function FlashCard({
   function playRecording(blob: Blob) {
     const url = URL.createObjectURL(blob);
     objectUrlRef.current.push(url);
-    new Audio(url).play().catch(() => {});
+    audioRef.current = new Audio(url);
+    audioRef.current.play().catch(() => {});
   }
 
   function resetRecording(side: "front" | "back") {
