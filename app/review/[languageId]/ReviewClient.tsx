@@ -72,19 +72,18 @@ export default function ReviewClient({
     const nextIndex = index + 1;
     const isLastCard = nextIndex >= currentCards.length;
 
+    setIsPending(true);
     if (!remembered) {
       setFailedIds((prev) => new Set(prev).add(currentCard.id));
       setForgottenThisRound((prev) => [...prev, currentCard]);
-      if (isLastCard) setView("results");
-      else setIndex(nextIndex);
+      await markReview(currentCard.id, false);
     } else {
-      setIsPending(true);
       await markReview(currentCard.id, !failedIds.has(currentCard.id));
       setRoundRemembered((n) => n + 1);
-      setIsPending(false);
-      if (isLastCard) setView("results");
-      else setIndex(nextIndex);
     }
+    setIsPending(false);
+    if (isLastCard) setView("results");
+    else setIndex(nextIndex);
   }
 
   function startNextRound() {
