@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 
 const links = [
   { href: "/", label: "首頁" },
+  { href: "/settings", label: "設定" },
 ];
 
 export default function Navbar() {
