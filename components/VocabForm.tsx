@@ -118,12 +118,14 @@ export default function VocabForm({
 		}
 	}
 
-	const isChineseLanguage = languages.find((l) => l.id === form.languageId)?.ttsCode === "zh-TW";
+	const selectedLangTtsCode = languages.find((l) => l.id === form.languageId)?.ttsCode;
+	const isZhTW = selectedLangTtsCode === "zh-TW";
+	const isZhHK = selectedLangTtsCode === "zh-HK";
 
 	const selectedLang = languages.find((l) => l.id === form.languageId);
 
 	async function handleBackBlur() {
-		if (!isChineseLanguage || !form.back.trim() || zhuyinLoading) return;
+		if (!isZhTW || !form.back.trim() || zhuyinLoading) return;
 		zhuyinAbortedRef.current = false;
 		setZhuyinLoading(true);
 		setZhuyinNotFound(false);
@@ -258,24 +260,24 @@ export default function VocabForm({
 				</div>
 			</div>
 
-			{/* 注音（中文）或例句（其他語言） */}
-			{isChineseLanguage ? (
+			{/* 注音（中文）、粵拼（廣東話）或例句（其他語言） */}
+			{isZhTW || isZhHK ? (
 				<div className="flex flex-col gap-1.5">
-					<Label htmlFor="zhuyin">注音</Label>
+					<Label htmlFor="zhuyin">{isZhTW ? "注音" : "粵拼"}</Label>
 					<Input
 						id="zhuyin"
 						value={form.zhuyin}
 						onChange={(e) => {
 							setField("zhuyin", e.target.value);
-							setZhuyinNotFound(false);
+							if (isZhTW) setZhuyinNotFound(false);
 						}}
 						autoComplete="off"
 						disabled={zhuyinLoading}
 					/>
-					{zhuyinLoading && (
+					{isZhTW && zhuyinLoading && (
 						<p className="text-xs text-muted-foreground">查詢中…</p>
 					)}
-					{zhuyinNotFound && !zhuyinLoading && (
+					{isZhTW && zhuyinNotFound && !zhuyinLoading && (
 						<p className="text-xs text-muted-foreground">查無結果，請手動輸入</p>
 					)}
 				</div>
