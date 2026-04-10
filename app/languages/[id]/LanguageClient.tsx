@@ -1,7 +1,7 @@
 // app/languages/[id]/LanguageClient.tsx
 "use client";
 
-import { FolderPlus, Plus } from "lucide-react";
+import { BarChart2, FolderPlus, Plus } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
@@ -158,6 +158,11 @@ export default function LanguageClient({
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">單字庫</h2>
           <div className="flex gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <Link href={`/languages/${language.id}/stats`}>
+                <BarChart2 className="w-4 h-4 mr-1" />統計
+              </Link>
+            </Button>
             <Button onClick={() => setShowCatInput((s) => !s)}>
               <FolderPlus className="w-4 h-4 mr-1" />新增分類
             </Button>
