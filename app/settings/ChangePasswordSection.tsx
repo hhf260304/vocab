@@ -1,7 +1,7 @@
 // app/settings/ChangePasswordSection.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +14,13 @@ export default function ChangePasswordSection() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const successTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (successTimerRef.current) clearTimeout(successTimerRef.current);
+    };
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,7 +42,8 @@ export default function ChangePasswordSection() {
         setOldPassword("");
         setNewPassword("");
         setConfirmPassword("");
-        setTimeout(() => setSuccess(false), 3000);
+        if (successTimerRef.current) clearTimeout(successTimerRef.current);
+        successTimerRef.current = setTimeout(() => setSuccess(false), 3000);
       }
     } finally {
       setLoading(false);
@@ -89,7 +97,7 @@ export default function ChangePasswordSection() {
           <p className="text-sm text-destructive">{error}</p>
         )}
         {success && (
-          <p className="text-sm text-green-600">密碼已更新</p>
+          <p className="text-sm text-green-600 dark:text-green-400">密碼已更新</p>
         )}
 
         <Button type="submit" disabled={loading} className="w-full">
