@@ -240,6 +240,7 @@ export async function markReview(id: string, remembered: boolean) {
       reviewStage: stage,
       nextReviewAt: nextReviewAtDate,
       lastReviewedAt: new Date(),
+      ...(remembered ? {} : { failCount: sql`${vocabulary.failCount} + 1` }),
     })
     .where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
 
