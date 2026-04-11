@@ -76,7 +76,6 @@ export default function ReviewClient({
     try {
       if (!remembered) {
         setFailedIds((prev) => new Set(prev).add(currentCard.id));
-        setForgottenThisRound((prev) => [...prev, currentCard]);
         await markReview(currentCard.id, false);
       } else {
         await markReview(currentCard.id, !failedIds.has(currentCard.id));
@@ -84,6 +83,9 @@ export default function ReviewClient({
       }
     } finally {
       setIsPending(false);
+      if (!remembered) {
+        setForgottenThisRound((prev) => [...prev, currentCard]);
+      }
       if (isLastCard) setView("results");
       else setIndex(nextIndex);
     }
