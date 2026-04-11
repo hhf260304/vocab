@@ -31,6 +31,7 @@ export default function ReviewClient({
   categoryMap: Record<string, string>;
 }) {
   const router = useRouter();
+  const [initiallyEmpty] = useState(() => queue.length === 0);
   const [currentCards, setCurrentCards] = useState<Vocabulary[]>(() => {
     const shuffled = [...queue];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -106,7 +107,7 @@ export default function ReviewClient({
     setResetKey((k) => k + 1);
   }
 
-  if (queue.length === 0) {
+  if (initiallyEmpty) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
         <Sparkles className="w-14 h-14 text-primary" />
