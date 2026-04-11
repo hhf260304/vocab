@@ -260,10 +260,10 @@ export default function VocabForm({
 				</div>
 			</div>
 
-			{/* 注音（中文）、粵拼（廣東話）或例句（其他語言） */}
+			{/* 發音（中文）、發音（廣東話）或例句（其他語言） */}
 			{isZhTW || isZhHK ? (
 				<div className="flex flex-col gap-1.5">
-					<Label htmlFor="zhuyin">{isZhTW ? "注音" : "粵拼"}</Label>
+					<Label htmlFor="zhuyin">發音</Label>
 					<Input
 						id="zhuyin"
 						value={form.zhuyin}
