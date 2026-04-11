@@ -116,10 +116,15 @@ export default function LanguageClient({
   return (
     <div className="flex flex-col gap-6">
       {/* 標題 */}
-      <div>
+      <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground">
           {language.name}
         </h1>
+        <Button variant="outline" asChild>
+          <Link href={`/languages/${language.id}/stats`}>
+            <BarChart2 className="w-4 h-4 mr-1" />統計
+          </Link>
+        </Button>
       </div>
 
       {/* 統計 */}
@@ -158,11 +163,6 @@ export default function LanguageClient({
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">單字庫</h2>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" asChild>
-              <Link href={`/languages/${language.id}/stats`}>
-                <BarChart2 className="w-4 h-4 mr-1" />統計
-              </Link>
-            </Button>
             <Button onClick={() => setShowCatInput((s) => !s)}>
               <FolderPlus className="w-4 h-4 mr-1" />新增分類
             </Button>
