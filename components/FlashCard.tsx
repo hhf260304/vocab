@@ -133,7 +133,7 @@ export default function FlashCard({
           onClick={() => setFlipped((f) => !f)}
         >
           {/* 正面 */}
-          <div className="[grid-area:1/1] backface-hidden bg-white rounded-3xl border-2 border-indigo-100 flex flex-col items-center justify-center p-6 min-h-40 shadow-[0_2px_0_0_rgba(79,70,229,0.12),0_8px_24px_-4px_rgba(79,70,229,0.10)]">
+          <div className="[grid-area:1/1] backface-hidden bg-white rounded-3xl border-2 border-indigo-100 flex flex-col items-center justify-center p-6 min-h-[180px] shadow-[0_2px_0_0_rgba(79,70,229,0.12),0_8px_24px_-4px_rgba(79,70,229,0.10)]">
             {categoryName && (
               <Badge className="absolute top-4 left-4 bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-50 font-medium text-xs">
                 {categoryName}
@@ -147,7 +147,7 @@ export default function FlashCard({
 
           {/* 反面 */}
           <div
-            className="[grid-area:1/1] backface-hidden rotate-y-180 rounded-3xl flex flex-col items-center justify-center p-6 min-h-40 shadow-[0_2px_0_0_rgba(79,70,229,0.2),0_8px_24px_-4px_rgba(79,70,229,0.15)]"
+            className="[grid-area:1/1] backface-hidden rotate-y-180 rounded-3xl flex flex-col items-center justify-center p-6 min-h-[180px] shadow-[0_2px_0_0_rgba(79,70,229,0.2),0_8px_24px_-4px_rgba(79,70,229,0.15)]"
             style={{ background: "linear-gradient(135deg, #4F46E5, #7C3AED)" }}
           >
             <p className="text-4xl font-bold text-white text-center">
