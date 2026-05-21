@@ -37,6 +37,7 @@ export default function FlashCard({
   const [flipped, setFlipped] = useState(false);
 
   function speakBack() {
+    speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(vocab.back);
     utterance.lang = ttsCode;
     speechSynthesis.speak(utterance);
@@ -85,12 +86,15 @@ export default function FlashCard({
     setter({ status: "idle", blob: null });
   }
 
-  // 翻轉至反面時播音
+  // 翻轉至反面時播音，翻回正面時停音
   useEffect(() => {
     if (flipped) {
+      speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(vocab.back);
       utterance.lang = ttsCode;
       speechSynthesis.speak(utterance);
+    } else {
+      speechSynthesis.cancel();
     }
   }, [flipped, vocab.back, ttsCode]);
 
@@ -122,6 +126,7 @@ export default function FlashCard({
         mediaRecorderRef.current.stop();
       }
       urls.forEach(URL.revokeObjectURL);
+      speechSynthesis.cancel();
     };
   }, []);
 
