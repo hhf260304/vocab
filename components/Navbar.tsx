@@ -30,26 +30,28 @@ export default function Navbar() {
           快快樂樂背單字
         </Link>
         {user && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Avatar className="w-8 h-8 cursor-pointer">
-                <AvatarImage src={user.image ?? undefined} alt={user.name ?? "用戶"} />
-                <AvatarFallback>{initials}</AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link href="/settings">
-                  <Settings className="w-4 h-4" />
-                  設定
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => signOut({ redirectTo: "/login" })}>
-                <LogOut className="w-4 h-4" />
-                登出
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="hidden sm:block">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className="w-8 h-8 cursor-pointer">
+                  <AvatarImage src={user.image ?? undefined} alt={user.name ?? "用戶"} />
+                  <AvatarFallback>{initials}</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link href="/settings">
+                    <Settings className="w-4 h-4" />
+                    設定
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => signOut({ redirectTo: "/login" })}>
+                  <LogOut className="w-4 h-4" />
+                  登出
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         )}
       </div>
     </nav>

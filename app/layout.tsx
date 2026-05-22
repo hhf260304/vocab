@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import Navbar from "@/components/Navbar";
+import BottomTabBar from "@/components/BottomTabBar";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"] });
@@ -18,7 +19,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${geist.className} bg-background min-h-screen flex flex-col`}>
         <SessionProvider>
           <Navbar />
-          <main className="max-w-3xl mx-auto px-4 py-8 flex-1 w-full flex flex-col">{children}</main>
+          <main className="max-w-3xl mx-auto px-4 py-4 sm:py-8 pb-20 sm:pb-8 flex-1 w-full flex flex-col">{children}</main>
+          <BottomTabBar />
         </SessionProvider>
       </body>
     </html>
