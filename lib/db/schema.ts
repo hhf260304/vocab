@@ -35,7 +35,7 @@ export const categories = pgTable("categories", {
     onDelete: "cascade",
   }),
   name: text("name").notNull(),
-  type: text("type").notNull().default("vocab"),
+  type: text("type").default("vocab").notNull(),
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
 });
 
