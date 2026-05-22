@@ -6,17 +6,19 @@ import { Button } from "@/components/ui/button";
 import { createLanguage, getLanguages } from "@/lib/actions/languages";
 import { PRESET_LANGUAGES } from "@/lib/languages-config";
 import { getVocabularies, getTodayReviews } from "@/lib/actions/vocabulary";
+import { getSentenceCounts } from "@/lib/actions/sentences";
 
 export default async function DashboardPage() {
   const langs = await getLanguages();
 
   const stats = await Promise.all(
     langs.map(async (lang) => {
-      const [all, reviews] = await Promise.all([
+      const [all, reviews, sentenceCounts] = await Promise.all([
         getVocabularies(lang.id),
         getTodayReviews(lang.id),
+        getSentenceCounts(lang.id),
       ]);
-      return { lang, totalCount: all.length, reviewCount: reviews.length };
+      return { lang, totalCount: all.length, reviewCount: reviews.length, sentenceCount: sentenceCounts.total };
     })
   );
 
@@ -61,12 +63,13 @@ export default async function DashboardPage() {
       ) : (
         <>
           <div className="flex flex-col gap-3">
-            {stats.map(({ lang, totalCount, reviewCount }) => (
+            {stats.map(({ lang, totalCount, reviewCount, sentenceCount }) => (
               <LanguageCard
                 key={lang.id}
                 language={lang}
                 reviewCount={reviewCount}
                 totalCount={totalCount}
+                sentenceCount={sentenceCount}
               />
             ))}
           </div>

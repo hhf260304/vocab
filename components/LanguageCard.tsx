@@ -6,9 +6,10 @@ interface Props {
   language: Language;
   reviewCount: number;
   totalCount: number;
+  sentenceCount: number;
 }
 
-export default function LanguageCard({ language, reviewCount, totalCount }: Props) {
+export default function LanguageCard({ language, reviewCount, totalCount, sentenceCount }: Props) {
   return (
     <Link href={`/languages/${language.id}`}>
       <div className="bg-card border border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-md transition-all cursor-pointer active:scale-[0.99]">
@@ -21,7 +22,7 @@ export default function LanguageCard({ language, reviewCount, totalCount }: Prop
           )}
         </div>
         <p className="text-sm text-muted-foreground">
-          {totalCount} 個單字
+          {totalCount} 個單字・{sentenceCount} 個句子
           {reviewCount > 0
             ? `・${reviewCount} 個待複習`
             : totalCount > 0
