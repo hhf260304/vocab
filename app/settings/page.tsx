@@ -2,6 +2,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import ChangePasswordSection from "./ChangePasswordSection";
+import LogoutSection from "./LogoutSection";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -17,6 +18,7 @@ export default async function SettingsPage() {
       </div>
 
       <ChangePasswordSection />
+      <LogoutSection />
     </div>
   );
 }
