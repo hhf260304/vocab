@@ -30,6 +30,7 @@ export default async function CategoryPage({
       languageId: id,
       userId: language.userId,
       createdAt: language.createdAt,
+      type: "vocabulary",
     };
   } else {
     const found = categories.find((c) => c.id === categoryId);
