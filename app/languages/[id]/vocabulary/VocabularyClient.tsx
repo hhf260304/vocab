@@ -180,7 +180,8 @@ export default function VocabularyClient({
           <h2 className="text-lg font-semibold text-foreground">單字庫</h2>
           <div className="flex gap-2">
             <Button onClick={() => setShowCatInput((s) => !s)}>
-              <FolderPlus className="w-4 h-4 mr-1" />新增分類
+              <FolderPlus className="w-4 h-4" />
+              <span className="hidden sm:inline ml-1">新增分類</span>
             </Button>
             <Button asChild>
               <Link
@@ -190,7 +191,8 @@ export default function VocabularyClient({
                     : `/vocabulary/new?languageId=${language.id}`
                 }
               >
-                <Plus className="w-4 h-4 mr-1" />新增單字
+                <Plus className="w-4 h-4" />
+                <span className="hidden sm:inline ml-1">新增單字</span>
               </Link>
             </Button>
           </div>

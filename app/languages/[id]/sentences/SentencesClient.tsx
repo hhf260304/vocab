@@ -162,7 +162,8 @@ export default function SentencesClient({
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">句子庫</h2>
           <Button onClick={() => setShowCatInput((s) => !s)}>
-            <FolderPlus className="w-4 h-4 mr-1" />新增分類
+            <FolderPlus className="w-4 h-4" />
+            <span className="hidden sm:inline ml-1">新增分類</span>
           </Button>
         </div>
 
