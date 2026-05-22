@@ -1,4 +1,4 @@
-// app/review/[languageId]/ReviewClient.tsx
+// app/sentences/[languageId]/review/SentenceReviewClient.tsx
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -7,8 +7,8 @@ import FlashCard from "@/components/FlashCard";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, RotateCcw, Sparkles, Trash2 } from "lucide-react";
-import { markReview, deleteVocabulary } from "@/lib/actions/vocabulary";
-import type { Language, Vocabulary } from "@/lib/db/schema";
+import { markSentenceReview, deleteSentence } from "@/lib/actions/sentences";
+import type { Language, Sentence } from "@/lib/db/schema";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,18 +21,18 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export default function ReviewClient({
+export default function SentenceReviewClient({
   queue,
   language,
   categoryMap,
 }: {
-  queue: Vocabulary[];
+  queue: Sentence[];
   language: Language;
   categoryMap: Record<string, string>;
 }) {
   const router = useRouter();
   const [initiallyEmpty] = useState(() => queue.length === 0);
-  const [currentCards, setCurrentCards] = useState<Vocabulary[]>(() => {
+  const [currentCards, setCurrentCards] = useState<Sentence[]>(() => {
     const shuffled = [...queue];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -42,7 +42,7 @@ export default function ReviewClient({
   });
   const [index, setIndex] = useState(0);
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set());
-  const [forgottenThisRound, setForgottenThisRound] = useState<Vocabulary[]>([]);
+  const [forgottenThisRound, setForgottenThisRound] = useState<Sentence[]>([]);
   const [roundRemembered, setRoundRemembered] = useState(0);
   const [round, setRound] = useState(1);
   const [view, setView] = useState<"reviewing" | "results">("reviewing");
@@ -54,7 +54,7 @@ export default function ReviewClient({
   async function handleDelete() {
     if (!current) return;
     const idToDelete = current.id;
-    await deleteVocabulary(idToDelete);
+    await deleteSentence(idToDelete);
     const newCards = currentCards.filter((c) => c.id !== idToDelete);
     setForgottenThisRound((prev) => prev.filter((c) => c.id !== idToDelete));
     if (newCards.length === 0) {
@@ -77,9 +77,9 @@ export default function ReviewClient({
     try {
       if (!remembered) {
         setFailedIds((prev) => new Set(prev).add(currentCard.id));
-        await markReview(currentCard.id, false);
+        await markSentenceReview(currentCard.id, false);
       } else {
-        await markReview(currentCard.id, !failedIds.has(currentCard.id));
+        await markSentenceReview(currentCard.id, !failedIds.has(currentCard.id));
         setRoundRemembered((n) => n + 1);
       }
     } finally {
@@ -111,9 +111,7 @@ export default function ReviewClient({
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
         <Sparkles className="w-14 h-14 text-primary" />
-        <h2 className="text-xl font-bold text-foreground">
-          今日沒有待複習單字
-        </h2>
+        <h2 className="text-xl font-bold text-foreground">今日沒有待複習句子</h2>
         <Button
           variant="link"
           className="text-primary"
@@ -140,21 +138,17 @@ export default function ReviewClient({
         </h2>
         <div className="flex gap-6">
           <div className="flex flex-col items-center">
-            <span className="text-3xl font-bold text-emerald-600">
-              {roundRemembered}
-            </span>
+            <span className="text-3xl font-bold text-emerald-600">{roundRemembered}</span>
             <span className="text-sm text-muted-foreground">記得</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="text-3xl font-bold text-red-500">
-              {forgotCount}
-            </span>
+            <span className="text-3xl font-bold text-red-500">{forgotCount}</span>
             <span className="text-sm text-muted-foreground">忘記</span>
           </div>
         </div>
         {!allDone && (
           <Button className="px-8 active:scale-[0.98] transition-transform" onClick={startNextRound}>
-            <RotateCcw className="w-4 h-4 mr-1" />複習忘記的字 ({forgotCount})
+            <RotateCcw className="w-4 h-4 mr-1" />複習忘記的句子 ({forgotCount})
           </Button>
         )}
         <Button
@@ -173,7 +167,7 @@ export default function ReviewClient({
       <div className="w-full flex items-center justify-between">
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">{language.name}</span>
+            <span className="text-sm text-muted-foreground">{language.name} · 句子</span>
             {round > 1 && (
               <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">
                 第 {round} 輪
@@ -193,17 +187,14 @@ export default function ReviewClient({
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>刪除單字？</AlertDialogTitle>
+                <AlertDialogTitle>刪除句子？</AlertDialogTitle>
                 <AlertDialogDescription>
                   「{current.front}」將被永久刪除，無法復原。
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>取消</AlertDialogCancel>
-                <AlertDialogAction
-                  variant="destructive"
-                  onClick={handleDelete}
-                >
+                <AlertDialogAction variant="destructive" onClick={handleDelete}>
                   <Trash2 className="w-4 h-4 mr-1" />刪除
                 </AlertDialogAction>
               </AlertDialogFooter>

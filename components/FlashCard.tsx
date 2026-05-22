@@ -5,13 +5,19 @@ import { useEffect, useRef, useState } from "react";
 import { Mic, Play, RotateCcw, Square, ThumbsDown, ThumbsUp, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import type { Vocabulary } from "@/lib/db/schema";
+export interface CardLike {
+  id: string;
+  front: string;
+  back: string;
+  zhuyin?: string | null;
+  exampleJp?: string | null;
+}
 
 type RecStatus = "idle" | "recording" | "recorded";
 type RecState = { status: RecStatus; blob: Blob | null };
 
 interface Props {
-  vocab: Vocabulary;
+  card: CardLike;
   ttsCode: string;
   categoryName?: string;
   isAnswering?: boolean;
@@ -20,7 +26,7 @@ interface Props {
 }
 
 export default function FlashCard({
-  vocab,
+  card,
   ttsCode,
   categoryName,
   isAnswering = false,
@@ -38,7 +44,7 @@ export default function FlashCard({
 
   function speakBack() {
     speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(vocab.back);
+    const utterance = new SpeechSynthesisUtterance(card.back);
     utterance.lang = ttsCode;
     speechSynthesis.speak(utterance);
   }
@@ -90,13 +96,13 @@ export default function FlashCard({
   useEffect(() => {
     if (flipped) {
       speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(vocab.back);
+      const utterance = new SpeechSynthesisUtterance(card.back);
       utterance.lang = ttsCode;
       speechSynthesis.speak(utterance);
     } else {
       speechSynthesis.cancel();
     }
-  }, [flipped, vocab.back, ttsCode]);
+  }, [flipped, card.back, ttsCode]);
 
   // 鍵盤快捷鍵：Space/Enter 翻牌，← 忘記，→ 記得
   useEffect(() => {
@@ -145,7 +151,7 @@ export default function FlashCard({
               </Badge>
             )}
             <p className="text-4xl font-bold text-foreground text-center">
-              {vocab.front}
+              {card.front}
             </p>
             <p className="text-muted-foreground text-sm mt-4">點擊翻轉</p>
           </div>
@@ -156,7 +162,7 @@ export default function FlashCard({
             style={{ background: "linear-gradient(135deg, #4F46E5, #7C3AED)" }}
           >
             <p className="text-4xl font-bold text-white text-center">
-              {vocab.back}
+              {card.back}
             </p>
             <button
               type="button"
@@ -166,11 +172,11 @@ export default function FlashCard({
             >
               <Volume2 className="h-5 w-5" />
             </button>
-            {vocab.zhuyin && (
-              <p className="mt-4 text-indigo-100 text-sm text-center">{vocab.zhuyin}</p>
+            {card.zhuyin && (
+              <p className="mt-4 text-indigo-100 text-sm text-center">{card.zhuyin}</p>
             )}
-            {vocab.exampleJp && (
-              <p className="mt-2 text-indigo-100 text-sm text-center">{vocab.exampleJp}</p>
+            {card.exampleJp && (
+              <p className="mt-2 text-indigo-100 text-sm text-center">{card.exampleJp}</p>
             )}
           </div>
         </div>
