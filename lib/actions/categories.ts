@@ -13,26 +13,38 @@ async function getUserId(): Promise<string> {
   return session.user.id;
 }
 
-export async function getCategories(languageId: string) {
+export async function getCategories(
+  languageId: string,
+  type?: "vocab" | "sentence"
+) {
   const userId = await getUserId();
+  const conditions = [
+    eq(categories.userId, userId),
+    eq(categories.languageId, languageId),
+  ];
+  if (type) conditions.push(eq(categories.type, type));
   return db
     .select()
     .from(categories)
-    .where(and(eq(categories.userId, userId), eq(categories.languageId, languageId)))
+    .where(and(...conditions))
     .orderBy(categories.createdAt);
 }
 
-export async function createCategory(name: string, languageId: string) {
+export async function createCategory(
+  name: string,
+  languageId: string,
+  type: "vocab" | "sentence" = "vocab"
+) {
   const userId = await getUserId();
   const trimmed = name.trim();
   if (!trimmed) throw new Error("分類名稱不能為空");
 
   const [created] = await db
     .insert(categories)
-    .values({ userId, name: trimmed, languageId })
+    .values({ userId, name: trimmed, languageId, type })
     .returning();
 
-  revalidatePath(`/languages/${languageId}`);
+  revalidatePath(`/languages/${languageId}`, "layout");
   return created;
 }
 
@@ -42,7 +54,7 @@ export async function deleteCategory(id: string, languageId: string) {
     .delete(categories)
     .where(and(eq(categories.id, id), eq(categories.userId, userId)));
 
-  revalidatePath(`/languages/${languageId}`);
+  revalidatePath(`/languages/${languageId}`, "layout");
 }
 
 export async function updateCategory(id: string, name: string, languageId: string) {
@@ -55,5 +67,5 @@ export async function updateCategory(id: string, name: string, languageId: strin
     .set({ name: trimmed })
     .where(and(eq(categories.id, id), eq(categories.userId, userId)));
 
-  revalidatePath(`/languages/${languageId}`);
+  revalidatePath(`/languages/${languageId}`, "layout");
 }
