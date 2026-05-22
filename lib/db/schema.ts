@@ -35,6 +35,7 @@ export const categories = pgTable("categories", {
     onDelete: "cascade",
   }),
   name: text("name").notNull(),
+  type: text("type").notNull().default("vocab"),
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
 });
 
@@ -63,10 +64,34 @@ export const vocabulary = pgTable("vocabulary", {
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
 });
 
+export const sentences = pgTable("sentences", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  languageId: text("language_id").references(() => languages.id, {
+    onDelete: "set null",
+  }),
+  categoryId: text("category_id").references(() => categories.id, {
+    onDelete: "cascade",
+  }),
+  front: text("front").notNull(),
+  back: text("back").notNull(),
+  reviewStage: integer("review_stage").notNull().default(0),
+  nextReviewAt: timestamp("next_review_at").default(sql`now()`).notNull(),
+  lastReviewedAt: timestamp("last_reviewed_at"),
+  failCount: integer("fail_count").notNull().default(0),
+  createdAt: timestamp("created_at").default(sql`now()`).notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type Language = typeof languages.$inferSelect;
 export type Category = typeof categories.$inferSelect;
 export type Vocabulary = typeof vocabulary.$inferSelect;
+export type Sentence = typeof sentences.$inferSelect;
 export type NewLanguage = typeof languages.$inferInsert;
 export type NewCategory = typeof categories.$inferInsert;
 export type NewVocabulary = typeof vocabulary.$inferInsert;
+export type NewSentence = typeof sentences.$inferInsert;

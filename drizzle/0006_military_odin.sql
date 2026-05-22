@@ -1,0 +1,1 @@
+ALTER TABLE "categories" ADD COLUMN "type" text DEFAULT 'vocab' NOT NULL;
