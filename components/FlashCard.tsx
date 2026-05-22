@@ -144,7 +144,7 @@ export default function FlashCard({
           onClick={() => setFlipped((f) => !f)}
         >
           {/* 正面 */}
-          <div className="[grid-area:1/1] backface-hidden bg-white rounded-3xl border-2 border-indigo-100 flex flex-col items-center justify-center p-6 min-h-[180px] shadow-[0_2px_0_0_rgba(79,70,229,0.12),0_8px_24px_-4px_rgba(79,70,229,0.10)]">
+          <div className="[grid-area:1/1] backface-hidden bg-white rounded-3xl border-2 border-indigo-100 flex flex-col items-center justify-center p-6 min-h-[200px] sm:min-h-[180px] shadow-[0_2px_0_0_rgba(79,70,229,0.12),0_8px_24px_-4px_rgba(79,70,229,0.10)]">
             {categoryName && (
               <Badge className="absolute top-4 left-4 bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-50 font-medium text-xs">
                 {categoryName}
@@ -158,7 +158,7 @@ export default function FlashCard({
 
           {/* 反面 */}
           <div
-            className="[grid-area:1/1] backface-hidden rotate-y-180 rounded-3xl flex flex-col items-center justify-center p-6 min-h-[180px] shadow-[0_2px_0_0_rgba(79,70,229,0.2),0_8px_24px_-4px_rgba(79,70,229,0.15)]"
+            className="[grid-area:1/1] backface-hidden rotate-y-180 rounded-3xl flex flex-col items-center justify-center p-6 min-h-[200px] sm:min-h-[180px] shadow-[0_2px_0_0_rgba(79,70,229,0.2),0_8px_24px_-4px_rgba(79,70,229,0.15)]"
             style={{ background: "linear-gradient(135deg, #4F46E5, #7C3AED)" }}
           >
             <p className="text-4xl font-bold text-white text-center">
@@ -279,7 +279,7 @@ export default function FlashCard({
           <div className="flex gap-4 w-full">
             <Button
               variant="outline"
-              className="flex-1 h-auto py-3.5 bg-red-50 text-red-600 border-red-200 hover:bg-red-100 hover:text-red-600 rounded-2xl font-semibold gap-2 active:scale-[0.97] transition-transform"
+              className="flex-1 h-auto py-4 sm:py-3.5 bg-red-50 text-red-600 border-red-200 hover:bg-red-100 hover:text-red-600 rounded-2xl font-semibold gap-2 active:scale-[0.97] transition-transform"
               onClick={() => onForgot()}
               disabled={isAnswering}
             >
@@ -287,21 +287,21 @@ export default function FlashCard({
             </Button>
             <Button
               variant="outline"
-              className="flex-1 h-auto py-3.5 bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100 hover:text-emerald-600 rounded-2xl font-semibold gap-2 active:scale-[0.97] transition-transform"
+              className="flex-1 h-auto py-4 sm:py-3.5 bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100 hover:text-emerald-600 rounded-2xl font-semibold gap-2 active:scale-[0.97] transition-transform"
               onClick={() => onRemembered()}
               disabled={isAnswering}
             >
               <ThumbsUp className="w-4 h-4" /> 記得
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground/60 select-none">
+          <p className="hidden sm:block text-xs text-muted-foreground/60 select-none">
             <kbd className="px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-mono text-[11px]">←</kbd>
             {" 忘記 · 記得 "}
             <kbd className="px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-mono text-[11px]">→</kbd>
           </p>
         </div>
       ) : (
-        <p className="text-xs text-muted-foreground/60 select-none">
+        <p className="hidden sm:block text-xs text-muted-foreground/60 select-none">
           <kbd className="px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-mono text-[11px]">Space</kbd>
           {" 翻轉"}
         </p>
