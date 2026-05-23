@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="zh-TW">
       <body className={`${geist.className} bg-gray-200`}>
         <SessionProvider>
-          <div className="max-w-[430px] w-full mx-auto h-screen flex flex-col bg-background shadow-xl overflow-hidden">
+          <div className="max-w-[430px] w-full mx-auto h-dvh flex flex-col bg-background shadow-xl overflow-hidden">
             <Navbar />
             <main className="flex-1 overflow-y-auto px-4 py-4 flex flex-col">{children}</main>
             <BottomTabBar />
