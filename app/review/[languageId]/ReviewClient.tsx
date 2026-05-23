@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FlashCard from "@/components/FlashCard";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
