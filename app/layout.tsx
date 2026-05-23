@@ -21,11 +21,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-TW">
-      <body className={`${geist.className} bg-background min-h-screen flex flex-col`}>
+      <body className={`${geist.className} bg-gray-200`}>
         <SessionProvider>
-          <Navbar />
-          <main className="max-w-3xl mx-auto px-4 py-4 sm:py-8 pb-20 sm:pb-8 flex-1 w-full flex flex-col">{children}</main>
-          <BottomTabBar />
+          <div className="max-w-[430px] w-full mx-auto h-screen flex flex-col bg-background shadow-xl overflow-hidden">
+            <Navbar />
+            <main className="flex-1 overflow-y-auto px-4 py-4 flex flex-col">{children}</main>
+            <BottomTabBar />
+          </div>
         </SessionProvider>
       </body>
     </html>
