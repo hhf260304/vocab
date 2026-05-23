@@ -16,7 +16,7 @@ export default function BottomTabBar() {
   const isSettings = pathname.startsWith("/settings");
 
   return (
-    <nav className="sm:hidden fixed bottom-0 inset-x-0 bg-card/90 backdrop-blur-sm border-t border-border z-10">
+    <nav className="bg-card/90 backdrop-blur-sm border-t border-border z-10">
       <div className="flex h-14">
         <Link
           href="/"
