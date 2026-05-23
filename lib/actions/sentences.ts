@@ -187,8 +187,8 @@ export async function createSentences(
       userId,
       languageId,
       categoryId,
-      front: item.front,
-      back: item.back,
+      front: item.front.trim(),
+      back: item.back.trim(),
       reviewStage: 0,
       nextReviewAt: new Date(),
     }))
