@@ -1,7 +1,7 @@
 // app/languages/[id]/sentences/[categoryId]/SentenceCategoryClient.tsx
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { ArrowLeft, Check, ListPlus, Pencil, Plus, Trash2, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -76,6 +76,7 @@ export default function SentenceCategoryClient({
   const [batchSubmitError, setBatchSubmitError] = useState("");
 
   const [sentences, setSentences] = useState(initialSentences);
+  useEffect(() => { setSentences(initialSentences); }, [initialSentences]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newFront, setNewFront] = useState("");
   const [newBack, setNewBack] = useState("");
