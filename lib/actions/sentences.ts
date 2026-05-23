@@ -173,3 +173,28 @@ export async function getCategorySentenceCounts(
   }
   return result;
 }
+
+export async function createSentences(
+  items: { front: string; back: string }[],
+  languageId: string,
+  categoryId: string | null
+): Promise<{ created: number }> {
+  const userId = await getUserId();
+  if (items.length === 0) return { created: 0 };
+
+  await db.insert(sentences).values(
+    items.map((item) => ({
+      userId,
+      languageId,
+      categoryId,
+      front: item.front,
+      back: item.back,
+      reviewStage: 0,
+      nextReviewAt: new Date(),
+    }))
+  );
+
+  revalidatePath("/");
+  revalidatePath(`/languages/${languageId}`, "layout");
+  return { created: items.length };
+}
