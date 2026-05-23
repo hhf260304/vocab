@@ -1,5 +1,5 @@
 // app/layout.tsx
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import Navbar from "@/components/Navbar";
@@ -7,6 +7,11 @@ import BottomTabBar from "@/components/BottomTabBar";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"] });
+
+export const viewport: Viewport = {
+  userScalable: false,
+  maximumScale: 1,
+};
 
 export const metadata: Metadata = {
   title: "快快樂樂背單字 — 單字練習本",
