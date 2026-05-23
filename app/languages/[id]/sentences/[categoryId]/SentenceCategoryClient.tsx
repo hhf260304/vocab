@@ -73,6 +73,7 @@ export default function SentenceCategoryClient({
   const [batchText, setBatchText] = useState("");
   const [batchErrors, setBatchErrors] = useState<number[]>([]);
   const [isBatchSubmitting, setIsBatchSubmitting] = useState(false);
+  const [batchSubmitError, setBatchSubmitError] = useState("");
 
   const [sentences, setSentences] = useState(initialSentences);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -147,13 +148,14 @@ export default function SentenceCategoryClient({
   }
 
   async function handleBatchCreate() {
-    const lines = batchText.split("\n").filter((l) => l.trim());
+    const allLines = batchText.split("\n");
     const errorLines: number[] = [];
     const items: { front: string; back: string }[] = [];
 
-    lines.forEach((line, i) => {
+    allLines.forEach((line, i) => {
+      if (!line.trim()) return; // 空行略過，不計入 errorLines
       const parsed = parseBatchSentenceLine(line);
-      if (!parsed) errorLines.push(i + 1);
+      if (!parsed) errorLines.push(i + 1); // i+1 = 原始文字的行號
       else items.push(parsed);
     });
 
@@ -164,12 +166,15 @@ export default function SentenceCategoryClient({
     if (items.length === 0) return;
 
     setIsBatchSubmitting(true);
+    setBatchSubmitError("");
     try {
       await createSentences(items, language.id, defaultCategoryId);
       setBatchOpen(false);
       setBatchText("");
       setBatchErrors([]);
       router.refresh();
+    } catch {
+      setBatchSubmitError("新增失敗，請稍後再試");
     } finally {
       setIsBatchSubmitting(false);
     }
@@ -399,6 +404,7 @@ export default function SentenceCategoryClient({
           if (!o) {
             setBatchText("");
             setBatchErrors([]);
+            setBatchSubmitError("");
           }
         }}
       >
@@ -429,6 +435,9 @@ export default function SentenceCategoryClient({
                   </span>
                 ))}
               </p>
+            )}
+            {batchSubmitError && (
+              <p className="text-sm text-destructive">{batchSubmitError}</p>
             )}
           </div>
           <DialogFooter>

@@ -181,6 +181,7 @@ export async function createSentences(
 ): Promise<{ created: number }> {
   const userId = await getUserId();
   if (items.length === 0) return { created: 0 };
+  if (items.length > 200) throw new Error("單次最多批次新增 200 筆");
 
   await db.insert(sentences).values(
     items.map((item) => ({
