@@ -164,12 +164,15 @@ export default function SentenceCategoryClient({
     if (items.length === 0) return;
 
     setIsBatchSubmitting(true);
-    await createSentences(items, language.id, defaultCategoryId);
-    setIsBatchSubmitting(false);
-    setBatchOpen(false);
-    setBatchText("");
-    setBatchErrors([]);
-    router.refresh();
+    try {
+      await createSentences(items, language.id, defaultCategoryId);
+      setBatchOpen(false);
+      setBatchText("");
+      setBatchErrors([]);
+      router.refresh();
+    } finally {
+      setIsBatchSubmitting(false);
+    }
   }
 
   return (
@@ -432,7 +435,7 @@ export default function SentenceCategoryClient({
             <Button variant="outline" onClick={() => setBatchOpen(false)}>
               取消
             </Button>
-            <Button onClick={handleBatchCreate} disabled={isBatchSubmitting}>
+            <Button onClick={handleBatchCreate} disabled={isBatchSubmitting || !batchText.trim()}>
               {isBatchSubmitting ? (
                 "新增中…"
               ) : (
