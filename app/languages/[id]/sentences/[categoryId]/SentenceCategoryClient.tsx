@@ -40,7 +40,7 @@ import type { Category, Language, Sentence } from "@/lib/db/schema";
 
 function parseBatchSentenceLine(line: string): { front: string; back: string } | null {
   const parts = line.includes("\t") ? line.split("\t") : line.split("|");
-  const [front, back] = parts.map((p) => p.trim());
+  const [back, front] = parts.map((p) => p.trim());
   if (!front || !back) return null;
   return { front, back };
 }
@@ -412,14 +412,14 @@ export default function SentenceCategoryClient({
           <DialogHeader>
             <DialogTitle>批次新增句子 — {categoryName}</DialogTitle>
             <DialogDescription>
-              每行一筆：句子（{language.name}） | 翻譯（母語）
+              每行一筆：翻譯（母語） | 句子（{language.name}）
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2">
             <Textarea
               autoFocus
               rows={8}
-              placeholder={"I love cats | 我愛貓\nShe runs fast | 她跑得很快"}
+              placeholder={"我愛貓 | I love cats\n她跑得很快 | She runs fast"}
               value={batchText}
               onChange={(e) => {
                 setBatchText(e.target.value);
