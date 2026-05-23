@@ -144,16 +144,20 @@ export default function FlashCard({
           onClick={() => setFlipped((f) => !f)}
         >
           {/* 正面 */}
-          <div className="[grid-area:1/1] backface-hidden bg-white rounded-3xl border-2 border-indigo-100 flex flex-col items-center justify-center p-6 min-h-[200px] sm:min-h-[180px] shadow-[0_2px_0_0_rgba(79,70,229,0.12),0_8px_24px_-4px_rgba(79,70,229,0.10)]">
-            {categoryName && (
-              <Badge className="absolute top-4 left-4 bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-50 font-medium text-xs">
-                {categoryName}
-              </Badge>
-            )}
-            <p className="text-4xl font-bold text-foreground text-center">
-              {card.front}
-            </p>
-            <p className="text-muted-foreground text-sm mt-4">點擊翻轉</p>
+          <div className="[grid-area:1/1] backface-hidden bg-white rounded-3xl border-2 border-indigo-100 flex flex-col p-6 min-h-[200px] sm:min-h-[180px] shadow-[0_2px_0_0_rgba(79,70,229,0.12),0_8px_24px_-4px_rgba(79,70,229,0.10)]">
+            <div className="min-h-[24px]">
+              {categoryName && (
+                <Badge className="bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-50 font-medium text-xs">
+                  {categoryName}
+                </Badge>
+              )}
+            </div>
+            <div className="flex-1 flex flex-col items-center justify-center">
+              <p className="text-4xl font-bold text-foreground text-center">
+                {card.front}
+              </p>
+              <p className="text-muted-foreground text-sm mt-4">點擊翻轉</p>
+            </div>
           </div>
 
           {/* 反面 */}

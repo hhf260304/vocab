@@ -31,6 +31,14 @@ export default function ReviewClient({
   categoryMap: Record<string, string>;
 }) {
   const router = useRouter();
+
+  useEffect(() => {
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = "hidden";
+    return () => { html.style.overflow = prev; };
+  }, []);
+
   const [initiallyEmpty] = useState(() => queue.length === 0);
   const [currentCards, setCurrentCards] = useState<Vocabulary[]>(() => {
     const shuffled = [...queue];
