@@ -2,11 +2,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { ArrowLeft, Check, Pencil, Plus, Trash2, X } from "lucide-react";
+import { ArrowLeft, Check, ListPlus, Pencil, Plus, Trash2, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,14 +21,29 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createSentence, updateSentence, deleteSentence } from "@/lib/actions/sentences";
+import { createSentence, createSentences, updateSentence, deleteSentence } from "@/lib/actions/sentences";
 import type { Category, Language, Sentence } from "@/lib/db/schema";
+
+function parseBatchSentenceLine(line: string): { front: string; back: string } | null {
+  const parts = line.includes("\t") ? line.split("\t") : line.split("|");
+  const [front, back] = parts.map((p) => p.trim());
+  if (!front || !back) return null;
+  return { front, back };
+}
 
 interface Props {
   language: Language;
@@ -50,6 +67,12 @@ export default function SentenceCategoryClient({
   initialSentences,
 }: Props) {
   const [, startTransition] = useTransition();
+
+  const router = useRouter();
+  const [batchOpen, setBatchOpen] = useState(false);
+  const [batchText, setBatchText] = useState("");
+  const [batchErrors, setBatchErrors] = useState<number[]>([]);
+  const [isBatchSubmitting, setIsBatchSubmitting] = useState(false);
 
   const [sentences, setSentences] = useState(initialSentences);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -123,6 +146,32 @@ export default function SentenceCategoryClient({
     });
   }
 
+  async function handleBatchCreate() {
+    const lines = batchText.split("\n").filter((l) => l.trim());
+    const errorLines: number[] = [];
+    const items: { front: string; back: string }[] = [];
+
+    lines.forEach((line, i) => {
+      const parsed = parseBatchSentenceLine(line);
+      if (!parsed) errorLines.push(i + 1);
+      else items.push(parsed);
+    });
+
+    if (errorLines.length > 0) {
+      setBatchErrors(errorLines);
+      return;
+    }
+    if (items.length === 0) return;
+
+    setIsBatchSubmitting(true);
+    await createSentences(items, language.id, defaultCategoryId);
+    setIsBatchSubmitting(false);
+    setBatchOpen(false);
+    setBatchText("");
+    setBatchErrors([]);
+    router.refresh();
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-2">
@@ -146,9 +195,21 @@ export default function SentenceCategoryClient({
             {language.name} · {sentences.length} 個句子
           </p>
         </div>
-        <Button onClick={() => setShowAddForm((s) => !s)}>
-          <Plus className="w-4 h-4 mr-1" />新增句子
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => {
+              setBatchOpen(true);
+              setBatchText("");
+              setBatchErrors([]);
+            }}
+          >
+            <ListPlus className="w-4 h-4 mr-1" />批次新增
+          </Button>
+          <Button onClick={() => setShowAddForm((s) => !s)}>
+            <Plus className="w-4 h-4 mr-1" />新增句子
+          </Button>
+        </div>
       </div>
 
       {showAddForm && (
@@ -326,6 +387,64 @@ export default function SentenceCategoryClient({
           );
         })}
       </div>
+
+      {/* 批次新增 */}
+      <Dialog
+        open={batchOpen}
+        onOpenChange={(o) => {
+          setBatchOpen(o);
+          if (!o) {
+            setBatchText("");
+            setBatchErrors([]);
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>批次新增句子 — {categoryName}</DialogTitle>
+            <DialogDescription>
+              每行一筆：句子（{language.name}） | 翻譯（母語）
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-2">
+            <Textarea
+              autoFocus
+              rows={8}
+              placeholder={"I love cats | 我愛貓\nShe runs fast | 她跑得很快"}
+              value={batchText}
+              onChange={(e) => {
+                setBatchText(e.target.value);
+                if (batchErrors.length > 0) setBatchErrors([]);
+              }}
+            />
+            {batchErrors.length > 0 && (
+              <p className="text-sm text-destructive">
+                以下行格式有誤（需至少「句子 | 翻譯」）：
+                {batchErrors.map((n) => (
+                  <span key={n} className="block font-medium">
+                    ・第 {n} 行
+                  </span>
+                ))}
+              </p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBatchOpen(false)}>
+              取消
+            </Button>
+            <Button onClick={handleBatchCreate} disabled={isBatchSubmitting}>
+              {isBatchSubmitting ? (
+                "新增中…"
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-1" />
+                  新增
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
