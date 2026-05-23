@@ -40,7 +40,7 @@ import type { Category, Language, Sentence } from "@/lib/db/schema";
 
 function parseBatchSentenceLine(line: string): { front: string; back: string } | null {
   const parts = line.includes("\t") ? line.split("\t") : line.split("|");
-  const [back, front] = parts.map((p) => p.trim());
+  const [front, back] = parts.map((p) => p.trim());
   if (!front || !back) return null;
   return { front, back };
 }
