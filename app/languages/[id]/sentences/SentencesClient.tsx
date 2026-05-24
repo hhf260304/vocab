@@ -29,7 +29,7 @@ function SentenceCategoryCard({
   return (
     <Link
       href={href}
-      className="bg-card rounded-2xl border border-border overflow-hidden flex items-center gap-2 px-5 py-3.5 hover:bg-muted/60 hover:border-emerald-500/30 transition-all active:scale-[0.99] cursor-pointer"
+      className="bg-card rounded-2xl border border-emerald-500/20 overflow-hidden flex items-center gap-2 px-5 py-3.5 hover:bg-emerald-500/5 hover:border-emerald-500/40 transition-all active:scale-[0.99] cursor-pointer"
     >
       <span className="font-semibold text-foreground truncate min-w-0">
         {cat.name}
@@ -129,17 +129,17 @@ export default function SentencesClient({
 
       {/* 統計格 */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-card border border-border rounded-2xl p-4 text-center">
+        <div className="bg-card border border-emerald-500/20 rounded-2xl p-4 text-center">
           <p className="text-2xl font-bold text-emerald-500">{reviewCount}</p>
-          <p className="text-xs text-muted-foreground mt-1">待複習</p>
+          <p className="text-xs text-emerald-600/60 dark:text-emerald-400/60 mt-1">待複習</p>
         </div>
-        <div className="bg-card border border-border rounded-2xl p-4 text-center">
+        <div className="bg-card border border-emerald-500/20 rounded-2xl p-4 text-center">
           <p className="text-2xl font-bold text-foreground">{totalCount}</p>
-          <p className="text-xs text-muted-foreground mt-1">總句子</p>
+          <p className="text-xs text-emerald-600/60 dark:text-emerald-400/60 mt-1">總句子</p>
         </div>
-        <div className="bg-card border border-border rounded-2xl p-4 text-center">
+        <div className="bg-card border border-emerald-500/20 rounded-2xl p-4 text-center">
           <p className="text-2xl font-bold text-foreground">{graduatedCount}</p>
-          <p className="text-xs text-muted-foreground mt-1">已畢業</p>
+          <p className="text-xs text-emerald-600/60 dark:text-emerald-400/60 mt-1">已畢業</p>
         </div>
       </div>
 
