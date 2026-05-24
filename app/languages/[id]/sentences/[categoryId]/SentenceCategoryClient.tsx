@@ -368,12 +368,15 @@ export default function SentenceCategoryClient({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2 flex-wrap">
                     <span className="text-lg font-bold text-foreground">
+                      {sentence.back}
+                    </span>
+                    <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
                       {sentence.front}
                     </span>
                     {language.ttsCode && (
                       <button
                         onClick={() => {
-                          const u = new SpeechSynthesisUtterance(sentence.front);
+                          const u = new SpeechSynthesisUtterance(sentence.back);
                           u.lang = language.ttsCode;
                           speechSynthesis.speak(u);
                         }}
@@ -383,9 +386,6 @@ export default function SentenceCategoryClient({
                         <Volume2 className="w-4 h-4" />
                       </button>
                     )}
-                    <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                      {sentence.back}
-                    </span>
                   </div>
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                     <Badge variant="outline" className={`text-xs ${getStageStyle(sentence.reviewStage)}`}>
