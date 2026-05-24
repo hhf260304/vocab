@@ -1,7 +1,7 @@
 // app/languages/[id]/vocabulary/VocabularyClient.tsx
 "use client";
 
-import { ArrowLeft, FolderPlus, Plus } from "lucide-react";
+import { ArrowLeft, BarChart2, FolderPlus, Plus } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
@@ -123,7 +123,7 @@ export default function VocabularyClient({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between">
         <Button
           variant="ghost"
           size="sm"
@@ -133,6 +133,11 @@ export default function VocabularyClient({
           <Link href={`/languages/${language.id}`}>
             <ArrowLeft className="w-4 h-4 mr-1" />
             {language.name}
+          </Link>
+        </Button>
+        <Button variant="outline" size="sm" asChild>
+          <Link href={`/languages/${language.id}/vocabulary/stats`}>
+            <BarChart2 className="w-4 h-4 mr-1" />統計
           </Link>
         </Button>
       </div>
