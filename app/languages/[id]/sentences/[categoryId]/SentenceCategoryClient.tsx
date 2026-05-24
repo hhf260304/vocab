@@ -377,7 +377,7 @@ export default function SentenceCategoryClient({
                           u.lang = language.ttsCode;
                           speechSynthesis.speak(u);
                         }}
-                        className="text-muted-foreground hover:text-foreground transition-colors leading-none cursor-pointer"
+                        className="text-slate-400 hover:text-foreground transition-colors leading-none cursor-pointer"
                         aria-label="播放發音"
                       >
                         <Volume2 className="w-4 h-4" />
@@ -392,11 +392,11 @@ export default function SentenceCategoryClient({
                       {STAGE_LABELS[sentence.reviewStage]}
                     </Badge>
                     {sentence.reviewStage < 6 && (
-                      <span className={`text-xs font-medium ${formatRelativeDate(sentence.nextReviewAt) === "待複習" ? "text-amber-600" : "text-muted-foreground"}`}>
+                      <span className={`text-xs font-medium ${formatRelativeDate(sentence.nextReviewAt) === "待複習" ? "text-amber-600" : "text-slate-400"}`}>
                         {formatRelativeDate(sentence.nextReviewAt)}
                       </span>
                     )}
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-slate-400">
                       新增 {formatDate(sentence.createdAt)}
                     </span>
                   </div>
@@ -405,14 +405,14 @@ export default function SentenceCategoryClient({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="text-muted-foreground hover:text-foreground"
+                    className="text-slate-400 hover:text-foreground"
                     onClick={() => startEdit(sentence)}
                   >
                     <Pencil className="w-4 h-4" />
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
+                      <Button variant="ghost" size="icon" className="text-slate-400 hover:text-destructive">
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </AlertDialogTrigger>
