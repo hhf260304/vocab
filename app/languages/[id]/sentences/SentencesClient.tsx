@@ -1,7 +1,7 @@
 // app/languages/[id]/sentences/SentencesClient.tsx
 "use client";
 
-import { ArrowLeft, BookOpen, FolderPlus, Plus } from "lucide-react";
+import { ArrowLeft, BarChart2, FolderPlus, Plus } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
@@ -44,6 +44,7 @@ function SentenceCategoryCard({
 interface Props {
   language: Language;
   totalCount: number;
+  graduatedCount: number;
   reviewCount: number;
   initialCategories: Category[];
   categoryCounts: Record<string, number>;
@@ -52,6 +53,7 @@ interface Props {
 export default function SentencesClient({
   language,
   totalCount,
+  graduatedCount,
   reviewCount,
   initialCategories,
   categoryCounts,
@@ -104,7 +106,7 @@ export default function SentencesClient({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between">
         <Button
           variant="ghost"
           size="sm"
@@ -116,19 +118,28 @@ export default function SentencesClient({
             {language.name}
           </Link>
         </Button>
+        <Button variant="outline" size="sm" asChild>
+          <Link href={`/languages/${language.id}/sentences/stats`}>
+            <BarChart2 className="w-4 h-4 mr-1" />統計
+          </Link>
+        </Button>
       </div>
 
       <h1 className="text-2xl font-bold text-foreground">句子管理</h1>
 
       {/* 統計格 */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         <div className="bg-card border border-border rounded-2xl p-4 text-center">
-          <p className="text-2xl font-bold text-emerald-500">{reviewCount}</p>
+          <p className="text-2xl font-bold text-primary">{reviewCount}</p>
           <p className="text-xs text-muted-foreground mt-1">待複習</p>
         </div>
         <div className="bg-card border border-border rounded-2xl p-4 text-center">
           <p className="text-2xl font-bold text-foreground">{totalCount}</p>
           <p className="text-xs text-muted-foreground mt-1">總句子</p>
+        </div>
+        <div className="bg-card border border-border rounded-2xl p-4 text-center">
+          <p className="text-2xl font-bold text-foreground">{graduatedCount}</p>
+          <p className="text-xs text-muted-foreground mt-1">已畢業</p>
         </div>
       </div>
 
@@ -136,23 +147,15 @@ export default function SentencesClient({
       {reviewCount > 0 ? (
         <Button
           size="lg"
-          variant="outline"
-          className="w-full text-base py-6 active:scale-[0.98] transition-transform border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400"
+          className="w-full text-lg py-7 active:scale-[0.98] transition-transform"
           asChild
         >
           <Link href={`/sentences/${language.id}/review`}>
-            <BookOpen className="w-5 h-5 mr-2" />
-            複習句子（{reviewCount} 個）
+            開始複習（{reviewCount} 個）
           </Link>
         </Button>
       ) : (
-        <Button
-          size="lg"
-          variant="outline"
-          className="w-full text-base py-6"
-          disabled
-        >
-          <BookOpen className="w-5 h-5 mr-2" />
+        <Button size="lg" className="w-full text-lg py-7" disabled>
           今日無待複習句子
         </Button>
       )}
@@ -161,10 +164,18 @@ export default function SentencesClient({
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">句子庫</h2>
-          <Button onClick={() => setShowCatInput((s) => !s)}>
-            <FolderPlus className="w-4 h-4" />
-            <span className="hidden sm:inline ml-1">新增分類</span>
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => setShowCatInput((s) => !s)}>
+              <FolderPlus className="w-4 h-4" />
+              <span className="hidden sm:inline ml-1">新增分類</span>
+            </Button>
+            <Button asChild>
+              <Link href={`/languages/${language.id}/sentences/uncategorized`}>
+                <Plus className="w-4 h-4" />
+                <span className="hidden sm:inline ml-1">新增句子</span>
+              </Link>
+            </Button>
+          </div>
         </div>
 
         {showCatInput && (
