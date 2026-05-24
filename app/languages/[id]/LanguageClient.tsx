@@ -1,9 +1,7 @@
 // app/languages/[id]/LanguageClient.tsx
 "use client";
 
-import { BarChart2 } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import type { Language } from "@/lib/db/schema";
 
 interface Props {
@@ -23,14 +21,7 @@ export default function LanguageClient({
 }: Props) {
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">{language.name}</h1>
-        <Button variant="outline" asChild>
-          <Link href={`/languages/${language.id}/stats`}>
-            <BarChart2 className="w-4 h-4 mr-1" />統計
-          </Link>
-        </Button>
-      </div>
+      <h1 className="text-2xl font-bold text-foreground">{language.name}</h1>
 
       <Link
         href={`/languages/${language.id}/vocabulary`}
@@ -46,11 +37,9 @@ export default function LanguageClient({
             <p className="text-xs text-muted-foreground">個單字</p>
           </div>
         </div>
-        {vocabReviewCount > 0 && (
-          <div className="mt-3 bg-primary/20 rounded-lg px-3 py-1.5 text-sm text-primary font-medium text-center">
-            待複習 {vocabReviewCount} 個 →
-          </div>
-        )}
+        <div className="mt-3 bg-primary/20 rounded-lg px-3 py-1.5 text-sm text-primary font-medium text-center">
+          {vocabReviewCount > 0 ? `待複習 ${vocabReviewCount} 個 →` : "目前無待複習"}
+        </div>
       </Link>
 
       <Link
@@ -60,18 +49,16 @@ export default function LanguageClient({
         <div className="flex items-center justify-between">
           <div>
             <p className="font-bold text-foreground text-lg">💬 句子管理</p>
-            <p className="text-sm text-muted-foreground mt-0.5">分類 · 新增 · 複習</p>
+            <p className="text-sm text-emerald-600/60 mt-0.5">分類 · 新增 · 複習</p>
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold text-emerald-500">{sentenceTotal}</p>
-            <p className="text-xs text-muted-foreground">個句子</p>
+            <p className="text-xs text-emerald-600/60">個句子</p>
           </div>
         </div>
-        {sentenceReviewCount > 0 && (
-          <div className="mt-3 bg-emerald-500/20 rounded-lg px-3 py-1.5 text-sm text-emerald-600 dark:text-emerald-400 font-medium text-center">
-            待複習 {sentenceReviewCount} 個 →
-          </div>
-        )}
+        <div className="mt-3 bg-emerald-500/20 rounded-lg px-3 py-1.5 text-sm text-emerald-600 dark:text-emerald-400 font-medium text-center">
+          {sentenceReviewCount > 0 ? `待複習 ${sentenceReviewCount} 個 →` : "目前無待複習"}
+        </div>
       </Link>
     </div>
   );

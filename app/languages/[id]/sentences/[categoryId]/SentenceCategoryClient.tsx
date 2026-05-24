@@ -2,10 +2,11 @@
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
-import { ArrowLeft, Check, ListPlus, Pencil, Plus, Trash2, X } from "lucide-react";
+import { ArrowLeft, Check, ListPlus, Pencil, Plus, Trash2, Volume2, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -37,6 +38,32 @@ import {
 } from "@/components/ui/select";
 import { createSentence, createSentences, updateSentence, deleteSentence } from "@/lib/actions/sentences";
 import type { Category, Language, Sentence } from "@/lib/db/schema";
+
+const STAGE_LABELS = ["新", "Lv.1", "Lv.2", "Lv.3", "Lv.4", "Lv.5", "已畢業"];
+
+function getStageStyle(stage: number): string {
+  if (stage === 0) return "bg-sky-50 text-sky-600 border-sky-200";
+  if (stage === 6) return "bg-emerald-50 text-emerald-600 border-emerald-200";
+  return "bg-indigo-50 text-indigo-600 border-indigo-200";
+}
+
+function formatRelativeDate(date: Date | string | null): string {
+  if (!date) return "";
+  const target = new Date(date);
+  const now = new Date();
+  target.setHours(0, 0, 0, 0);
+  now.setHours(0, 0, 0, 0);
+  const diffDays = Math.ceil((target.getTime() - now.getTime()) / 86400000);
+  if (diffDays <= 0) return "待複習";
+  if (diffDays === 1) return "明日複習";
+  return `${diffDays} 天後複習`;
+}
+
+function formatDate(date: Date | string | null): string {
+  if (!date) return "-";
+  const d = new Date(date);
+  return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`;
+}
 
 function parseBatchSentenceLine(line: string): { front: string; back: string } | null {
   const parts = line.includes("\t") ? line.split("\t") : line.split("|");
@@ -89,7 +116,6 @@ export default function SentenceCategoryClient({
     categoryId: "none",
   });
 
-  const categoryMap = Object.fromEntries(categories.map((c) => [c.id, c.name]));
   const defaultCategoryId = categoryId === "uncategorized" ? null : categoryId;
 
   function handleAddSubmit(e: React.FormEvent) {
@@ -183,37 +209,35 @@ export default function SentenceCategoryClient({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="-ml-2 text-muted-foreground"
-          asChild
-        >
-          <Link href={`/languages/${language.id}/sentences`}>
-            <ArrowLeft className="w-4 h-4 mr-1" />
-            句子管理
-          </Link>
-        </Button>
-      </div>
-
-      <div className="flex items-center justify-between">
-        <div>
+      {/* 標題列 */}
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="self-start -ml-2 text-muted-foreground"
+            asChild
+          >
+            <Link href={`/languages/${language.id}/sentences`}>
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              句子管理
+            </Link>
+          </Button>
           <h1 className="text-2xl font-bold text-foreground">{categoryName}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {language.name} · {sentences.length} 個句子
+          <p className="text-sm text-muted-foreground">
+            {sentences.length} 個句子
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 shrink-0">
           <Button
-            variant="outline"
             onClick={() => {
               setBatchOpen(true);
               setBatchText("");
               setBatchErrors([]);
             }}
           >
-            <ListPlus className="w-4 h-4 mr-1" />批次新增
+            <ListPlus className="w-4 h-4 mr-1" />
+            批次新增
           </Button>
           <Button onClick={() => setShowAddForm((s) => !s)}>
             <Plus className="w-4 h-4 mr-1" />新增句子
@@ -337,62 +361,80 @@ export default function SentenceCategoryClient({
           }
 
           return (
-            <div
-              key={sentence.id}
-              className="bg-card border border-border rounded-2xl px-5 py-4 flex items-start gap-3"
-            >
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-foreground text-base leading-snug">
-                  {sentence.front}
-                </p>
-                <p className="text-muted-foreground text-sm mt-1 leading-snug">
-                  {sentence.back}
-                </p>
-                {sentence.categoryId && categoryMap[sentence.categoryId] && (
-                  <Badge variant="secondary" className="mt-2 text-xs">
-                    {categoryMap[sentence.categoryId]}
-                  </Badge>
-                )}
-              </div>
-              <div className="flex items-center gap-1 shrink-0">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                  onClick={() => startEdit(sentence)}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:text-red-500"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>刪除句子？</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        「{sentence.front}」將被永久刪除，無法復原。
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>取消</AlertDialogCancel>
-                      <AlertDialogAction
-                        variant="destructive"
-                        onClick={() => handleDelete(sentence.id)}
+            <Card key={sentence.id}>
+              <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <span className="text-lg font-bold text-foreground">
+                      {sentence.front}
+                    </span>
+                    {language.ttsCode && (
+                      <button
+                        onClick={() => {
+                          const u = new SpeechSynthesisUtterance(sentence.front);
+                          u.lang = language.ttsCode;
+                          speechSynthesis.speak(u);
+                        }}
+                        className="text-muted-foreground hover:text-foreground transition-colors leading-none cursor-pointer"
+                        aria-label="播放發音"
                       >
-                        <Trash2 className="w-4 h-4 mr-1" />刪除
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            </div>
+                        <Volume2 className="w-4 h-4" />
+                      </button>
+                    )}
+                    <span className="text-sm font-medium text-primary">
+                      {sentence.back}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                    <Badge variant="outline" className={`text-xs ${getStageStyle(sentence.reviewStage)}`}>
+                      {STAGE_LABELS[sentence.reviewStage]}
+                    </Badge>
+                    {sentence.reviewStage < 6 && (
+                      <span className={`text-xs font-medium ${formatRelativeDate(sentence.nextReviewAt) === "待複習" ? "text-amber-600" : "text-muted-foreground"}`}>
+                        {formatRelativeDate(sentence.nextReviewAt)}
+                      </span>
+                    )}
+                    <span className="text-xs text-muted-foreground">
+                      新增 {formatDate(sentence.createdAt)}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-muted-foreground hover:text-foreground"
+                    onClick={() => startEdit(sentence)}
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>刪除句子？</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          「{sentence.front}」將被永久刪除，無法復原。
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>取消</AlertDialogCancel>
+                        <AlertDialogAction
+                          variant="destructive"
+                          onClick={() => handleDelete(sentence.id)}
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" />刪除
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </CardContent>
+            </Card>
           );
         })}
       </div>
