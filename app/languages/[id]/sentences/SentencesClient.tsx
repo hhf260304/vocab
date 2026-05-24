@@ -34,7 +34,7 @@ function SentenceCategoryCard({
       <span className="font-semibold text-foreground truncate min-w-0">
         {cat.name}
       </span>
-      <span className="text-sm text-muted-foreground shrink-0 ml-auto">
+      <span className="text-sm text-emerald-600/70 dark:text-emerald-400/70 shrink-0 ml-auto">
         {sentenceCount} 個句子
       </span>
     </Link>
@@ -118,7 +118,7 @@ export default function SentencesClient({
             {language.name}
           </Link>
         </Button>
-        <Button variant="outline" size="sm" className="border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400" asChild>
+        <Button variant="ghost" size="sm" className="border border-emerald-500/50 text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400" asChild>
           <Link href={`/languages/${language.id}/sentences/stats`}>
             <BarChart2 className="w-4 h-4 mr-1" />統計
           </Link>
