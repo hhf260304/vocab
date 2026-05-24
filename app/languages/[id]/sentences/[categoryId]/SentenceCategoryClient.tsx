@@ -224,12 +224,13 @@ export default function SentenceCategoryClient({
             </Link>
           </Button>
           <h1 className="text-2xl font-bold text-foreground">{categoryName}</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-emerald-600/70 dark:text-emerald-400/70">
             {sentences.length} 個句子
           </p>
         </div>
         <div className="flex gap-2 shrink-0">
           <Button
+            className="bg-emerald-500 hover:bg-emerald-600 text-white"
             onClick={() => {
               setBatchOpen(true);
               setBatchText("");
@@ -239,7 +240,7 @@ export default function SentenceCategoryClient({
             <ListPlus className="w-4 h-4 mr-1" />
             批次新增
           </Button>
-          <Button onClick={() => setShowAddForm((s) => !s)}>
+          <Button className="bg-emerald-500 hover:bg-emerald-600 text-white" onClick={() => setShowAddForm((s) => !s)}>
             <Plus className="w-4 h-4 mr-1" />新增句子
           </Button>
         </div>
@@ -248,7 +249,7 @@ export default function SentenceCategoryClient({
       {showAddForm && (
         <form
           onSubmit={handleAddSubmit}
-          className="bg-card border border-border rounded-2xl p-5 flex flex-col gap-3"
+          className="bg-card border border-emerald-500/20 rounded-2xl p-5 flex flex-col gap-3"
         >
           <h2 className="font-semibold text-foreground">新增句子</h2>
           <div className="flex flex-col gap-2">
@@ -282,7 +283,7 @@ export default function SentenceCategoryClient({
             >
               取消
             </Button>
-            <Button type="submit">
+            <Button type="submit" className="bg-emerald-500 hover:bg-emerald-600 text-white">
               <Plus className="w-4 h-4 mr-1" />新增
             </Button>
           </div>
@@ -304,7 +305,7 @@ export default function SentenceCategoryClient({
             return (
               <div
                 key={sentence.id}
-                className="bg-card border border-primary/40 rounded-2xl p-4 flex flex-col gap-2"
+                className="bg-card border border-emerald-500/40 rounded-2xl p-4 flex flex-col gap-2"
               >
                 <Input
                   autoFocus
@@ -351,6 +352,7 @@ export default function SentenceCategoryClient({
                   </Button>
                   <Button
                     size="sm"
+                    className="bg-emerald-500 hover:bg-emerald-600 text-white"
                     onClick={() => handleEditSubmit(sentence.id)}
                   >
                     <Check className="w-4 h-4 mr-1" />儲存
@@ -361,7 +363,7 @@ export default function SentenceCategoryClient({
           }
 
           return (
-            <Card key={sentence.id}>
+            <Card key={sentence.id} className="border-emerald-500/20">
               <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2 flex-wrap">
@@ -381,7 +383,7 @@ export default function SentenceCategoryClient({
                         <Volume2 className="w-4 h-4" />
                       </button>
                     )}
-                    <span className="text-sm font-medium text-primary">
+                    <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
                       {sentence.back}
                     </span>
                   </div>
@@ -487,7 +489,7 @@ export default function SentenceCategoryClient({
             <Button variant="outline" onClick={() => setBatchOpen(false)}>
               取消
             </Button>
-            <Button onClick={handleBatchCreate} disabled={isBatchSubmitting || !batchText.trim()}>
+            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white" onClick={handleBatchCreate} disabled={isBatchSubmitting || !batchText.trim()}>
               {isBatchSubmitting ? (
                 "新增中…"
               ) : (
