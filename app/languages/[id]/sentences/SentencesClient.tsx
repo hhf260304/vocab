@@ -118,7 +118,7 @@ export default function SentencesClient({
             {language.name}
           </Link>
         </Button>
-        <Button variant="outline" size="sm" asChild>
+        <Button variant="outline" size="sm" className="border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400" asChild>
           <Link href={`/languages/${language.id}/sentences/stats`}>
             <BarChart2 className="w-4 h-4 mr-1" />統計
           </Link>
@@ -130,7 +130,7 @@ export default function SentencesClient({
       {/* 統計格 */}
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-card border border-border rounded-2xl p-4 text-center">
-          <p className="text-2xl font-bold text-primary">{reviewCount}</p>
+          <p className="text-2xl font-bold text-emerald-500">{reviewCount}</p>
           <p className="text-xs text-muted-foreground mt-1">待複習</p>
         </div>
         <div className="bg-card border border-border rounded-2xl p-4 text-center">
@@ -147,7 +147,7 @@ export default function SentencesClient({
       {reviewCount > 0 ? (
         <Button
           size="lg"
-          className="w-full text-lg py-7 active:scale-[0.98] transition-transform"
+          className="w-full text-lg py-7 active:scale-[0.98] transition-transform bg-emerald-500 hover:bg-emerald-600 text-white"
           asChild
         >
           <Link href={`/sentences/${language.id}/review`}>
@@ -155,7 +155,7 @@ export default function SentencesClient({
           </Link>
         </Button>
       ) : (
-        <Button size="lg" className="w-full text-lg py-7" disabled>
+        <Button size="lg" className="w-full text-lg py-7 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20" disabled>
           今日無待複習句子
         </Button>
       )}
@@ -165,11 +165,11 @@ export default function SentencesClient({
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">句子庫</h2>
           <div className="flex gap-2">
-            <Button onClick={() => setShowCatInput((s) => !s)}>
+            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white" onClick={() => setShowCatInput((s) => !s)}>
               <FolderPlus className="w-4 h-4" />
               <span className="hidden sm:inline ml-1">新增分類</span>
             </Button>
-            <Button asChild>
+            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white" asChild>
               <Link href={`/languages/${language.id}/sentences/uncategorized`}>
                 <Plus className="w-4 h-4" />
                 <span className="hidden sm:inline ml-1">新增句子</span>
@@ -192,7 +192,7 @@ export default function SentencesClient({
                 }}
                 onKeyDown={(e) => e.key === "Escape" && setShowCatInput(false)}
               />
-              <Button type="submit" className="shrink-0">
+              <Button type="submit" className="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white">
                 <Plus className="w-4 h-4 mr-1" />建立
               </Button>
               <Button
