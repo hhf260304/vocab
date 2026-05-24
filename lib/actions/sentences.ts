@@ -2,10 +2,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, eq, isNull, lte, lt, count, sql } from "drizzle-orm";
+import { and, eq, isNull, lte, lt, count, sql, gt, desc } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { sentences } from "@/lib/db/schema";
+import { sentences, categories } from "@/lib/db/schema";
 import { getNextReviewAt } from "@/lib/srs";
 
 async function getUserId(): Promise<string> {
@@ -198,4 +198,34 @@ export async function createSentences(
   revalidatePath("/");
   revalidatePath(`/languages/${languageId}`, "layout");
   return { created: items.length };
+}
+
+export type SentenceFailStat = {
+  id: string;
+  front: string;
+  back: string;
+  failCount: number;
+  categoryName: string | null;
+};
+
+export async function getSentenceFailStats(languageId: string): Promise<SentenceFailStat[]> {
+  const userId = await getUserId();
+  return db
+    .select({
+      id: sentences.id,
+      front: sentences.front,
+      back: sentences.back,
+      failCount: sentences.failCount,
+      categoryName: categories.name,
+    })
+    .from(sentences)
+    .leftJoin(categories, eq(sentences.categoryId, categories.id))
+    .where(
+      and(
+        eq(sentences.userId, userId),
+        eq(sentences.languageId, languageId),
+        gt(sentences.failCount, 0)
+      )
+    )
+    .orderBy(desc(sentences.failCount));
 }
