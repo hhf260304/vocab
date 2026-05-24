@@ -246,7 +246,7 @@ export async function markReview(id: string, remembered: boolean) {
 
   revalidatePath("/");
   if (vocab.languageId) {
-    revalidatePath(`/languages/${vocab.languageId}/stats`);
+    revalidatePath(`/languages/${vocab.languageId}/vocabulary/stats`);
   }
 }
 
