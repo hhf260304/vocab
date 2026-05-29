@@ -77,6 +77,7 @@ export default function SentencePracticeClient({
     }
     setCurrentCards(nextCards);
     setForgottenThisRound([]);
+    setFailedIds(new Set());
     setRoundRemembered(0);
     setIndex(0);
     setView("reviewing");
