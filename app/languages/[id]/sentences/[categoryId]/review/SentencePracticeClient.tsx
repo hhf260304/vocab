@@ -155,7 +155,7 @@ export default function SentencePracticeClient({
       <Progress value={((index + 1) / currentCards.length) * 100} className="w-full [&>div]:bg-emerald-500" />
       <FlashCard
         key={`${index}-${resetKey}`}
-        card={current}
+        card={{ ...current, front: current.back, back: current.front }}
         ttsCode={language.ttsCode}
         isAnswering={false}
         onRemembered={() => handleAnswer(true)}

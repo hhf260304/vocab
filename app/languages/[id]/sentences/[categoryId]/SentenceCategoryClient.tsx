@@ -24,7 +24,6 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -230,8 +229,7 @@ export default function SentenceCategoryClient({
         </div>
         <div className="flex gap-2 shrink-0">
           <Button
-            variant="outline"
-            className="border-emerald-500 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950"
+            className="bg-emerald-500 hover:bg-emerald-600 text-white"
             disabled={sentences.length === 0}
             onClick={() => router.push(`/languages/${language.id}/sentences/${categoryId}/review`)}
           >
@@ -376,15 +374,15 @@ export default function SentenceCategoryClient({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2 flex-wrap">
                     <span className="text-lg font-bold text-foreground">
-                      {sentence.back}
+                      {sentence.front}
                     </span>
                     <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                      {sentence.front}
+                      {sentence.back}
                     </span>
                     {language.ttsCode && (
                       <button
                         onClick={() => {
-                          const u = new SpeechSynthesisUtterance(sentence.back);
+                          const u = new SpeechSynthesisUtterance(sentence.front);
                           u.lang = language.ttsCode;
                           speechSynthesis.speak(u);
                         }}
@@ -464,9 +462,6 @@ export default function SentenceCategoryClient({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>批次新增句子 — {categoryName}</DialogTitle>
-            <DialogDescription>
-              每行一筆：句子（{language.name}） | 翻譯（母語）
-            </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2">
             <Textarea
