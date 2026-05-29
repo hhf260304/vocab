@@ -372,26 +372,28 @@ export default function SentenceCategoryClient({
             <Card key={sentence.id} className="border-emerald-500/20">
               <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2 flex-wrap">
-                    <span className="text-lg font-bold text-foreground">
-                      {sentence.front}
-                    </span>
+                  <div className="flex flex-col gap-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg font-bold text-foreground">
+                        {sentence.front}
+                      </span>
+                      {language.ttsCode && (
+                        <button
+                          onClick={() => {
+                            const u = new SpeechSynthesisUtterance(sentence.front);
+                            u.lang = language.ttsCode;
+                            speechSynthesis.speak(u);
+                          }}
+                          className="text-slate-400 hover:text-foreground transition-colors leading-none cursor-pointer"
+                          aria-label="播放發音"
+                        >
+                          <Volume2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
                     <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
                       {sentence.back}
                     </span>
-                    {language.ttsCode && (
-                      <button
-                        onClick={() => {
-                          const u = new SpeechSynthesisUtterance(sentence.front);
-                          u.lang = language.ttsCode;
-                          speechSynthesis.speak(u);
-                        }}
-                        className="text-slate-400 hover:text-foreground transition-colors leading-none cursor-pointer"
-                        aria-label="播放發音"
-                      >
-                        <Volume2 className="w-4 h-4" />
-                      </button>
-                    )}
                   </div>
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                     <Badge variant="outline" className={`text-xs ${getStageStyle(sentence.reviewStage)}`}>
