@@ -59,7 +59,14 @@
       "Bash(npm uninstall:*)",
       "Bash(grep:*)",
       "Bash(find /Users/user/Desktop/vocab/docs -name *categor* -o -name *task*4*)",
-      "mcp__Neon__get_database_tables"
+      "mcp__Neon__get_database_tables",
+      "Bash(bash *)",
+      "Bash(rm \"/Users/user/Desktop/vocab/app/languages/[id]/stats/page.tsx\")",
+      "Bash(rmdir \"/Users/user/Desktop/vocab/app/languages/[id]/stats\")",
+      "Bash(test -d /Users/user/Desktop/vocab/app/languages/\\\\[id\\\\]/stats)",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(kill 25195)",
+      "Bash(rm -f /Users/user/Desktop/vocab/.next/dev/lock)"
     ]
   }
 }
