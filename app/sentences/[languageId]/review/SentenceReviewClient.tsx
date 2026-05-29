@@ -213,7 +213,7 @@ export default function SentenceReviewClient({
       <Progress value={((index + 1) / currentCards.length) * 100} className="w-full" />
       <FlashCard
         key={`${index}-${resetKey}`}
-        card={current}
+        card={{ ...current, front: current.back, back: current.front }}
         ttsCode={language.ttsCode}
         categoryName={current.categoryId ? categoryMap[current.categoryId] : undefined}
         isAnswering={isPending}
