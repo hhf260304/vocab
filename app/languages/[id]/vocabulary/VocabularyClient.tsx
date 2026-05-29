@@ -45,6 +45,7 @@ function CategorySection({
 interface Props {
   language: Language;
   reviewCount: number;
+  tomorrowCount: number;
   totalCount: number;
   graduatedCount: number;
   initialCategories: Category[];
@@ -54,6 +55,7 @@ interface Props {
 export default function VocabularyClient({
   language,
   reviewCount,
+  tomorrowCount,
   totalCount,
   graduatedCount,
   initialCategories,
@@ -177,6 +179,15 @@ export default function VocabularyClient({
         <Button size="lg" className="w-full text-lg py-7" disabled>
           今日無待複習單字
         </Button>
+      )}
+
+      {tomorrowCount > 0 && (
+        <Link
+          href={`/languages/${language.id}/vocabulary/tomorrow`}
+          className="text-sm text-muted-foreground hover:text-primary text-center block -mt-3"
+        >
+          明天待複習 {tomorrowCount} 個 →
+        </Link>
       )}
 
       {/* 單字庫 */}

@@ -7,6 +7,7 @@ import {
   getVocabularyCounts,
   getCategoryVocabCounts,
   getTodayReviews,
+  getTomorrowVocabReviews,
 } from "@/lib/actions/vocabulary";
 
 export default async function VocabularyPage({
@@ -15,13 +16,14 @@ export default async function VocabularyPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [language, reviews, counts, vocabCounts, initialCategories] =
+  const [language, reviews, counts, vocabCounts, initialCategories, tomorrowItems] =
     await Promise.all([
       getLanguageById(id),
       getTodayReviews(id),
       getVocabularyCounts(id),
       getCategoryVocabCounts(id),
       getCategories(id, "vocab"),
+      getTomorrowVocabReviews(id),
     ]);
 
   if (!language) notFound();
@@ -34,6 +36,7 @@ export default async function VocabularyPage({
       graduatedCount={counts.graduated}
       initialCategories={initialCategories}
       vocabCounts={vocabCounts}
+      tomorrowCount={tomorrowItems.length}
     />
   );
 }
