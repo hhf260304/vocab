@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
-import { ArrowLeft, Check, ListPlus, Pencil, Plus, Trash2, Volume2, X } from "lucide-react";
+import { ArrowLeft, BookOpen, Check, ListPlus, Pencil, Plus, Trash2, Volume2, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -229,6 +229,14 @@ export default function SentenceCategoryClient({
           </p>
         </div>
         <div className="flex gap-2 shrink-0">
+          <Button
+            variant="outline"
+            className="border-emerald-500 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950"
+            disabled={sentences.length === 0}
+            onClick={() => router.push(`/languages/${language.id}/sentences/${categoryId}/review`)}
+          >
+            <BookOpen className="w-4 h-4 mr-1" />複習
+          </Button>
           <Button
             className="bg-emerald-500 hover:bg-emerald-600 text-white"
             onClick={() => {
@@ -457,14 +465,14 @@ export default function SentenceCategoryClient({
           <DialogHeader>
             <DialogTitle>批次新增句子 — {categoryName}</DialogTitle>
             <DialogDescription>
-              每行一筆：翻譯（母語） | 句子（{language.name}）
+              每行一筆：句子（{language.name}） | 翻譯（母語）
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2">
             <Textarea
               autoFocus
               rows={8}
-              placeholder={"我愛貓 | I love cats\n她跑得很快 | She runs fast"}
+              placeholder={"I love cats | 我愛貓\nShe runs fast | 她跑得很快"}
               value={batchText}
               onChange={(e) => {
                 setBatchText(e.target.value);
@@ -473,7 +481,7 @@ export default function SentenceCategoryClient({
             />
             {batchErrors.length > 0 && (
               <p className="text-sm text-destructive">
-                以下行格式有誤（需至少「句子 | 翻譯」）：
+                以下行格式有誤（每行需為「句子 | 翻譯」）：
                 {batchErrors.map((n) => (
                   <span key={n} className="block font-medium">
                     ・第 {n} 行
