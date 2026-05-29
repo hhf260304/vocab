@@ -2,7 +2,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, eq, isNull, lte, lt, count, sql, gt, desc } from "drizzle-orm";
+import { and, eq, gte, isNull, lte, lt, count, sql, gt, desc } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { vocabulary, categories } from "@/lib/db/schema";
@@ -79,6 +79,46 @@ export async function getTodayReviews(languageId: string, categoryId?: string) {
     conditions.push(eq(vocabulary.categoryId, categoryId));
   }
   return db.select().from(vocabulary).where(and(...conditions));
+}
+
+export type TomorrowVocabItem = {
+  id: string;
+  front: string;
+  back: string;
+  exampleJp: string;
+  zhuyin: string;
+  categoryName: string | null;
+};
+
+export async function getTomorrowVocabReviews(languageId: string): Promise<TomorrowVocabItem[]> {
+  const userId = await getUserId();
+  const tomorrowStart = new Date();
+  tomorrowStart.setHours(0, 0, 0, 0);
+  tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+  const dayAfterStart = new Date(tomorrowStart);
+  dayAfterStart.setDate(dayAfterStart.getDate() + 1);
+
+  return db
+    .select({
+      id: vocabulary.id,
+      front: vocabulary.front,
+      back: vocabulary.back,
+      exampleJp: vocabulary.exampleJp,
+      zhuyin: vocabulary.zhuyin,
+      categoryName: categories.name,
+    })
+    .from(vocabulary)
+    .leftJoin(categories, eq(vocabulary.categoryId, categories.id))
+    .where(
+      and(
+        eq(vocabulary.userId, userId),
+        eq(vocabulary.languageId, languageId),
+        lt(vocabulary.reviewStage, 6),
+        gte(vocabulary.nextReviewAt, tomorrowStart),
+        lt(vocabulary.nextReviewAt, dayAfterStart),
+      )
+    )
+    .orderBy(categories.name, vocabulary.front);
 }
 
 export async function createVocabulary(data: {

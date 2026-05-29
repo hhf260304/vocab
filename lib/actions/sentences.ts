@@ -2,7 +2,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, eq, isNull, lte, lt, count, sql, gt, desc } from "drizzle-orm";
+import { and, eq, gte, isNull, lte, lt, count, sql, gt, desc } from "drizzle-orm";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { sentences, categories } from "@/lib/db/schema";
@@ -59,6 +59,42 @@ export async function getTodaySentenceReviews(languageId: string, categoryId?: s
     conditions.push(eq(sentences.categoryId, categoryId));
   }
   return db.select().from(sentences).where(and(...conditions));
+}
+
+export type TomorrowSentenceItem = {
+  id: string;
+  front: string;
+  back: string;
+  categoryName: string | null;
+};
+
+export async function getTomorrowSentenceReviews(languageId: string): Promise<TomorrowSentenceItem[]> {
+  const userId = await getUserId();
+  const tomorrowStart = new Date();
+  tomorrowStart.setHours(0, 0, 0, 0);
+  tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+  const dayAfterStart = new Date(tomorrowStart);
+  dayAfterStart.setDate(dayAfterStart.getDate() + 1);
+
+  return db
+    .select({
+      id: sentences.id,
+      front: sentences.front,
+      back: sentences.back,
+      categoryName: categories.name,
+    })
+    .from(sentences)
+    .leftJoin(categories, eq(sentences.categoryId, categories.id))
+    .where(
+      and(
+        eq(sentences.userId, userId),
+        eq(sentences.languageId, languageId),
+        lt(sentences.reviewStage, 6),
+        gte(sentences.nextReviewAt, tomorrowStart),
+        lt(sentences.nextReviewAt, dayAfterStart),
+      )
+    )
+    .orderBy(categories.name, sentences.front);
 }
 
 export async function createSentence(data: {
