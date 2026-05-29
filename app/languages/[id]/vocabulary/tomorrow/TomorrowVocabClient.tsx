@@ -51,7 +51,13 @@ export default function TomorrowVocabClient({ language, items }: Props) {
         </div>
       ) : (
         <div className="flex flex-col gap-6">
-          {Object.entries(groups).map(([categoryName, groupItems]) => (
+          {Object.entries(groups)
+            .sort(([a], [b]) => {
+              if (a === "未分類") return -1;
+              if (b === "未分類") return 1;
+              return a.localeCompare(b);
+            })
+            .map(([categoryName, groupItems]) => (
             <div key={categoryName} className="flex flex-col gap-3">
               <h2 className="text-sm font-semibold text-muted-foreground">
                 {categoryName}（{groupItems.length} 個）
