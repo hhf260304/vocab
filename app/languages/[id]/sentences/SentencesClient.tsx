@@ -93,18 +93,34 @@ export default function SentencesClient({
     createdAt: language.createdAt,
   };
 
-  const groups = [
-    {
-      cat: virtualCategory,
-      sentenceCount: categoryCounts["uncategorized"] ?? 0,
-      isVirtual: true,
-    },
-    ...initialCategories.map((cat) => ({
-      cat,
-      sentenceCount: categoryCounts[cat.id] ?? 0,
-      isVirtual: false,
-    })),
-  ];
+  const realUncategorized = initialCategories.find((c) => c.name === "未分類");
+  const otherCategories = initialCategories.filter((c) => c.name !== "未分類");
+
+  const groups = realUncategorized
+    ? [
+        {
+          cat: realUncategorized,
+          sentenceCount: categoryCounts[realUncategorized.id] ?? 0,
+          isVirtual: false,
+        },
+        ...otherCategories.map((cat) => ({
+          cat,
+          sentenceCount: categoryCounts[cat.id] ?? 0,
+          isVirtual: false,
+        })),
+      ]
+    : [
+        {
+          cat: virtualCategory,
+          sentenceCount: categoryCounts["uncategorized"] ?? 0,
+          isVirtual: true,
+        },
+        ...initialCategories.map((cat) => ({
+          cat,
+          sentenceCount: categoryCounts[cat.id] ?? 0,
+          isVirtual: false,
+        })),
+      ];
 
   return (
     <div className="flex flex-col gap-6">
