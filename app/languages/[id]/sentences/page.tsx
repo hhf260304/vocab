@@ -7,6 +7,7 @@ import {
   getSentenceCounts,
   getTodaySentenceReviews,
   getCategorySentenceCounts,
+  getTomorrowSentenceReviews,
 } from "@/lib/actions/sentences";
 
 export default async function SentencesPage({
@@ -15,13 +16,14 @@ export default async function SentencesPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [language, sentenceCounts, sentenceReviews, initialCategories, categoryCounts] =
+  const [language, sentenceCounts, sentenceReviews, initialCategories, categoryCounts, tomorrowItems] =
     await Promise.all([
       getLanguageById(id),
       getSentenceCounts(id),
       getTodaySentenceReviews(id),
       getCategories(id, "sentence"),
       getCategorySentenceCounts(id),
+      getTomorrowSentenceReviews(id),
     ]);
 
   if (!language) notFound();
@@ -34,6 +36,7 @@ export default async function SentencesPage({
       reviewCount={sentenceReviews.length}
       initialCategories={initialCategories}
       categoryCounts={categoryCounts}
+      tomorrowCount={tomorrowItems.length}
     />
   );
 }

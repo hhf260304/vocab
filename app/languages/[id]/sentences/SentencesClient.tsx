@@ -46,6 +46,7 @@ interface Props {
   totalCount: number;
   graduatedCount: number;
   reviewCount: number;
+  tomorrowCount: number;
   initialCategories: Category[];
   categoryCounts: Record<string, number>;
 }
@@ -55,6 +56,7 @@ export default function SentencesClient({
   totalCount,
   graduatedCount,
   reviewCount,
+  tomorrowCount,
   initialCategories,
   categoryCounts,
 }: Props) {
@@ -158,6 +160,15 @@ export default function SentencesClient({
         <Button size="lg" className="w-full text-lg py-7 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20" disabled>
           今日無待複習句子
         </Button>
+      )}
+
+      {tomorrowCount > 0 && (
+        <Link
+          href={`/languages/${language.id}/sentences/tomorrow`}
+          className="text-sm text-emerald-600/70 dark:text-emerald-400/70 hover:text-emerald-500 text-center block -mt-3"
+        >
+          明天待複習 {tomorrowCount} 個 →
+        </Link>
       )}
 
       {/* 句子庫 */}
