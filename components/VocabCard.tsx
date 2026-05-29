@@ -85,12 +85,12 @@ export default function VocabCard({ vocab, ttsCode, onDelete }: Props) {
             </span>
           </div>
         </div>
-        <div className="flex gap-2 shrink-0 self-end sm:self-auto">
-          <Button variant="outline" size="sm" asChild>
-            <Link href={`/vocabulary/${vocab.id}`}><Pencil className="w-3.5 h-3.5 mr-1" />編輯</Link>
+        <div className="flex items-center gap-1 shrink-0">
+          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" asChild>
+            <Link href={`/vocabulary/${vocab.id}`}><Pencil className="w-4 h-4" /></Link>
           </Button>
-          <Button variant="destructive" size="sm" onClick={onDelete}>
-            <Trash2 className="w-3.5 h-3.5 mr-1" />刪除
+          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={onDelete}>
+            <Trash2 className="w-4 h-4" />
           </Button>
         </div>
       </CardContent>
