@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import Navbar from "@/components/Navbar";
-import BottomTabBar from "@/components/BottomTabBar";
+import BottomTabBarWrapper from "@/components/BottomTabBarWrapper";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"] });
@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="max-w-[430px] w-full mx-auto h-dvh flex flex-col bg-background shadow-xl overflow-hidden">
             <Navbar />
             <main className="flex-1 overflow-y-auto px-4 py-4 flex flex-col">{children}</main>
-            <BottomTabBar />
+            <BottomTabBarWrapper />
           </div>
         </SessionProvider>
       </body>
