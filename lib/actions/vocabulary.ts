@@ -6,7 +6,7 @@ import { and, eq, gte, isNull, lte, lt, count, sql, gt, desc } from "drizzle-orm
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { vocabulary, categories } from "@/lib/db/schema";
-import { getNextReviewAt } from "@/lib/srs";
+import { getNextReviewAt, todayStr } from "@/lib/srs";
 
 async function getUserId(): Promise<string> {
   const session = await auth();
@@ -66,12 +66,11 @@ export async function getCategoryVocabCounts(
 
 export async function getTodayReviews(languageId: string, categoryId?: string) {
   const userId = await getUserId();
-  const now = new Date();
   const conditions = [
     eq(vocabulary.userId, userId),
     eq(vocabulary.languageId, languageId),
     lt(vocabulary.reviewStage, 6),
-    lte(vocabulary.nextReviewAt, now),
+    lte(vocabulary.nextReviewAt, todayStr()),
   ];
   if (categoryId === "uncategorized") {
     conditions.push(isNull(vocabulary.categoryId));
@@ -92,11 +91,9 @@ export type TomorrowVocabItem = {
 
 export async function getTomorrowVocabReviews(languageId: string): Promise<TomorrowVocabItem[]> {
   const userId = await getUserId();
-  const tomorrowStart = new Date();
-  tomorrowStart.setHours(0, 0, 0, 0);
-  tomorrowStart.setDate(tomorrowStart.getDate() + 1);
-  const dayAfterStart = new Date(tomorrowStart);
-  dayAfterStart.setDate(dayAfterStart.getDate() + 1);
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowStr = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
 
   return db
     .select({
@@ -114,8 +111,7 @@ export async function getTomorrowVocabReviews(languageId: string): Promise<Tomor
         eq(vocabulary.userId, userId),
         eq(vocabulary.languageId, languageId),
         lt(vocabulary.reviewStage, 6),
-        gte(vocabulary.nextReviewAt, tomorrowStart),
-        lt(vocabulary.nextReviewAt, dayAfterStart),
+        eq(vocabulary.nextReviewAt, tomorrowStr),
       )
     )
     .orderBy(categories.name, vocabulary.front);
@@ -141,7 +137,7 @@ export async function createVocabulary(data: {
       categoryId: data.categoryId,
       languageId: data.languageId,
       reviewStage: 0,
-      nextReviewAt: new Date(),
+      nextReviewAt: todayStr(),
     })
     .returning();
 
@@ -199,7 +195,7 @@ export async function createVocabularies(
       exampleJp: item.exampleJp,
       zhuyin: item.zhuyin,
       reviewStage: 0,
-      nextReviewAt: new Date(),
+      nextReviewAt: todayStr(),
     }))
   );
 
@@ -269,16 +265,11 @@ export async function markReview(id: string, remembered: boolean) {
 
   const { stage, nextReviewAt } = getNextReviewAt(vocab.reviewStage, remembered);
 
-  const nextReviewAtDate =
-    nextReviewAt === Infinity
-      ? new Date("9999-12-31T00:00:00Z")
-      : new Date(nextReviewAt);
-
   await db
     .update(vocabulary)
     .set({
       reviewStage: stage,
-      nextReviewAt: nextReviewAtDate,
+      nextReviewAt,
       lastReviewedAt: new Date(),
       ...(remembered ? {} : { failCount: sql`${vocabulary.failCount} + 1` }),
     })

@@ -46,11 +46,20 @@ function getStageStyle(stage: number): string {
   return "bg-indigo-50 text-indigo-600 border-indigo-200";
 }
 
+function parseDateLocal(date: Date | string): Date {
+  if (typeof date === "string") {
+    const [y, m, d] = date.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  }
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
 function formatRelativeDate(date: Date | string | null): string {
   if (!date) return "";
-  const target = new Date(date);
+  const target = parseDateLocal(date);
   const now = new Date();
-  target.setHours(0, 0, 0, 0);
   now.setHours(0, 0, 0, 0);
   const diffDays = Math.ceil((target.getTime() - now.getTime()) / 86400000);
   if (diffDays <= 0) return "待複習";

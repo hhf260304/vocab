@@ -6,7 +6,7 @@ import { and, eq, gte, isNull, lte, lt, count, sql, gt, desc } from "drizzle-orm
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { sentences, categories } from "@/lib/db/schema";
-import { getNextReviewAt } from "@/lib/srs";
+import { getNextReviewAt, todayStr } from "@/lib/srs";
 
 async function getUserId(): Promise<string> {
   const session = await auth();
@@ -46,12 +46,11 @@ export async function getSentenceCounts(
 
 export async function getTodaySentenceReviews(languageId: string, categoryId?: string) {
   const userId = await getUserId();
-  const now = new Date();
   const conditions = [
     eq(sentences.userId, userId),
     eq(sentences.languageId, languageId),
     lt(sentences.reviewStage, 6),
-    lte(sentences.nextReviewAt, now),
+    lte(sentences.nextReviewAt, todayStr()),
   ];
   if (categoryId === "uncategorized") {
     conditions.push(isNull(sentences.categoryId));
@@ -70,11 +69,9 @@ export type TomorrowSentenceItem = {
 
 export async function getTomorrowSentenceReviews(languageId: string): Promise<TomorrowSentenceItem[]> {
   const userId = await getUserId();
-  const tomorrowStart = new Date();
-  tomorrowStart.setHours(0, 0, 0, 0);
-  tomorrowStart.setDate(tomorrowStart.getDate() + 1);
-  const dayAfterStart = new Date(tomorrowStart);
-  dayAfterStart.setDate(dayAfterStart.getDate() + 1);
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowStr = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`;
 
   return db
     .select({
@@ -90,8 +87,7 @@ export async function getTomorrowSentenceReviews(languageId: string): Promise<To
         eq(sentences.userId, userId),
         eq(sentences.languageId, languageId),
         lt(sentences.reviewStage, 6),
-        gte(sentences.nextReviewAt, tomorrowStart),
-        lt(sentences.nextReviewAt, dayAfterStart),
+        eq(sentences.nextReviewAt, tomorrowStr),
       )
     )
     .orderBy(categories.name, sentences.front);
@@ -113,7 +109,7 @@ export async function createSentence(data: {
       categoryId: data.categoryId,
       languageId: data.languageId,
       reviewStage: 0,
-      nextReviewAt: new Date(),
+      nextReviewAt: todayStr(),
     })
     .returning();
 
@@ -169,16 +165,11 @@ export async function markSentenceReview(id: string, remembered: boolean) {
 
   const { stage, nextReviewAt } = getNextReviewAt(sentence.reviewStage, remembered);
 
-  const nextReviewAtDate =
-    nextReviewAt === Infinity
-      ? new Date("9999-12-31T00:00:00Z")
-      : new Date(nextReviewAt);
-
   await db
     .update(sentences)
     .set({
       reviewStage: stage,
-      nextReviewAt: nextReviewAtDate,
+      nextReviewAt,
       lastReviewedAt: new Date(),
       ...(remembered ? {} : { failCount: sql`${sentences.failCount} + 1` }),
     })
@@ -227,7 +218,7 @@ export async function createSentences(
       front: item.front.trim(),
       back: item.back.trim(),
       reviewStage: 0,
-      nextReviewAt: new Date(),
+      nextReviewAt: todayStr(),
     }))
   );
 

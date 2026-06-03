@@ -1,6 +1,6 @@
 // lib/db/schema.ts
 import { sql } from "drizzle-orm";
-import { integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { date, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
@@ -58,7 +58,7 @@ export const vocabulary = pgTable("vocabulary", {
   exampleJp: text("example_jp").notNull().default(""),
   zhuyin: text("zhuyin").notNull().default(""),
   reviewStage: integer("review_stage").notNull().default(0),
-  nextReviewAt: timestamp("next_review_at").default(sql`now()`).notNull(),
+  nextReviewAt: date("next_review_at").default(sql`CURRENT_DATE`).notNull(),
   lastReviewedAt: timestamp("last_reviewed_at"),
   failCount: integer("fail_count").notNull().default(0),
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),
@@ -80,7 +80,7 @@ export const sentences = pgTable("sentences", {
   front: text("front").notNull(),
   back: text("back").notNull(),
   reviewStage: integer("review_stage").notNull().default(0),
-  nextReviewAt: timestamp("next_review_at").default(sql`now()`).notNull(),
+  nextReviewAt: date("next_review_at").default(sql`CURRENT_DATE`).notNull(),
   lastReviewedAt: timestamp("last_reviewed_at"),
   failCount: integer("fail_count").notNull().default(0),
   createdAt: timestamp("created_at").default(sql`now()`).notNull(),

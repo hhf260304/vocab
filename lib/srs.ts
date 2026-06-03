@@ -1,32 +1,30 @@
-// Wait times (ms) applied when reviewing stage N: INTERVALS_MS[N] schedules stage N+1.
-// Stage 5 → stage 6 (graduation) returns Infinity directly — no entry needed for it.
-const INTERVALS_MS = [
-  1  * 24 * 60 * 60 * 1000, // stage 0 → 1
-  3  * 24 * 60 * 60 * 1000, // stage 1 → 2
-  7  * 24 * 60 * 60 * 1000, // stage 2 → 3
-  14 * 24 * 60 * 60 * 1000, // stage 3 → 4
-  30 * 24 * 60 * 60 * 1000, // stage 4 → 5 (30-day wait before graduation review)
-]
+const INTERVALS_DAYS = [1, 3, 7, 14, 30]
 
-export function getNextReviewAt(stage: number, remembered: boolean): { stage: number; nextReviewAt: number } {
+function toDateStr(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+function addDays(days: number): string {
+  const d = new Date()
+  d.setDate(d.getDate() + days)
+  return toDateStr(d)
+}
+
+export function todayStr(): string {
+  return toDateStr(new Date())
+}
+
+export function getNextReviewAt(stage: number, remembered: boolean): { stage: number; nextReviewAt: string } {
   if (!remembered) {
-    return {
-      stage: 0,
-      nextReviewAt: Date.now() + INTERVALS_MS[0],
-    }
+    return { stage: 0, nextReviewAt: addDays(INTERVALS_DAYS[0]) }
   }
   const nextStage = Math.min(stage + 1, 6) as 0 | 1 | 2 | 3 | 4 | 5 | 6
   if (nextStage === 6) {
-    return { stage: 6, nextReviewAt: Infinity }
+    return { stage: 6, nextReviewAt: '9999-12-31' }
   }
-  const next = new Date(Date.now() + INTERVALS_MS[stage])
-  next.setHours(0, 0, 0, 0)
-  return {
-    stage: nextStage,
-    nextReviewAt: next.getTime(),
-  }
+  return { stage: nextStage, nextReviewAt: addDays(INTERVALS_DAYS[stage]) }
 }
 
-export function isDueToday(nextReviewAt: number): boolean {
-  return nextReviewAt !== Infinity && nextReviewAt <= Date.now()
+export function isDueToday(nextReviewAt: string): boolean {
+  return nextReviewAt !== '9999-12-31' && nextReviewAt <= todayStr()
 }
