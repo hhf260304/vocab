@@ -1,7 +1,7 @@
 const INTERVALS_DAYS = [1, 3, 7, 14, 30]
 
 function toDateStr(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Taipei' }).format(d)
 }
 
 function addDays(days: number): string {
