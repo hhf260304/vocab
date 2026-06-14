@@ -13,7 +13,7 @@ interface Props {
   onDelete: () => void;
 }
 
-const STAGE_LABELS = ["新", "Lv.1", "Lv.2", "Lv.3", "Lv.4"];
+const STAGE_LABELS = ["新", "Lv.1", "Lv.2", "Lv.3", "Lv.4", "Lv.5"];
 
 function getStageStyle(stage: number): string {
   if (stage === 0) return "bg-sky-50 text-sky-600 border-sky-200";
@@ -32,6 +32,7 @@ function parseDateLocal(date: Date | string): Date {
 
 function formatRelativeDate(date: Date | string | null): string {
   if (!date) return "";
+  if (date === "9999-12-31") return "已精熟";
   const target = parseDateLocal(date);
   const now = new Date();
   now.setHours(0, 0, 0, 0);
