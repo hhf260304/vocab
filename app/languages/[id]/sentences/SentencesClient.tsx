@@ -44,7 +44,6 @@ function SentenceCategoryCard({
 interface Props {
   language: Language;
   totalCount: number;
-  graduatedCount: number;
   reviewCount: number;
   tomorrowCount: number;
   initialCategories: Category[];
@@ -54,7 +53,6 @@ interface Props {
 export default function SentencesClient({
   language,
   totalCount,
-  graduatedCount,
   reviewCount,
   tomorrowCount,
   initialCategories,
@@ -146,7 +144,7 @@ export default function SentencesClient({
       <h1 className="text-2xl font-bold text-foreground">句子管理</h1>
 
       {/* 統計格 */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <div className="bg-card border border-emerald-500/20 rounded-2xl p-4 text-center">
           <p className="text-2xl font-bold text-emerald-500">{reviewCount}</p>
           <p className="text-xs text-emerald-600/60 dark:text-emerald-400/60 mt-1">待複習</p>
@@ -154,10 +152,6 @@ export default function SentencesClient({
         <div className="bg-card border border-emerald-500/20 rounded-2xl p-4 text-center">
           <p className="text-2xl font-bold text-foreground">{totalCount}</p>
           <p className="text-xs text-emerald-600/60 dark:text-emerald-400/60 mt-1">總句子</p>
-        </div>
-        <div className="bg-card border border-emerald-500/20 rounded-2xl p-4 text-center">
-          <p className="text-2xl font-bold text-foreground">{graduatedCount}</p>
-          <p className="text-xs text-emerald-600/60 dark:text-emerald-400/60 mt-1">已畢業</p>
         </div>
       </div>
 

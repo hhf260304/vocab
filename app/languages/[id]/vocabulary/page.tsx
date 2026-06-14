@@ -33,7 +33,6 @@ export default async function VocabularyPage({
       language={language}
       reviewCount={reviews.length}
       totalCount={counts.total}
-      graduatedCount={counts.graduated}
       initialCategories={initialCategories}
       vocabCounts={vocabCounts}
       tomorrowCount={tomorrowItems.length}

@@ -38,11 +38,10 @@ import {
 import { createSentence, createSentences, updateSentence, deleteSentence } from "@/lib/actions/sentences";
 import type { Category, Language, Sentence } from "@/lib/db/schema";
 
-const STAGE_LABELS = ["新", "Lv.1", "Lv.2", "Lv.3", "Lv.4", "Lv.5", "已畢業"];
+const STAGE_LABELS = ["新", "Lv.1", "Lv.2", "Lv.3", "Lv.4"];
 
 function getStageStyle(stage: number): string {
   if (stage === 0) return "bg-sky-50 text-sky-600 border-sky-200";
-  if (stage === 6) return "bg-emerald-50 text-emerald-600 border-emerald-200";
   return "bg-indigo-50 text-indigo-600 border-indigo-200";
 }
 
@@ -408,7 +407,7 @@ export default function SentenceCategoryClient({
                     <Badge variant="outline" className={`text-xs ${getStageStyle(sentence.reviewStage)}`}>
                       {STAGE_LABELS[sentence.reviewStage]}
                     </Badge>
-                    {sentence.reviewStage < 6 && (
+                    {(
                       <span className={`text-xs font-medium ${formatRelativeDate(sentence.nextReviewAt) === "待複習" ? "text-amber-600" : "text-slate-400"}`}>
                         {formatRelativeDate(sentence.nextReviewAt)}
                       </span>

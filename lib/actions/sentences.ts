@@ -32,16 +32,13 @@ export async function getSentences(languageId?: string, categoryId?: string) {
 
 export async function getSentenceCounts(
   languageId: string
-): Promise<{ total: number; graduated: number }> {
+): Promise<{ total: number }> {
   const userId = await getUserId();
   const [result] = await db
-    .select({
-      total: count(),
-      graduated: sql<number>`count(*) filter (where ${sentences.reviewStage} = 6)`,
-    })
+    .select({ total: count() })
     .from(sentences)
     .where(and(eq(sentences.userId, userId), eq(sentences.languageId, languageId)));
-  return { total: result?.total ?? 0, graduated: Number(result?.graduated ?? 0) };
+  return { total: result?.total ?? 0 };
 }
 
 export async function getTodaySentenceReviews(languageId: string, categoryId?: string) {
@@ -49,7 +46,6 @@ export async function getTodaySentenceReviews(languageId: string, categoryId?: s
   const conditions = [
     eq(sentences.userId, userId),
     eq(sentences.languageId, languageId),
-    lt(sentences.reviewStage, 6),
     lte(sentences.nextReviewAt, todayStr()),
   ];
   if (categoryId === "uncategorized") {
@@ -86,7 +82,6 @@ export async function getTomorrowSentenceReviews(languageId: string): Promise<To
       and(
         eq(sentences.userId, userId),
         eq(sentences.languageId, languageId),
-        lt(sentences.reviewStage, 6),
         eq(sentences.nextReviewAt, tomorrowStr),
       )
     )
@@ -163,17 +158,30 @@ export async function markSentenceReview(id: string, remembered: boolean) {
 
   if (!sentence) return;
 
-  const { stage, nextReviewAt } = getNextReviewAt(sentence.reviewStage, remembered);
+  const { nextReviewAt, stage } = getNextReviewAt(sentence.reviewStage, remembered);
 
-  await db
-    .update(sentences)
-    .set({
-      reviewStage: stage,
-      nextReviewAt,
-      lastReviewedAt: new Date(),
-      ...(remembered ? {} : { failCount: sql`${sentences.failCount} + 1` }),
-    })
-    .where(and(eq(sentences.id, id), eq(sentences.userId, userId)));
+  if (nextReviewAt === '9999-12-31') {
+    await db.delete(sentences).where(and(eq(sentences.id, id), eq(sentences.userId, userId)));
+    if (sentence.categoryId) {
+      const [{ remaining }] = await db
+        .select({ remaining: count() })
+        .from(sentences)
+        .where(and(eq(sentences.categoryId, sentence.categoryId), eq(sentences.userId, userId)));
+      if (remaining === 0) {
+        await db.delete(categories).where(eq(categories.id, sentence.categoryId));
+      }
+    }
+  } else {
+    await db
+      .update(sentences)
+      .set({
+        reviewStage: stage,
+        nextReviewAt,
+        lastReviewedAt: new Date(),
+        ...(remembered ? {} : { failCount: sql`${sentences.failCount} + 1` }),
+      })
+      .where(and(eq(sentences.id, id), eq(sentences.userId, userId)));
+  }
 
   revalidatePath("/");
   if (sentence.languageId) {

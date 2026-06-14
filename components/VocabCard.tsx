@@ -13,11 +13,10 @@ interface Props {
   onDelete: () => void;
 }
 
-const STAGE_LABELS = ["新", "Lv.1", "Lv.2", "Lv.3", "Lv.4", "Lv.5", "已畢業"];
+const STAGE_LABELS = ["新", "Lv.1", "Lv.2", "Lv.3", "Lv.4"];
 
 function getStageStyle(stage: number): string {
   if (stage === 0) return "bg-sky-50 text-sky-600 border-sky-200";
-  if (stage === 6) return "bg-emerald-50 text-emerald-600 border-emerald-200";
   return "bg-indigo-50 text-indigo-600 border-indigo-200";
 }
 
@@ -56,7 +55,7 @@ export default function VocabCard({ vocab, ttsCode, onDelete }: Props) {
     speechSynthesis.speak(utterance);
   }
 
-  const relativeReview = vocab.reviewStage < 6 ? formatRelativeDate(vocab.nextReviewAt) : null;
+  const relativeReview = formatRelativeDate(vocab.nextReviewAt);
 
   return (
     <Card>

@@ -32,16 +32,13 @@ export async function getVocabularies(languageId?: string, categoryId?: string) 
 
 export async function getVocabularyCounts(
   languageId: string
-): Promise<{ total: number; graduated: number }> {
+): Promise<{ total: number }> {
   const userId = await getUserId();
   const [result] = await db
-    .select({
-      total: count(),
-      graduated: sql<number>`count(*) filter (where ${vocabulary.reviewStage} = 6)`,
-    })
+    .select({ total: count() })
     .from(vocabulary)
     .where(and(eq(vocabulary.userId, userId), eq(vocabulary.languageId, languageId)));
-  return { total: result?.total ?? 0, graduated: Number(result?.graduated ?? 0) };
+  return { total: result?.total ?? 0 };
 }
 
 export async function getCategoryVocabCounts(
@@ -69,7 +66,6 @@ export async function getTodayReviews(languageId: string, categoryId?: string) {
   const conditions = [
     eq(vocabulary.userId, userId),
     eq(vocabulary.languageId, languageId),
-    lt(vocabulary.reviewStage, 6),
     lte(vocabulary.nextReviewAt, todayStr()),
   ];
   if (categoryId === "uncategorized") {
@@ -110,7 +106,6 @@ export async function getTomorrowVocabReviews(languageId: string): Promise<Tomor
       and(
         eq(vocabulary.userId, userId),
         eq(vocabulary.languageId, languageId),
-        lt(vocabulary.reviewStage, 6),
         eq(vocabulary.nextReviewAt, tomorrowStr),
       )
     )
@@ -223,36 +218,6 @@ export async function getVocabularyById(id: string) {
   return vocab ?? null;
 }
 
-export type GraduatedVocab = {
-  id: string;
-  front: string;
-  back: string;
-  categoryName: string | null;
-  lastReviewedAt: Date | null;
-};
-
-export async function getGraduatedVocab(
-  languageId: string
-): Promise<GraduatedVocab[]> {
-  const userId = await getUserId();
-  return db
-    .select({
-      id: vocabulary.id,
-      front: vocabulary.front,
-      back: vocabulary.back,
-      categoryName: categories.name,
-      lastReviewedAt: vocabulary.lastReviewedAt,
-    })
-    .from(vocabulary)
-    .leftJoin(categories, eq(vocabulary.categoryId, categories.id))
-    .where(
-      and(
-        eq(vocabulary.userId, userId),
-        eq(vocabulary.languageId, languageId),
-        eq(vocabulary.reviewStage, 6)
-      )
-    );
-}
 
 export async function markReview(id: string, remembered: boolean) {
   const userId = await getUserId();
@@ -263,17 +228,30 @@ export async function markReview(id: string, remembered: boolean) {
 
   if (!vocab) return;
 
-  const { stage, nextReviewAt } = getNextReviewAt(vocab.reviewStage, remembered);
+  const { nextReviewAt, stage } = getNextReviewAt(vocab.reviewStage, remembered);
 
-  await db
-    .update(vocabulary)
-    .set({
-      reviewStage: stage,
-      nextReviewAt,
-      lastReviewedAt: new Date(),
-      ...(remembered ? {} : { failCount: sql`${vocabulary.failCount} + 1` }),
-    })
-    .where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
+  if (nextReviewAt === '9999-12-31') {
+    await db.delete(vocabulary).where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
+    if (vocab.categoryId) {
+      const [{ remaining }] = await db
+        .select({ remaining: count() })
+        .from(vocabulary)
+        .where(and(eq(vocabulary.categoryId, vocab.categoryId), eq(vocabulary.userId, userId)));
+      if (remaining === 0) {
+        await db.delete(categories).where(eq(categories.id, vocab.categoryId));
+      }
+    }
+  } else {
+    await db
+      .update(vocabulary)
+      .set({
+        reviewStage: stage,
+        nextReviewAt,
+        lastReviewedAt: new Date(),
+        ...(remembered ? {} : { failCount: sql`${vocabulary.failCount} + 1` }),
+      })
+      .where(and(eq(vocabulary.id, id), eq(vocabulary.userId, userId)));
+  }
 
   revalidatePath("/");
   if (vocab.languageId) {

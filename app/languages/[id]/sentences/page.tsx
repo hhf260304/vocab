@@ -32,7 +32,6 @@ export default async function SentencesPage({
     <SentencesClient
       language={language}
       totalCount={sentenceCounts.total}
-      graduatedCount={sentenceCounts.graduated}
       reviewCount={sentenceReviews.length}
       initialCategories={initialCategories}
       categoryCounts={categoryCounts}

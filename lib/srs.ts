@@ -1,4 +1,4 @@
-const INTERVALS_DAYS = [1, 3, 7, 14, 30]
+const INTERVALS_DAYS = [3, 7, 14, 30]
 
 function toDateStr(d: Date): string {
   return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Taipei' }).format(d)
@@ -16,13 +16,12 @@ export function todayStr(): string {
 
 export function getNextReviewAt(stage: number, remembered: boolean): { stage: number; nextReviewAt: string } {
   if (!remembered) {
-    return { stage: 0, nextReviewAt: addDays(INTERVALS_DAYS[0]) }
+    return { stage: 0, nextReviewAt: addDays(1) }
   }
-  const nextStage = Math.min(stage + 1, 6) as 0 | 1 | 2 | 3 | 4 | 5 | 6
-  if (nextStage === 6) {
-    return { stage: 6, nextReviewAt: '9999-12-31' }
+  if (stage >= INTERVALS_DAYS.length) {
+    return { stage, nextReviewAt: '9999-12-31' }
   }
-  return { stage: nextStage, nextReviewAt: addDays(INTERVALS_DAYS[stage]) }
+  return { stage: stage + 1, nextReviewAt: addDays(INTERVALS_DAYS[stage]) }
 }
 
 export function isDueToday(nextReviewAt: string): boolean {

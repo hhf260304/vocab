@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { GraduatedSheet } from "@/components/GraduatedSheet";
 import { createCategory } from "@/lib/actions/categories";
 import type { Category, Language } from "@/lib/db/schema";
 
@@ -47,7 +46,6 @@ interface Props {
   reviewCount: number;
   tomorrowCount: number;
   totalCount: number;
-  graduatedCount: number;
   initialCategories: Category[];
   vocabCounts: Record<string, number>;
 }
@@ -57,7 +55,6 @@ export default function VocabularyClient({
   reviewCount,
   tomorrowCount,
   totalCount,
-  graduatedCount,
   initialCategories,
   vocabCounts,
 }: Props) {
@@ -147,7 +144,7 @@ export default function VocabularyClient({
       <h1 className="text-2xl font-bold text-foreground">單字管理</h1>
 
       {/* 統計格 */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <div className="bg-card border border-border rounded-2xl p-4 text-center">
           <p className="text-2xl font-bold text-primary">{reviewCount}</p>
           <p className="text-xs text-muted-foreground mt-1">待複習</p>
@@ -156,12 +153,6 @@ export default function VocabularyClient({
           <p className="text-2xl font-bold text-foreground">{totalCount}</p>
           <p className="text-xs text-muted-foreground mt-1">總單字</p>
         </div>
-        <GraduatedSheet languageId={language.id} totalCount={graduatedCount}>
-          <div className="bg-card border border-border rounded-2xl p-4 text-center cursor-pointer hover:bg-accent transition-colors">
-            <p className="text-2xl font-bold text-foreground">{graduatedCount}</p>
-            <p className="text-xs text-muted-foreground mt-1">已畢業</p>
-          </div>
-        </GraduatedSheet>
       </div>
 
       {/* 複習按鈕 */}
