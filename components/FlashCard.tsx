@@ -5,12 +5,27 @@ import { useEffect, useRef, useState } from "react";
 import { Mic, Play, RotateCcw, Square, ThumbsDown, ThumbsUp, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+const STAGE_LABELS = ["新", "Lv.1", "Lv.2", "Lv.3", "Lv.4", "Lv.5"];
+
+function StageBadge({ stage }: { stage: number }) {
+  const style = stage === 0
+    ? "bg-sky-50 text-sky-600 border-sky-200"
+    : "bg-indigo-50 text-indigo-600 border-indigo-200";
+  const label = STAGE_LABELS[Math.min(stage, STAGE_LABELS.length - 1)];
+  return (
+    <Badge className={`${style} hover:${style} font-medium text-xs`}>
+      {label}
+    </Badge>
+  );
+}
+
 export interface CardLike {
   id: string;
   front: string;
   back: string;
   zhuyin?: string | null;
   exampleJp?: string | null;
+  reviewStage?: number | null;
 }
 
 type RecStatus = "idle" | "recording" | "recorded";
@@ -145,11 +160,16 @@ export default function FlashCard({
         >
           {/* 正面 */}
           <div className="[grid-area:1/1] backface-hidden bg-white rounded-3xl border-2 border-indigo-100 flex flex-col p-6 min-h-[200px] sm:min-h-[180px] shadow-[0_2px_0_0_rgba(79,70,229,0.12),0_8px_24px_-4px_rgba(79,70,229,0.10)]">
-            <div className="min-h-[24px]">
-              {categoryName && (
-                <Badge className="bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-50 font-medium text-xs">
-                  {categoryName}
-                </Badge>
+            <div className="min-h-[24px] flex items-center justify-between gap-2">
+              <div>
+                {categoryName && (
+                  <Badge className="bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-50 font-medium text-xs">
+                    {categoryName}
+                  </Badge>
+                )}
+              </div>
+              {card.reviewStage != null && (
+                <StageBadge stage={card.reviewStage} />
               )}
             </div>
             <div className="flex-1 flex flex-col items-center justify-center">
